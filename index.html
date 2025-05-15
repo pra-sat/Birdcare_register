@@ -1,38 +1,52 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8">
-  <title>สมัครสมาชิก Bird Car Care</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">  <!-- responsive :contentReference[oaicite:5]{index=5} -->
-  <link rel="stylesheet" href="style.css">
-  <!-- LIFF SDK -->
-  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
-  <!-- SweetAlert2 -->
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>สมัครสมาชิก Bird Car Care 🚗</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- LINE LIFF SDK -->
+    <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    <!-- ข้อมูลยี่ห้อ รุ่น ปี ของรถ -->
+    <script src="all_car_model.js"></script>
 </head>
 <body>
-  <div class="container">
-    <h1>✨ สมัครสมาชิก Bird Car Care 🎉</h1>
-    <form id="registerForm">
-      <!-- UserID (ได้จาก LIFF) -->
-      <input type="hidden" id="userId" name="userId">
-      <!-- Phone -->
-      <input type="tel" id="phone" name="phone" placeholder="เบอร์โทรศัพท์ (10 หลัก)" maxlength="10" required>
-      <!-- Name -->
-      <input type="text" id="name" name="name" placeholder="ชื่อ-นามสกุล" required>
-      <!-- Brand with datalist -->
-      <input list="brandList" id="brand" name="brand" placeholder="ยี่ห้อ" required>
-      <datalist id="brandList"></datalist>
-      <!-- Model with datalist -->
-      <input list="modelList" id="model" name="model" placeholder="รุ่น" required>
-      <datalist id="modelList"></datalist>
-      <!-- Year with datalist -->
-      <input list="yearList" id="year" name="year" placeholder="ปี" required>
-      <datalist id="yearList"></datalist>
-      <button type="submit" id="submitBtn">สมัครสมาชิก</button>
-    </form>
-  </div>
-  <script src="car_data.js"></script>
-  <script src="script.js"></script>
+    <div class="container">
+        <h1>🎉 สมัครสมาชิก Bird Car Care</h1>
+        <form id="registerForm">
+            <label for="userId">💳 userId (อัตโนมัติ)</label>
+            <input type="text" id="userId" name="userId" readonly>
+
+            <label for="name">📝 ชื่อผู้ใช้</label>
+            <input type="text" id="name" name="name" placeholder="เช่น สมชาย ใจดี">
+
+            <label for="phone">📞 เบอร์โทรศัพท์</label>
+            <input type="tel" id="phone" name="phone" placeholder="เช่น 0812345678" pattern="[0-9]*">
+
+            <label for="brand">🚗 ยี่ห้อรถ</label>
+            <input list="brandList" id="brand" name="brand" placeholder="เลือกยี่ห้อรถ">
+            <datalist id="brandList">
+                <!-- Option ยี่ห้อรถ จะถูกเติมโดย script.js -->
+            </datalist>
+
+            <label for="model">🚙 รุ่นรถ</label>
+            <input list="modelList" id="model" name="model" placeholder="เลือกหรือพิมพ์รุ่นรถ" disabled>
+            <datalist id="modelList">
+                <!-- Option รุ่นรถ จะถูกเติมโดย script.js -->
+            </datalist>
+
+            <label for="year">📅 ปีที่ผลิตรถ</label>
+            <input list="yearList" id="year" name="year" placeholder="เลือกหรือพิมพ์ปี" disabled>
+            <datalist id="yearList">
+                <!-- Option ปี จะถูกเติมโดย script.js -->
+            </datalist>
+
+            <button type="button" id="submitBtn">✅ สมัครสมาชิก</button>
+        </form>
+    </div>
+    <script src="script.js"></script>
 </body>
 </html>

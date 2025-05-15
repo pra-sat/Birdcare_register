@@ -1,52 +1,52 @@
-<!-- index.html -->
 <!DOCTYPE html>
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>สมัครสมาชิก Bird Car Care 🚗</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1"> <!-- Responsive meta tag:contentReference[oaicite:4]{index=4} -->
+    <title>สมัครสมาชิก Bird Car Care</title>
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
     <link rel="stylesheet" href="style.css">
-    <!-- SweetAlert2 -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <!-- LINE LIFF SDK -->
-    <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
-    <!-- ข้อมูลยี่ห้อ รุ่น ปี ของรถ -->
-    <script src="all_car_model.js"></script>
 </head>
 <body>
     <div class="container">
-        <h1>🎉 สมัครสมาชิก Bird Car Care</h1>
-        <form id="registerForm">
-            <label for="userId">💳 userId (อัตโนมัติ)</label>
+        <h1>สมัครสมาชิก Bird Car Care</h1>
+        <p>โปรดกรอกข้อมูลของท่านด้านล่าง</p>
+        <!-- Registration Form -->
+        <form id="regForm">
+            <label for="userId">LINE User ID</label>
             <input type="text" id="userId" name="userId" readonly>
 
-            <label for="name">📝 ชื่อผู้ใช้</label>
-            <input type="text" id="name" name="name" placeholder="เช่น สมชาย ใจดี">
+            <label for="fullName">ชื่อ-นามสกุล</label>
+            <input type="text" id="fullName" name="fullName" placeholder="ชื่อ-นามสกุล">
 
-            <label for="phone">📞 เบอร์โทรศัพท์</label>
-            <input type="tel" id="phone" name="phone" placeholder="เช่น 0812345678" pattern="[0-9]*">
+            <label for="phone">เบอร์โทรศัพท์</label>
+            <input type="tel" id="phone" name="phone" placeholder="0XXXXXXXXX">
 
-            <label for="brand">🚗 ยี่ห้อรถ</label>
-            <input list="brandList" id="brand" name="brand" placeholder="เลือกยี่ห้อรถ">
-            <datalist id="brandList">
-                <!-- Option ยี่ห้อรถ จะถูกเติมโดย script.js -->
-            </datalist>
+            <label for="brand">ยี่ห้อรถ</label>
+            <input list="brandList" id="brand" name="brand" placeholder="เลือกหรือพิมพ์ยี่ห้อรถ">
+            <datalist id="brandList"></datalist> <!-- Auto-suggest options populated by script:contentReference[oaicite:5]{index=5} -->
 
-            <label for="model">🚙 รุ่นรถ</label>
-            <input list="modelList" id="model" name="model" placeholder="เลือกหรือพิมพ์รุ่นรถ" disabled>
-            <datalist id="modelList">
-                <!-- Option รุ่นรถ จะถูกเติมโดย script.js -->
-            </datalist>
+            <label for="model">รุ่นรถ</label>
+            <input list="modelList" id="model" name="model" placeholder="เลือกรุ่นรถ" disabled>
+            <datalist id="modelList"></datalist>
 
-            <label for="year">📅 ปีที่ผลิตรถ</label>
-            <input list="yearList" id="year" name="year" placeholder="เลือกหรือพิมพ์ปี" disabled>
-            <datalist id="yearList">
-                <!-- Option ปี จะถูกเติมโดย script.js -->
-            </datalist>
+            <label for="year">ปีรถ</label>
+            <input list="yearList" id="year" name="year" placeholder="เลือกปีรถ" disabled>
+            <datalist id="yearList"></datalist>
 
-            <button type="button" id="submitBtn">✅ สมัครสมาชิก</button>
+            <button type="button" id="submitBtn">สมัคร</button>
         </form>
     </div>
+
+    <!-- LIFF SDK v2 -->
+    <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    <!-- SweetAlert2 for alerts -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Car brand/model/year data -->
+    <script src="all_car_model.js"></script>
+    <!-- Main script -->
     <script src="script.js"></script>
 </body>
 </html>

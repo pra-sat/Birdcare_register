@@ -1,6 +1,6 @@
 // LIFF initialization (แทนที่ YOUR_LIFF_ID ด้วย LIFF ID ของคุณ)
 window.addEventListener('load', () => {
-  liff.init({ liffId: "YOUR_LIFF_ID" }).then(() => {
+  liff.init({ liffId: "2007421084-6bzYVymA" }).then(() => {
     if (!liff.isLoggedIn()) {
       liff.login();
     } else {

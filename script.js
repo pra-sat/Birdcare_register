@@ -1,102 +1,98 @@
-const liffId = '2007421084-6bzYVymA';
-let userId = '';
-
-async function initLIFF() {
-    try {
-        await liff.init({ liffId });
-        if (!liff.isLoggedIn()) {
-            liff.login({ redirectUri: window.location.href });
-        } else {
-            const profile = await liff.getProfile();
-            userId = profile.userId || 'no-userId';
-            document.getElementById('userId').value = userId;
-        }
-    } catch (error) {
-        Swal.fire('เกิดข้อผิดพลาด', 'ไม่สามารถเชื่อมต่อ LINE ได้', 'error');
+// LIFF initialization (แทนที่ YOUR_LIFF_ID ด้วย LIFF ID ของคุณ)
+window.addEventListener('load', () => {
+  liff.init({ liffId: "YOUR_LIFF_ID" }).then(() => {
+    if (!liff.isLoggedIn()) {
+      liff.login();
+    } else {
+      liff.getProfile().then(profile => {
+        document.getElementById('userId').value = profile.userId;
+      }).catch(err => console.error(err));
     }
-}
+  }).catch(err => console.error('LIFF init failed', err));
 
-window.addEventListener('load', initLIFF);
+  // เตรียมเติม dropdown ยี่ห้อ
+  const brandList = document.getElementById('brandList');
+  for (let brand in carData) {
+    let opt = document.createElement('option');
+    opt.value = brand;
+    brandList.appendChild(opt);
+  }
 
-document.addEventListener('DOMContentLoaded', () => {
-    const phone = document.getElementById('phone');
-    const name = document.getElementById('name');
-    const brand = document.getElementById('brand');
-    const model = document.getElementById('model');
-    const year = document.getElementById('year');
+  // เมื่อเลือกยี่ห้อ ให้เติมรุ่น
+  document.getElementById('brand').addEventListener('input', function() {
+    const models = carData[this.value] || {};
+    const modelList = document.getElementById('modelList');
+    modelList.innerHTML = '';
+    document.getElementById('model').value = '';
+    document.getElementById('year').value = '';
+    for (let model in models) {
+      let opt = document.createElement('option');
+      opt.value = model;
+      modelList.appendChild(opt);
+    }
+  });
 
-    // Populate brand list
-    for (const brandName in carData) {
-        const opt = document.createElement('option');
-        opt.value = brandName;
-        document.getElementById('brandList').appendChild(opt);
+  // เมื่อเลือกรุ่น ให้เติมปี
+  document.getElementById('model').addEventListener('input', function() {
+    const brand = document.getElementById('brand').value;
+    const years = (carData[brand] || {})[this.value] || [];
+    const yearList = document.getElementById('yearList');
+    yearList.innerHTML = '';
+    document.getElementById('year').value = '';
+    for (let yr of years) {
+      let opt = document.createElement('option');
+      opt.value = yr;
+      yearList.appendChild(opt);
+    }
+  });
+
+  // Submit form
+  document.getElementById('registerForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const userId = document.getElementById('userId').value;
+    const phone = document.getElementById('phone').value.trim();
+    const name = document.getElementById('name').value.trim();
+    const brand = document.getElementById('brand').value.trim();
+    const model = document.getElementById('model').value.trim();
+    const year = document.getElementById('year').value.trim();
+
+    // Validation
+    if (name === '') {
+      Swal.fire({ icon: 'error', title: 'กรุณากรอกชื่อ' });
+      return;
+    }
+    if (!/^\d{10}$/.test(phone)) {
+      Swal.fire({ icon: 'error', title: 'เบอร์โทรไม่ถูกต้อง', text: 'กรุณากรอก 10 หลัก' });
+      return;
+    }
+    if (!brand || !model || !year) {
+      Swal.fire({ icon: 'error', title: 'กรุณาเลือกรายการให้ครบถ้วน' });
+      return;
     }
 
-    // Update models when brand changes
-    brand.addEventListener('input', () => {
-        model.value = '';
-        year.value = '';
-        document.getElementById('modelList').innerHTML = '';
-        document.getElementById('yearList').innerHTML = '';
-        if (carData[brand.value]) {
-            for (const modelName in carData[brand.value].models) {
-                const opt = document.createElement('option');
-                opt.value = modelName;
-                document.getElementById('modelList').appendChild(opt);
-            }
-        }
+    // เตรียมข้อมูลส่งไป Google Apps Script
+    const data = { userId, phone, name, brand, model, year };
+    // ตัวอย่างการกำหนดค่าเพิ่มเติม (Category, Channel, Points) สามารถทำบน server ได้
+    fetch('https://script.google.com/macros/s/AKfycbyUj_iKVOAzGCCB4LilahJ2xZjlKvPQI1bB-F083-B8hkl1IYq_EovLKUAaps9uQCtQaw/exec', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    })
+    .then(res => res.text())
+    .then(resText => {
+      // สมมติว่าถ้าสคริปต์พบข้อมูลซ้ำ จะส่งกลับข้อความ 'DUPLICATE'
+      if (resText.includes('DUPLICATE')) {
+        Swal.fire({ icon: 'error', title: 'ข้อมูลซ้ำ', text: 'ท่านได้ลงทะเบียนไว้แล้ว' });
+        liff.closeWindow();
+      } else {
+        // สมัครสำเร็จ
+        Swal.fire({ icon: 'success', title: 'สมัครสมาชิกสำเร็จ 🎉', showConfirmButton: false, timer: 2000 });
+        setTimeout(() => { liff.closeWindow(); }, 2200);
+      }
+    })
+    .catch(err => {
+      console.error(err);
+      Swal.fire({ icon: 'error', title: 'เกิดข้อผิดพลาด', text: 'ไม่สามารถบันทึกข้อมูลได้' });
     });
-
-    // Update years when model changes
-    model.addEventListener('input', () => {
-        year.value = '';
-        document.getElementById('yearList').innerHTML = '';
-        const selected = carData[brand.value]?.models[model.value];
-        if (selected) {
-            selected.years.forEach(y => {
-                const opt = document.createElement('option');
-                opt.value = y;
-                document.getElementById('yearList').appendChild(opt);
-            });
-        }
-    });
-
-    // Form submission
-    document.getElementById('registerForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-
-        if (!/^\d{10}$/.test(phone.value)) {
-            Swal.fire('ข้อผิดพลาด', 'เบอร์โทรไม่ถูกต้อง', 'warning');
-            return;
-        }
-
-        if (!userId || userId === 'no-userId') {
-            Swal.fire('ข้อผิดพลาด', 'ไม่สามารถดึง UserID จาก LINE ได้', 'error');
-            return;
-        }
-
-        const data = {
-            userId,
-            phone: phone.value,
-            name: name.value,
-            brand: brand.value,
-            model: model.value,
-            year: year.value
-        };
-
-        const response = await fetch('https://script.google.com/macros/s/AKfycbyUj_iKVOAzGCCB4LilahJ2xZjlKvPQI1bB-F083-B8hkl1IYq_EovLKUAaps9uQCtQaw/exec', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
-        });
-
-        if (response.ok) {
-            Swal.fire('สำเร็จ', 'บันทึกข้อมูลเรียบร้อยแล้ว', 'success').then(() => {
-                document.getElementById('registerForm').reset();
-                liff.closeWindow();
-            });
-        } else {
-            Swal.fire('ผิดพลาด', 'สมัครไม่สำเร็จ กรุณาลองใหม่', 'error');
-        }
-    });
+  });
 });

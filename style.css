@@ -1,59 +1,93 @@
+/* style.css */
+
+/* ธีมสีพื้นหลังไล่โทน */
 body {
-  margin: 0; padding: 0; 
-  font-family: sans-serif;
-  background: linear-gradient(135deg, #1e3c72, #2a5298);
-  color: #fff;
-  min-height: 100vh;
-  display: flex; align-items: center; justify-content: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(to right, #ece9e6, #ffffff);
+    margin: 0;
+    padding: 0;
 }
 
 .container {
-  background: rgba(255, 255, 255, 0.1);
-  padding: 20px;
-  border-radius: 12px;
-  width: 90%; max-width: 400px; text-align: center;
-  animation: fadeIn 0.8s ease-out;
+    max-width: 500px;
+    margin: 2em auto;
+    background: #fff;
+    padding: 20px 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    animation: fadeIn 1s ease-out;
 }
 
 h1 {
-  margin-bottom: 20px;
+    text-align: center;
+    color: #333;
+    margin-bottom: 1em;
+    font-size: 1.6em;
+    animation: slideIn 1s ease-out;
 }
 
-input[list] {
-  width: 100%;
-  padding: 10px; margin: 10px 0;
-  border: none; border-radius: 6px;
-  font-size: 16px;
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    margin-top: 10px;
+    margin-bottom: 5px;
+    font-weight: 500;
+    color: #555;
+}
+
+input {
+    padding: 8px 10px;
+    font-size: 1em;
+    border: 2px solid #ccc;
+    border-radius: 6px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+input:focus {
+    outline: none;
+    border-color: #66afe9;
+    box-shadow: 0 0 5px rgba(102, 175, 233, 0.5);
+}
+
+input[readonly] {
+    background-color: #f7f7f7;
+    cursor: not-allowed;
 }
 
 button {
-  width: 100%;
-  padding: 12px;
-  margin-top: 15px;
-  background-color: #4fbde4;
-  border: none; border-radius: 6px;
-  font-size: 18px; color: #fff;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  animation: pulse 2s infinite;
+    margin-top: 20px;
+    padding: 10px;
+    font-size: 1em;
+    border: none;
+    border-radius: 6px;
+    background: #4CAF50;
+    color: white;
+    cursor: pointer;
+    transition: background 0.3s;
 }
+
 button:hover {
-  background-color: #3aaac0;
+    background: #45a049;
 }
 
+/* Responsive สำหรับหน้าจอเล็ก */
+@media (max-width: 600px) {
+    .container {
+        margin: 1em;
+        padding: 15px 20px;
+    }
+}
+
+/* อนิเมชันเรียบง่ายสำหรับโหลดหน้า */
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-@keyframes pulse {  /* Animation for button (CSS allows animations without JS:contentReference[oaicite:6]{index=6}) */
-  0% { transform: scale(1); }
-  50% { transform: scale(1.02); }
-  100% { transform: scale(1); }
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
-/* Responsive tweaks */
-@media (max-width: 480px) {
-  .container { padding: 15px; }
-  input[list] { font-size: 14px; }
-  button { font-size: 16px; }
+@keyframes slideIn {
+    from { transform: translateY(-20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
 }

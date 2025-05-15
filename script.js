@@ -84,7 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
             year: year.value
         };
 
-        const response = await fetch('https://script.google.com/macros/s/1hCAY1GrDph0iPJOP74wPF-08Zc3ZSxX2R-YGYeTutc4/exec', {
+        const response = await fetch('https://script.google.com/macros/s/AKfycbyUj_iKVOAzGCCB4LilahJ2xZjlKvPQI1bB-F083-B8hkl1IYq_EovLKUAaps9uQCtQaw/exec', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)

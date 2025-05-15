@@ -1,93 +1,80 @@
-/* style.css */
-
-/* ธีมสีพื้นหลังไล่โทน */
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(to right, #ece9e6, #ffffff);
+/* Fullscreen gradient background (covering viewport):contentReference[oaicite:7]{index=7} */
+html, body {
     margin: 0;
     padding: 0;
+    height: 100%;
 }
-
-.container {
-    max-width: 500px;
-    margin: 2em auto;
-    background: #fff;
-    padding: 20px 25px;
-    border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    animation: fadeIn 1s ease-out;
-}
-
-h1 {
-    text-align: center;
-    color: #333;
-    margin-bottom: 1em;
-    font-size: 1.6em;
-    animation: slideIn 1s ease-out;
-}
-
-form {
+body {
+    background: linear-gradient(135deg, #1c1c1c, #4a4a4a);
     display: flex;
-    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Prompt', sans-serif;
+    color: #fff;
+    text-align: center;
 }
 
+/* Container for the form: dark, semi-transparent background */
+.container {
+    background-color: rgba(0, 0, 0, 0.6);
+    padding: 20px 25px;
+    border-radius: 10px;
+    max-width: 400px;
+    width: 90%;
+}
+
+/* Form heading and instructions */
+.container h1 {
+    margin: 0 0 10px;
+    font-weight: 600;
+}
+.container p {
+    margin: 5px 0 20px;
+    font-weight: 300;
+}
+
+/* Form labels and inputs */
 label {
-    margin-top: 10px;
-    margin-bottom: 5px;
-    font-weight: 500;
-    color: #555;
+    display: block;
+    margin: 10px 0 5px;
+    text-align: left;
+    font-weight: 400;
 }
-
 input {
+    width: 100%;
     padding: 8px 10px;
-    font-size: 1em;
-    border: 2px solid #ccc;
-    border-radius: 6px;
-    transition: border-color 0.3s, box-shadow 0.3s;
-}
-
-input:focus {
-    outline: none;
-    border-color: #66afe9;
-    box-shadow: 0 0 5px rgba(102, 175, 233, 0.5);
-}
-
-input[readonly] {
-    background-color: #f7f7f7;
-    cursor: not-allowed;
-}
-
-button {
-    margin-top: 20px;
-    padding: 10px;
-    font-size: 1em;
     border: none;
-    border-radius: 6px;
-    background: #4CAF50;
-    color: white;
+    border-radius: 5px;
+    margin-bottom: 5px;
+    font-size: 16px;
+}
+
+/* Disabled inputs appear gray */
+input:disabled {
+    background-color: #444;
+}
+
+/* Submit button */
+#submitBtn {
+    width: 100%;
+    padding: 10px;
+    margin-top: 15px;
+    background-color: #ff9800;
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    font-size: 18px;
     cursor: pointer;
-    transition: background 0.3s;
+    transition: background-color 0.3s, transform 0.2s;
+}
+#submitBtn:hover {
+    background-color: #e68900;
+    transform: scale(1.02);
 }
 
-button:hover {
-    background: #45a049;
-}
-
-/* Responsive สำหรับหน้าจอเล็ก */
+/* Ensure no horizontal scrolling on mobile */
 @media (max-width: 600px) {
     .container {
-        margin: 1em;
-        padding: 15px 20px;
+        padding: 15px;
     }
-}
-
-/* อนิเมชันเรียบง่ายสำหรับโหลดหน้า */
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-@keyframes slideIn {
-    from { transform: translateY(-20px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
 }

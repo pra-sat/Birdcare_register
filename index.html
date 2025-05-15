@@ -1,16 +1,26 @@
-
 <!DOCTYPE html>
-<html lang="th">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Bird CarCare Register</title>
-    <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 </head>
 <body>
-    <h1>Bird CarCare - สมัครสมาชิก</h1>
-    <p id="profile"></p>
-    <button id="registerBtn">ลงทะเบียน</button>
-
-    <script src="script.js"></script>
+  <div class="container">
+    <h2 class="title">สมัครสมาชิก Bird Car Care</h2>
+    <form id="registerForm">
+      <input type="text" id="userId" value="" readonly>
+      <input type="tel" id="phone" placeholder="เบอร์โทร" required>
+      <input type="text" id="name" placeholder="ชื่อ" required>
+      <input type="text" id="brand" placeholder="ยี่ห้อ" required>
+      <input type="text" id="model" placeholder="รุ่น" required>
+      <input type="text" id="year" placeholder="ปี" required>
+      <button type="submit">สมัครสมาชิก</button>
+    </form>
+  </div>
+  <script src="all_Car_Model.js"></script>
+  <script src="script.js"></script> <!-- แก้ตรงนี้ -->
 </body>
 </html>

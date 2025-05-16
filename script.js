@@ -5,99 +5,129 @@ const webhookURL = 'https://script.google.com/macros/s/AKfycbyUj_iKVOAzGCCB4Lila
 let userId = '';
 const liffId = '2007421084-6bzYVymA';
 
-// สคริปต์จัดการ UI และ LIFF
-window.addEventListener('DOMContentLoaded', () => {
-    // เริ่ม LIFF application
-    liff.init({liffId: liffId})
-        .then(() => {
-            if (liff.isLoggedIn()) {
-                liff.getProfile().then(profile => {
-                    userId = profile.userId;
-                    document.getElementById('userId').value = userId;
-                }).catch(err => {
-                    console.error('Error getting profile:', err);
-                });
-            }
-        })
-        .catch(err => {
-            console.error('LIFF Initialization failed', err);
+async function initLIFF() {
+  try {
+    await liff.init({liffId: liffId});
+    if (liff.isLoggedIn()) {
+      const profile = await liff.getProfile();
+            userId = profile.userId;
+            console.log(profile);
+            document.getElementById('userId').value = userId;
+      if (userId !== 'no-userId') {
+        document.getElementById('userId').value = userId;
+      }
+      if (userId === 'no-userId') {
+        Swal.fire({
+          icon: 'error',
+          title: 'ข้อผิดพลาด-1',
+          text: 'ไม่สามารถดึง UserID จาก LINE ได้ กรุณาลองใหม่หรือติดต่อ Admin',
+          confirmButtonText: 'ตกลง'
         });
-
-    const brandInput = document.getElementById('brandInput');
-    const modelInput = document.getElementById('modelInput');
-    const yearInput = document.getElementById('yearInput');
-    const modelList = document.getElementById('modelList');
-    const yearList = document.getElementById('yearList');
-    let selectedCategory = '';
-
-    // เมื่อเลือกยี่ห้อ เปลี่ยนรุ่นใน datalist
-    brandInput.addEventListener('change', () => {
-        const brand = brandInput.value;
-        // เคลียร์ datalist รุ่นและปี
-        modelList.innerHTML = '';
-        yearList.innerHTML = '';
-        yearInput.value = '';
-        selectedCategory = '';
-
-        if (carData[brand]) {
-            // เพิ่ม option ให้รุ่นต่างๆ ในแบรนด์นี้
-            const models = Object.keys(carData[brand]);
-            models.forEach(model => {
-                const option = document.createElement('option');
-                option.value = model;
-                modelList.appendChild(option);
-            });
-        }
+      }
+    } else {
+      liff.login();
+    }
+  } catch (err) {
+    console.error('LIFF Init Error:', err);
+    Swal.fire({
+      icon: 'error',
+      title: 'เกิดข้อผิดพลาด-2',
+      text: 'ไม่สามารถเชื่อมต่อกับ LINE ได้ กรุณาลองใหม่หรือติดต่อ Admin',
+      confirmButtonText: 'ตกลง'
     });
+  }
+}
 
-    // เมื่อเลือกหรือกรอกรุ่น เปลี่ยนปีใน datalist และเก็บหมวดหมู่
-    modelInput.addEventListener('change', () => {
-        const brand = brandInput.value;
-        const model = modelInput.value;
-        yearList.innerHTML = '';
-        yearInput.value = '';
-        selectedCategory = '';
 
-        if (carData[brand] && carData[brand][model]) {
-            const years = carData[brand][model].years;
-            years.forEach(y => {
-                const option = document.createElement('option');
-                option.value = y;
-                yearList.appendChild(option);
-            });
-            // เก็บประเภทจากข้อมูลรุ่นรถ
-            selectedCategory = carData[brand][model].category;
-        }
-    });
+
+// เรียก initLIFF เมื่อหน้าเว็บโหลด
+window.addEventListener('load', initLIFF);
+
+
+
+document.addEventListener('DOMContentLoaded', () => {
+  const phone = document.getElementById('phone');
+  const name = document.getElementById('name');
+  const brand = document.getElementById('brand');
+  const model = document.getElementById('model');
+  const year = document.getElementById('year');
+  const category = document.getElementById('category');
+
+  // Populate brand list
+  for (let brandName in carData) {
+    const opt = document.createElement('option');
+    opt.value = brandName;
+    document.getElementById('brandList').appendChild(opt);
+  }
+
+  // Update model list based on brand
+  brand.addEventListener('input', () => {
+    model.value = '';
+    year.value = '';
+    category.value = 'Unknown';
+    document.getElementById('modelList').innerHTML = '';
+    document.getElementById('yearList').innerHTML = '';
+    if (carData[brand.value]) {
+      Object.keys(carData[brand.value].models).forEach(modelName => {
+        const opt = document.createElement('option');
+        opt.value = modelName;
+        document.getElementById('modelList').appendChild(opt);
+      });
+    }
+  });
+
+  // Update year list and category based on model
+  model.addEventListener('input', () => {
+    year.value = '';
+    category.value = 'Unknown';
+    document.getElementById('yearList').innerHTML = '';
+    const brandVal = brand.value;
+    const modelVal = model.value;
+    if (carData[brandVal]?.models[modelVal]) {
+      carData[brandVal].models[modelVal].years.forEach(y => {
+        const opt = document.createElement('option');
+        opt.value = y;
+        document.getElementById('yearList').appendChild(opt);
+      });
+      category.value = carData[brandVal].models[modelVal].category;
+    }
+  });
+
 
     // เมื่อคลิกสมัครสมาชิก
-    document.getElementById('registerBtn').addEventListener('click', () => {
-        const userId = document.getElementById('userId').value.trim();
-        const name = document.getElementById('nameInput').value.trim();
-        const phone = document.getElementById('phoneInput').value.trim();
-        const brand = brandInput.value.trim();
-        const model = modelInput.value.trim();
-        const year = yearInput.value.trim();
+    document.getElementById('registerForm').addEventListener('submit', async e => {
+    e.preventDefault();
 
-        // ตรวจสอบข้อมูลที่กรอก
-        if (!userId || !name || !phone || !brand || !model || !year) {
-            Swal.fire({
-                icon: 'warning',
-                title: 'กรุณากรอกข้อมูลให้ครบถ้วน'
-            });
-            return;
-        }
+    if (!/^\d{10}$/.test(phone.value)) {
+      Swal.fire({
+        icon: 'error',
+        title: 'เบอร์โทรไม่ถูกต้อง',
+        text: 'กรุณากรอกเบอร์โทร 10 หลัก',
+        confirmButtonText: 'ตกลง'
+      });
+      return;
+    }
+    // ตรวจสอบว่า userId มีค่าหรือไม่
+    if (!userId || userId === 'no-userId') {
+      Swal.fire({
+        icon: 'error',
+        title: 'ข้อผิดพลาด-3',
+        text: 'ไม่สามารถดึง UserID จาก LINE ได้ กรุณาลองใหม่หรือติดต่อ Admin',
+        confirmButtonText: 'ตกลง'
+      });
+      return;
+    }
 
         // ส่งข้อมูลไปที่ Google Apps Script
         const url = 'https://script.google.com/macros/s/AKfycbyUj_iKVOAzGCCB4LilahJ2xZjlKvPQI1bB-F083-B8hkl1IYq_EovLKUAaps9uQCtQaw/exec';
         const params = new URLSearchParams({
             userId: userId,
-            name: name,
-            phone: phone,
-            brand: brand,
-            model: model,
-            year: year,
-            category: selectedCategory
+            phone: phone.value,
+            name: name.value,
+            brand: brand.value,
+            model: model.value,
+             year: year.value,
+            category: category.value || 'Unknown'
         });
 
         fetch(`${url}?${params.toString()}`)

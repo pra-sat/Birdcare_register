@@ -1,5 +1,5 @@
-charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js">
-src="https://cdn.jsdelivr.net/npm/sweetalert2@11">
+src="https://static.line-scdn.net/liff/edge/2/sdk.js";
+src="https://cdn.jsdelivr.net/npm/sweetalert2@11";
     
 const webhookURL = 'https://script.google.com/macros/s/AKfycbyUj_iKVOAzGCCB4LilahJ2xZjlKvPQI1bB-F083-B8hkl1IYq_EovLKUAaps9uQCtQaw/exec';
 let userId = '';

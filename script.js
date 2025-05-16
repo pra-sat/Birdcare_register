@@ -1,40 +1,5 @@
 // ตรวจสอบการโหลด LIFF SDK
-(function() {
-    let loadAttempts = 0;
-    const maxAttempts = 3;
-    const loadLIFFScript = () => {
-        const liffScript = document.createElement('script');
-        liffScript.src = 'https://static.line-scdn.net/liff/edge/2.19.3/sdk.js'; // ใช้เวอร์ชันที่เสถียร
-        liffScript.onload = () => {
-            console.log('LIFF SDK loaded successfully');
-            initLIFF();
-        };
-        liffScript.onerror = () => {
-            loadAttempts++;
-            if (loadAttempts < maxAttempts) {
-                console.warn(`LIFF SDK load failed, retrying (${loadAttempts}/${maxAttempts})...`);
-                setTimeout(loadLIFFScript, 2000); // รีทรีทุก 2 วินาที
-            } else {
-                console.error('Failed to load LIFF SDK after max attempts');
-                Swal.fire({
-                    icon: 'error',
-                    title: '❗️เกิดปัญหาการเชื่อต่อ LIFF SDK--1',
-                    text: 'กรุณาลองใหม่อีกครั้งหรือติดต่อ Admin',
-                    confirmButtonText: 'ตกลง'
-                });
-            }
-        };
-        document.head.appendChild(liffScript);
-    };
 
-    const swalScript = document.createElement('script');
-    swalScript.src = 'https://cdn.jsdelivr.net/npm/sweetalert2@11';
-    swalScript.onload = () => console.log('SweetAlert2 loaded');
-    swalScript.onerror = () => console.error('Failed to load SweetAlert2');
-    document.head.appendChild(swalScript);
-
-    loadLIFFScript(); // เริ่มโหลด LIFF SDK
-})();
 
 let userId = '';
 const liffId = '2007421084-6bzYVymA';

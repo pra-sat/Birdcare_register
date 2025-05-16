@@ -1,46 +1,56 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8">
-  <title>สมัครสมาชิก Bird Car Care</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <!-- UI Stylesheet -->
-  <link rel="stylesheet" href="style.css">
-
-  <!-- Include SweetAlert2 for popups -->
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <!-- Include LINE LIFF SDK (for getting userId and closing LIFF) -->
-  <script src="https://static.line-scdn.net/liff/edge/2.1/liff.js"></script>
-  <!-- Include car data (do not modify this file) -->
-  <script src="all_car_model.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>สมัครสมาชิก</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- LIFF SDK -->
+    <script src="https://static.line-scdn.net/liff/edge/2.3/sdk.js"></script>
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
-  <div class="register-card">
-    <h1>สมัครสมาชิก Bird Car Care</h1>
-    <form id="registerForm">
-      <!-- Hidden field for userId (filled via LIFF) -->
-       <!-- <input type="hidden" id="userId" name="userId" value=""> -->
-      <input type="text" id="userId" readonly>
-      <!-- Phone number -->
-      <input type="tel" id="phone" name="phone" placeholder="เบอร์โทรศัพท์" required>
-      <!-- Name -->
-      <input type="text" id="name" name="name" placeholder="ชื่อ" required>
-      <!-- Car Brand with datalist -->
-      <input type="text" id="brand" name="brand" list="brandList" placeholder="ยี่ห้อรถ" required>
-      <datalist id="brandList"></datalist>
-      <!-- Car Model with datalist -->
-      <input type="text" id="model" name="model" list="modelList" placeholder="รุ่นรถ" disabled required>
-      <datalist id="modelList"></datalist>
-      <!-- Car Year with datalist -->
-      <input type="text" id="year" name="year" list="yearList" placeholder="ปีที่ผลิตรถ" required>
-      <datalist id="yearList"></datalist>
-      <!-- Submit button -->
-      <button type="submit" id="submitBtn">สมัครสมาชิก</button>
-    </form>
-  </div>
-
-  <!-- Application logic -->
-  <script src="script.js"></script>
+    <div class="container">
+        <h2>สมัครสมาชิก</h2>
+        <form id="regForm">
+            <div class="form-group">
+                <label for="userId">User ID (LINE):</label>
+                <input type="text" id="userId" name="userId" readonly>
+            </div>
+            <div class="form-group">
+                <label for="nameInput">ชื่อ:</label>
+                <input type="text" id="nameInput" name="name">
+            </div>
+            <div class="form-group">
+                <label for="phoneInput">เบอร์โทร:</label>
+                <input type="tel" id="phoneInput" name="phone" placeholder="0812345678">
+            </div>
+            <div class="form-group">
+                <label for="brandInput">ยี่ห้อ:</label>
+                <input list="brandList" id="brandInput" name="brand" placeholder="เลือกยี่ห้อ">
+                <datalist id="brandList">
+                    <option value="Audi">
+                    <option value="Yamaha">
+                    <option value="Vespa">
+                    <option value="Triumph">
+                </datalist>
+            </div>
+            <div class="form-group">
+                <label for="modelInput">รุ่น:</label>
+                <input list="modelList" id="modelInput" name="model" placeholder="เลือกหรือพิมพ์รุ่น">
+                <datalist id="modelList"></datalist>
+            </div>
+            <div class="form-group">
+                <label for="yearInput">ปี:</label>
+                <input list="yearList" id="yearInput" name="year" placeholder="เลือกปี">
+                <datalist id="yearList"></datalist>
+            </div>
+            <button type="button" id="registerBtn">สมัครสมาชิก</button>
+        </form>
+    </div>
+    <!-- เชื่อมต่อไฟล์ข้อมูลและสคริปต์หลัก -->
+    <script src="all_car_model.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>

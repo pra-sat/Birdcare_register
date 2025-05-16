@@ -33,7 +33,8 @@ async function initLIFF() {
         const userIdInput = document.getElementById('userId');
         if (userIdInput) {
             userIdInput.value = profile.userId || 'no-userId';
-            console.log('userId set to:', userIdInput.value);
+            userIdInput.value = userId;
+            console.log('userId set to:', userId);
         } else {
             console.error('userId input element not found');
         }

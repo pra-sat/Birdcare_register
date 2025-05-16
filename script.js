@@ -1,24 +1,13 @@
 // ตรวจสอบการโหลด LIFF SDK
 (function() {
-    const liffScript = document.createElement('script');
-    liffScript.src = 'https://static.line-scdn.net/liff/edge/2.3/sdk.js';
-    liffScript.onload = () => {
-        console.log('LIFF SDK loaded successfully'); // ยังคงไว้ใน console
-        initLIFF();
-    };
-    liffScript.onerror = () => {
-        Swal.fire({
-            icon: 'error',
-            title: '❗️เกิดปัญหาการเชื่อต่อ LIFF SDK--1',
-            text: 'กรุณาลองใหม่อีกครั้งหรือติดต่อ Admin',
-            confirmButtonText: 'ตกลง'
-        });
-    };
-    document.head.appendChild(liffScript);
+  const liffScript = document.createElement('script');
+  liffScript.src = 'https://static.line-scdn.net/liff/edge/2/sdk.js';
+  liffScript.onload = () => initLIFF();
+  document.head.appendChild(liffScript);
 
-    const swalScript = document.createElement('script');
-    swalScript.src = 'https://cdn.jsdelivr.net/npm/sweetalert2@11';
-    document.head.appendChild(swalScript);
+  const swalScript = document.createElement('script');
+  swalScript.src = 'https://cdn.jsdelivr.net/npm/sweetalert2@11';
+  document.head.appendChild(swalScript);
 })();
 
 let userId = '';

@@ -13,16 +13,19 @@ async function initLIFF() {
         await liff.init({ liffId });
         console.log('LIFF Init OK');
 
-        if (!liff.isInClient()) {
+        if(!liff.isLoggedIn()){
             liff.login();
-            // showSwal({
-            //     icon: 'error',
-            //     title: '❗️ข้อผิดพลาด-0',
-            //     text: 'กรุณาเปิดหน้านี้ใน LINE App เท่านั้น',
-            //     confirmButtonText: confirmText
-            // });
-            // return;
-        }
+        }  
+
+        // if (!liff.isInClient()) {
+        //     showSwal({
+        //         icon: 'error',
+        //         title: '❗️ข้อผิดพลาด-0',
+        //         text: 'กรุณาเปิดหน้านี้ใน LINE App เท่านั้น',
+        //         confirmButtonText: confirmText
+        //     });
+        //     return;
+        // }
 
         const profile = await liff.getProfile();
         console.log('Profile retrieved:', profile);

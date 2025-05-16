@@ -1,66 +1,51 @@
-/* Full-page gradient background */
+/* CSS โทนฟ้าเข้ม (gradient พื้นหลังเข้ม) */
 body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: linear-gradient(to bottom, #001f3f, #01376b);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
+    background: linear-gradient(135deg, #001f3f, #002960);
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    color: #fff;
+    height: 100vh;
 }
-
-/* Registration card styles */
-.register-card {
-  background-color: #0F1A2E;
-  padding: 20px;
-  border-radius: 10px;
-  width: 90%;
-  max-width: 400px;
-  box-sizing: border-box;
-  color: white;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+.container {
+    max-width: 400px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: rgba(0, 0, 0, 0.4);
+    border-radius: 8px;
 }
-
-.register-card h1 {
-  text-align: center;
-  font-size: 1.5em;
-  margin-bottom: 20px;
-  font-weight: bold;
+h2 {
+    text-align: center;
 }
-
-.register-card input {
-  width: 100%;
-  padding: 12px;
-  margin-bottom: 15px;
-  border: none;
-  border-radius: 5px;
-  font-size: 1em;
-  box-sizing: border-box;
-  outline: none;
+.form-group {
+    margin-bottom: 15px;
 }
-
-.register-card input::placeholder {
-  color: #aaa;
+label {
+    display: block;
+    margin-bottom: 5px;
 }
-
-.register-card button {
-  width: 100%;
-  padding: 12px;
-  background-color: #1E90FF;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  font-size: 1em;
-  cursor: pointer;
+input[list], input[type="text"], input[type="tel"] {
+    width: 100%;
+    padding: 8px;
+    border: none;
+    border-radius: 4px;
+    box-sizing: border-box;
 }
-
-.register-card button:hover {
-  background-color: #1A7CD8;
+button {
+    width: 100%;
+    padding: 10px;
+    background-color: #005f9e;
+    border: none;
+    border-radius: 4px;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
 }
-
-.register-card button:disabled {
-  background-color: #888;
-  cursor: not-allowed;
+button:hover {
+    background-color: #004880;
 }
-
-/* Datalist inputs (no extra styling needed) */
+@media (max-width: 600px) {
+    .container {
+        margin: 20px;
+    }
+}

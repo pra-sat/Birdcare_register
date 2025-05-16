@@ -1,20 +1,21 @@
+const webhookURL = 'https://script.google.com/macros/s/AKfycbyUj_iKVOAzGCCB4LilahJ2xZjlKvPQI1bB-F083-B8hkl1IYq_EovLKUAaps9uQCtQaw/exec';
+let userId = '';
 // สคริปต์จัดการ UI และ LIFF
 window.addEventListener('DOMContentLoaded', () => {
     // เริ่ม LIFF application
-    liff.init({ liffId: '2007421084-6bzYVymA' })
+    liff.init({ liffId: '2007421084-6bzYVymA' })  // เปลี่ยนเป็น LIFF ID ของคุณ
         .then(() => {
             if (liff.isLoggedIn()) {
                 liff.getProfile().then(profile => {
-                    const userIdField = document.getElementById('userId');
-                    userIdField.value = profile.userId;
+                    userId = profile.userId;
+                    document.getElementById('userId').value = userId;
+                }).catch(err => {
+                    console.error('Error getting profile:', err);
                 });
-            } else {
-                // เรียก LIFF login ถ้ายังไม่ login
-                liff.login();
             }
         })
         .catch(err => {
-            console.error('LIFF initialization failed', err);
+            console.error('LIFF Initialization failed', err);
         });
 
     const brandInput = document.getElementById('brandInput');

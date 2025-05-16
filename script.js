@@ -20,7 +20,7 @@ async function initLIFF() {
     if (!liff.isInClient()) {
       Swal.fire({
         icon: 'error',
-        title: 'ข้อผิดพลาด',
+        title: 'ข้อผิดพลาด-0',
         text: 'กรุณาเปิดหน้านี้ในแอป LINE เท่านั้น',
         confirmButtonText: 'ตกลง'
       });
@@ -53,7 +53,6 @@ async function initLIFF() {
   }
 }
 
-// เรียก initLIFF เมื่อหน้าเว็บโหลด
 window.addEventListener('load', () => {
   if (typeof liff === 'undefined') {
     console.error('LIFF SDK not loaded');
@@ -69,6 +68,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const model = document.getElementById('model');
   const year = document.getElementById('year');
   const category = document.getElementById('category');
+
+  if (!brand) {
+    console.error('Element with id="brand" not found');
+    return;
+  }
 
   // Populate brand list
   for (let brandName in carData) {
@@ -94,6 +98,11 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Update year list and category based on model
+  if (!model) {
+    console.error('Element with id="model" not found');
+    return;
+  }
+
   model.addEventListener('input', () => {
     year.value = '';
     category.value = 'Unknown';

@@ -2,7 +2,7 @@
 
 
 let userId = '';
-const liffId = '2007421084-6bzYVymA';
+const liffId = '2007421084-0VKG7anQ';
 const webhookURL = 'https://script.google.com/macros/s/AKfycbyUj_iKVOAzGCCB4LilahJ2xZjlKvPQI1bB-F083-B8hkl1IYq_EovLKUAaps9uQCtQaw/exec';
 const confirmText = 'ตกลง';
 

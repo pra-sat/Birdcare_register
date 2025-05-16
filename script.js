@@ -92,35 +92,35 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('brandList').appendChild(opt);
     }
 
-    // Update model list based on brand
+    // Update model list based on brand (รองรับพิมพ์ฟรี)
     brand.addEventListener('input', () => {
         model.value = '';
         year.value = '';
         category.value = 'Unknown';
         document.getElementById('modelList').innerHTML = '';
         document.getElementById('yearList').innerHTML = '';
-        console.log('Selected Brand:', brand.value); // ดีบัก
-        console.log('Brand Data:', carData[brand.value]); // ดีบัก
-        if (carData[brand.value]) {
-            Object.keys(carData[brand.value].models).forEach(modelName => {
+        const brandVal = brand.value.trim();
+        console.log('Selected Brand:', brandVal); // ดีบัก
+        if (carData[brandVal]) {
+            Object.keys(carData[brandVal].models).forEach(modelName => {
                 const opt = document.createElement('option');
                 opt.value = modelName;
                 document.getElementById('modelList').appendChild(opt);
             });
         } else {
-            console.warn(`No models found for brand: ${brand.value}`);
+            console.warn(`No models found for brand: ${brandVal}. Proceeding with manual input.`);
+            // ยังคงอนุญาตให้พิมพ์รุ่นและปีเองได้
         }
     });
 
-    // Update year list and category based on model
+    // Update year list and category based on model (รองรับพิมพ์ฟรี)
     model.addEventListener('input', () => {
         year.value = '';
         category.value = 'Unknown';
         document.getElementById('yearList').innerHTML = '';
-        const brandVal = brand.value;
-        const modelVal = model.value;
+        const brandVal = brand.value.trim();
+        const modelVal = model.value.trim();
         console.log('Selected Model:', modelVal); // ดีบัก
-        console.log('Model Data:', carData[brandVal]?.models[modelVal]); // ดีบัก
         if (carData[brandVal]?.models[modelVal]) {
             carData[brandVal].models[modelVal].years.forEach(y => {
                 const opt = document.createElement('option');
@@ -129,9 +129,11 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             category.value = carData[brandVal].models[modelVal].category;
         } else {
-            console.warn(`No years found for brand: ${brandVal}, model: ${modelVal}`);
+            console.warn(`No years found for brand: ${brandVal}, model: ${modelVal}. Proceeding with manual input.`);
+            // ยังคงอนุญาตให้พิมพ์ปีเองได้
         }
     });
+
 
 
   // เมื่อคลิกสมัครสมาชิก

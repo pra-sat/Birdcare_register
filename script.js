@@ -136,7 +136,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (typeof carData === 'undefined') {
         console.error('carData is not defined. Ensure all_car_model.js is loaded.');
-        Swal.fire({
+        showSwal({
             icon: 'error',
             title: '❗️ข้อผิดพลาด-3',
             text: 'ไม่สามารถโหลดข้อมูลยี่ห้อรถได้ กรุณาลองใหม่หรือติดต่อ Admin',
@@ -160,7 +160,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('modelList').innerHTML = '';
         document.getElementById('yearList').innerHTML = '';
         const brandVal = brand.value.trim();
-        console.log('Selected Brand:', brandVal); // ดีบัก
+        console.log('Selected Brand:', brandVal);
         if (carData[brandVal]) {
             Object.keys(carData[brandVal].models).forEach(modelName => {
                 const opt = document.createElement('option');
@@ -169,7 +169,6 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         } else {
             console.warn(`No models found for brand: ${brandVal}. Proceeding with manual input.`);
-            // ยังคงอนุญาตให้พิมพ์รุ่นและปีเองได้
         }
     });
 
@@ -180,7 +179,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('yearList').innerHTML = '';
         const brandVal = brand.value.trim();
         const modelVal = model.value.trim();
-        console.log('Selected Model:', modelVal); // ดีบัก
+        console.log('Selected Model:', modelVal);
         if (carData[brandVal]?.models[modelVal]) {
             carData[brandVal].models[modelVal].years.forEach(y => {
                 const opt = document.createElement('option');
@@ -190,17 +189,15 @@ document.addEventListener('DOMContentLoaded', () => {
             category.value = carData[brandVal].models[modelVal].category;
         } else {
             console.warn(`No years found for brand: ${brandVal}, model: ${modelVal}. Proceeding with manual input.`);
-            // ยังคงอนุญาตให้พิมพ์ปีเองได้
         }
     });
 
-
-  // เมื่อคลิกสมัครสมาชิก
+    // เมื่อคลิกสมัครสมาชิก
     document.getElementById('registerForm').addEventListener('submit', async e => {
         e.preventDefault();
-    
+
         if (!/^\d{10}$/.test(phone.value)) {
-            Swal.fire({
+            showSwal({
                 icon: 'error',
                 title: '❗️เบอร์โทรไม่ถูกต้อง',
                 text: 'กรุณากรอกเบอร์โทร 10 หลัก',
@@ -209,7 +206,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
         if (!userId || userId === 'no-userId') {
-            Swal.fire({
+            showSwal({
                 icon: 'error',
                 title: '❗️ข้อผิดพลาด-4',
                 text: 'ไม่สามารถดึง UserID จาก LINE ได้ กรุณาลองใหม่หรือติดต่อ Admin',
@@ -217,7 +214,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             return;
         }
-    
+
         const url = webhookURL;
         const data = {
             userId: userId,
@@ -228,7 +225,7 @@ document.addEventListener('DOMContentLoaded', () => {
             year: year.value,
             category: category.value || 'Unknown'
         };
-    
+
         try {
             const response = await fetch(url, {
                 method: 'POST',
@@ -237,16 +234,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 },
                 body: JSON.stringify(data)
             });
-    
+
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
-    
+
             const text = await response.text();
             console.log('Server Response:', text);
             console.log('Data to Send:', data);
             if (text.includes('OK')) {
-                Swal.fire({
+                showSwal({
                     icon: 'success',
                     title: '✅ สมัครสมาชิกสำเร็จ'
                 }).then(() => {
@@ -254,21 +251,21 @@ document.addEventListener('DOMContentLoaded', () => {
                     liff.closeWindow();
                 });
             } else if (text.includes('Duplicate')) {
-                Swal.fire({
+                showSwal({
                     icon: 'error',
                     title: '❌ มีข้อมูลอยู่แล้วในระบบ'
                 }).then(() => {
                     liff.closeWindow();
                 });
             } else if (text.includes('ERROR')) {
-                Swal.fire({
+                showSwal({
                     icon: 'error',
                     title: '❗️เกิดข้อผิดพลาด-5',
                     text: 'ไม่สามารถบันทึกข้อมูลได้ กรุณาลองใหม่หรือติดต่อ Admin',
                     confirmButtonText: 'ตกลง'
                 });
             } else {
-                Swal.fire({
+                showSwal({
                     icon: 'error',
                     title: '❗️เกิดข้อผิดพลาด-6',
                     text: 'การตอบกลับจากเซิร์ฟเวอร์ไม่ถูกต้อง กรุณาลองใหม่',
@@ -277,7 +274,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } catch (err) {
             console.error('Fetch Error:', err);
-            Swal.fire({
+            showSwal({
                 icon: 'error',
                 title: '❗️เกิดข้อผิดพลาดในการส่งข้อมูล-7',
                 text: `ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้: ${err.message} กรุณาลองใหม่หรือติดต่อ Admin`,

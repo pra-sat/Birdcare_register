@@ -14,13 +14,14 @@ async function initLIFF() {
         console.log('LIFF Init OK');
 
         if (!liff.isInClient()) {
-            showSwal({
-                icon: 'error',
-                title: '❗️ข้อผิดพลาด-0',
-                text: 'กรุณาเปิดหน้านี้ใน LINE App เท่านั้น',
-                confirmButtonText: confirmText
-            });
-            return;
+            liff.login();
+            // showSwal({
+            //     icon: 'error',
+            //     title: '❗️ข้อผิดพลาด-0',
+            //     text: 'กรุณาเปิดหน้านี้ใน LINE App เท่านั้น',
+            //     confirmButtonText: confirmText
+            // });
+            // return;
         }
 
         const profile = await liff.getProfile();

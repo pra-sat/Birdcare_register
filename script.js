@@ -1,9 +1,14 @@
+charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js">
+src="https://cdn.jsdelivr.net/npm/sweetalert2@11">
+    
 const webhookURL = 'https://script.google.com/macros/s/AKfycbyUj_iKVOAzGCCB4LilahJ2xZjlKvPQI1bB-F083-B8hkl1IYq_EovLKUAaps9uQCtQaw/exec';
 let userId = '';
+const liffId = '2007421084-6bzYVymA';
+
 // สคริปต์จัดการ UI และ LIFF
 window.addEventListener('DOMContentLoaded', () => {
     // เริ่ม LIFF application
-    liff.init({ liffId: '2007421084-6bzYVymA' })  // เปลี่ยนเป็น LIFF ID ของคุณ
+    liff.init({liffId: liffId});
         .then(() => {
             if (liff.isLoggedIn()) {
                 liff.getProfile().then(profile => {

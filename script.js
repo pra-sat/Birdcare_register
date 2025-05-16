@@ -59,18 +59,30 @@ async function initLIFF() {
 
 
 document.addEventListener('DOMContentLoaded', () => {
-  if (typeof liff === 'undefined') {
-    console.error('LIFF SDK not loaded');
-    Swal.fire({
-        icon: 'error',
-        title: '❗️เกิดปัญหาการเชื่อต่อ LIFF SDK--1',
-        text: 'กรุณาลองใหม่อีกครั้งหรือติดต่อ Admin',
-        confirmButtonText: 'ตกลง'
-    });
-  } else {
-    initLIFF();
-  }
+    if (typeof liff !== 'undefined') {
+        liff.ready.then(() => {
+            console.log('LIFF SDK ready');
+            initLIFF();
+        }).catch(err => {
+            console.error('LIFF Ready Error:', err);
+            Swal.fire({
+                icon: 'error',
+                title: '❗️เกิดปัญหาการเชื่อต่อ LIFF SDK-Ready',
+                text: 'กรุณาลองใหม่อีกครั้งหรือติดต่อ Admin',
+                confirmButtonText: 'ตกลง'
+            });
+        });
+    } else {
+        console.error('LIFF SDK not loaded at all');
+        Swal.fire({
+            icon: 'error',
+            title: '❗️LIFF SDK ยังไม่โหลด',
+            text: 'กรุณาตรวจสอบการโหลด LIFF SDK หรือเช็คอินเทอร์เน็ต',
+            confirmButtonText: 'ตกลง'
+        });
+    }
 });
+
 
 
 document.addEventListener('DOMContentLoaded', () => {

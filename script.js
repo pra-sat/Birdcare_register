@@ -1,22 +1,37 @@
-src="https://static.line-scdn.net/liff/edge/2/sdk.js";
-src="https://cdn.jsdelivr.net/npm/sweetalert2@11";
-    
-const webhookURL = 'https://script.google.com/macros/s/AKfycbyUj_iKVOAzGCCB4LilahJ2xZjlKvPQI1bB-F083-B8hkl1IYq_EovLKUAaps9uQCtQaw/exec';
+// ตรวจสอบการโหลด LIFF SDK
+(function() {
+  const liffScript = document.createElement('script');
+  liffScript.src = 'https://static.line-scdn.net/liff/edge/2/sdk.js';
+  liffScript.onload = () => initLIFF();
+  document.head.appendChild(liffScript);
+
+  const swalScript = document.createElement('script');
+  swalScript.src = 'https://cdn.jsdelivr.net/npm/sweetalert2@11';
+  document.head.appendChild(swalScript);
+})();
+
 let userId = '';
 const liffId = '2007421084-6bzYVymA';
+const webhookURL = 'https://script.google.com/macros/s/AKfycbyUj_iKVOAzGCCB4LilahJ2xZjlKvPQI1bB-F083-B8hkl1IYq_EovLKUAaps9uQCtQaw/exec';
 
 async function initLIFF() {
   try {
-    await liff.init({liffId: liffId});
+    await liff.init({ liffId });
+    if (!liff.isInClient()) {
+      Swal.fire({
+        icon: 'error',
+        title: 'ข้อผิดพลาด',
+        text: 'กรุณาเปิดหน้านี้ในแอป LINE เท่านั้น',
+        confirmButtonText: 'ตกลง'
+      });
+      return;
+    }
     if (liff.isLoggedIn()) {
       const profile = await liff.getProfile();
-            userId = profile.userId;
-            console.log(profile);
-            document.getElementById('userId').value = userId;
-      if (userId !== 'no-userId') {
-        document.getElementById('userId').value = userId;
-      }
-      if (userId === 'no-userId') {
+      userId = profile.userId;
+      console.log('Profile:', profile);
+      document.getElementById('userId').value = userId || 'no-userId';
+      if (!userId || userId === 'no-userId') {
         Swal.fire({
           icon: 'error',
           title: 'ข้อผิดพลาด-1',
@@ -25,7 +40,7 @@ async function initLIFF() {
         });
       }
     } else {
-      liff.login();
+      liff.login({ redirectUri: window.location.href });
     }
   } catch (err) {
     console.error('LIFF Init Error:', err);
@@ -38,12 +53,14 @@ async function initLIFF() {
   }
 }
 
-
-
 // เรียก initLIFF เมื่อหน้าเว็บโหลด
-window.addEventListener('load', initLIFF);
-
-
+window.addEventListener('load', () => {
+  if (typeof liff === 'undefined') {
+    console.error('LIFF SDK not loaded');
+  } else {
+    initLIFF();
+  }
+});
 
 document.addEventListener('DOMContentLoaded', () => {
   const phone = document.getElementById('phone');
@@ -93,9 +110,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-
-    // เมื่อคลิกสมัครสมาชิก
-    document.getElementById('registerForm').addEventListener('submit', async e => {
+  // เมื่อคลิกสมัครสมาชิก
+  document.getElementById('registerForm').addEventListener('submit', async e => {
     e.preventDefault();
 
     if (!/^\d{10}$/.test(phone.value)) {
@@ -107,7 +123,6 @@ document.addEventListener('DOMContentLoaded', () => {
       });
       return;
     }
-    // ตรวจสอบว่า userId มีค่าหรือไม่
     if (!userId || userId === 'no-userId') {
       Swal.fire({
         icon: 'error',
@@ -118,41 +133,39 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-        // ส่งข้อมูลไปที่ Google Apps Script
-        const url = 'https://script.google.com/macros/s/AKfycbyUj_iKVOAzGCCB4LilahJ2xZjlKvPQI1bB-F083-B8hkl1IYq_EovLKUAaps9uQCtQaw/exec';
-        const params = new URLSearchParams({
-            userId: userId,
-            phone: phone.value,
-            name: name.value,
-            brand: brand.value,
-            model: model.value,
-             year: year.value,
-            category: category.value || 'Unknown'
-        });
-
-        fetch(`${url}?${params.toString()}`)
-            .then(response => response.text())
-            .then(text => {
-                if (text.includes('Duplicate')) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'มีข้อมูลอยู่แล้วในระบบ'
-                    }).then(() => {
-                        liff.closeWindow();
-                    });
-                } else {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'สมัครสมาชิกสำเร็จ'
-                    }).then(() => {
-                        // รีเซ็ตฟอร์ม
-                        document.getElementById('regForm').reset();
-                        liff.closeWindow();
-                    });
-                }
-            })
-            .catch(err => {
-                console.error(err);
-            });
+    const url = webhookURL;
+    const params = new URLSearchParams({
+      userId: userId,
+      phone: phone.value,
+      name: name.value,
+      brand: brand.value,
+      model: model.value,
+      year: year.value,
+      category: category.value || 'Unknown'
     });
+
+    fetch(`${url}?${params.toString()}`)
+      .then(response => response.text())
+      .then(text => {
+        if (text.includes('Duplicate')) {
+          Swal.fire({
+            icon: 'error',
+            title: 'มีข้อมูลอยู่แล้วในระบบ'
+          }).then(() => {
+            liff.closeWindow();
+          });
+        } else {
+          Swal.fire({
+            icon: 'success',
+            title: 'สมัครสมาชิกสำเร็จ'
+          }).then(() => {
+            document.getElementById('registerForm').reset();
+            liff.closeWindow();
+          });
+        }
+      })
+      .catch(err => {
+        console.error(err);
+      });
+  });
 });

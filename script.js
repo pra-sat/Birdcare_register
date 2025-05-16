@@ -62,62 +62,70 @@ window.addEventListener('load', () => {
 });
 
 document.addEventListener('DOMContentLoaded', () => {
-  const phone = document.getElementById('phone');
-  const name = document.getElementById('name');
-  const brand = document.getElementById('brand');
-  const model = document.getElementById('model');
-  const year = document.getElementById('year');
-  const category = document.getElementById('category');
+    const phone = document.getElementById('phone');
+    const name = document.getElementById('name');
+    const brand = document.getElementById('brand');
+    const model = document.getElementById('model');
+    const year = document.getElementById('year');
+    const category = document.getElementById('category');
 
-  if (!brand) {
-    console.error('Element with id="brand" not found');
-    return;
-  }
-
-  // Populate brand list
-  for (let brandName in carData) {
-    const opt = document.createElement('option');
-    opt.value = brandName;
-    document.getElementById('brandList').appendChild(opt);
-  }
-
-  // Update model list based on brand
-  brand.addEventListener('input', () => {
-    model.value = '';
-    year.value = '';
-    category.value = 'Unknown';
-    document.getElementById('modelList').innerHTML = '';
-    document.getElementById('yearList').innerHTML = '';
-    if (carData[brand.value]) {
-      Object.keys(carData[brand.value].models).forEach(modelName => {
-        const opt = document.createElement('option');
-        opt.value = modelName;
-        document.getElementById('modelList').appendChild(opt);
-      });
+    if (!brand || !model || !year) {
+        console.error('Required form elements not found');
+        return;
     }
-  });
 
-  // Update year list and category based on model
-  if (!model) {
-    console.error('Element with id="model" not found');
-    return;
-  }
-
-  model.addEventListener('input', () => {
-    year.value = '';
-    category.value = 'Unknown';
-    document.getElementById('yearList').innerHTML = '';
-    const brandVal = brand.value;
-    const modelVal = model.value;
-    if (carData[brandVal]?.models[modelVal]) {
-      carData[brandVal].models[modelVal].years.forEach(y => {
-        const opt = document.createElement('option');
-        opt.value = y;
-        document.getElementById('yearList').appendChild(opt);
-      });
-      category.value = carData[brandVal].models[modelVal].category;
+    // ตรวจสอบว่า carData มีอยู่
+    if (typeof carData === 'undefined') {
+        console.error('carData is not defined. Ensure all_car_model.js is loaded.');
+        Swal.fire({
+            icon: 'error',
+            title: 'ข้อผิดพลาด-3',
+            text: 'ไม่สามารถโหลดข้อมูลยี่ห้อรถได้ กรุณาลองใหม่หรือติดต่อ Admin',
+            confirmButtonText: 'ตกลง'
+        });
+        return;
     }
-  });
+
+    // Populate brand list
+    for (let brandName in carData) {
+        const opt = document.createElement('option');
+        opt.value = brandName;
+        document.getElementById('brandList').appendChild(opt);
+    }
+
+    // Update model list based on brand
+    brand.addEventListener('input', () => {
+        model.value = '';
+        year.value = '';
+        category.value = 'Unknown';
+        document.getElementById('modelList').innerHTML = '';
+        document.getElementById('yearList').innerHTML = '';
+        if (carData[brand.value]) {
+            Object.keys(carData[brand.value].models).forEach(modelName => {
+                const opt = document.createElement('option');
+                opt.value = modelName;
+                document.getElementById('modelList').appendChild(opt);
+            });
+        }
+    });
+
+    // Update year list and category based on model
+    model.addEventListener('input', () => {
+        year.value = '';
+        category.value = 'Unknown';
+        document.getElementById('yearList').innerHTML = '';
+        const brandVal = brand.value;
+        const modelVal = model.value;
+        if (carData[brandVal]?.models[modelVal]) {
+            carData[brandVal].models[modelVal].years.forEach(y => {
+                const opt = document.createElement('option');
+                opt.value = y;
+                document.getElementById('yearList').appendChild(opt);
+            });
+            category.value = carData[brandVal].models[modelVal].category;
+        }
+    });
+
 
   // เมื่อคลิกสมัครสมาชิก
   document.getElementById('registerForm').addEventListener('submit', async e => {
@@ -135,7 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!userId || userId === 'no-userId') {
       Swal.fire({
         icon: 'error',
-        title: 'ข้อผิดพลาด-3',
+        title: 'ข้อผิดพลาด-4',
         text: 'ไม่สามารถดึง UserID จาก LINE ได้ กรุณาลองใหม่หรือติดต่อ Admin',
         confirmButtonText: 'ตกลง'
       });

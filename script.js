@@ -1,7 +1,7 @@
 // ตรวจสอบการโหลด LIFF SDK
 (function() {
     const liffScript = document.createElement('script');
-    liffScript.src = 'https://static.line-scdn.net/liff/edge/2.3/sdk.js';
+    liffScript.src = 'https://static.line-scdn.net/liff/edge/2/sdk.js';
     liffScript.onload = () => {
         console.log('LIFF SDK loaded successfully'); // ยังคงไว้ใน console
         initLIFF();

@@ -216,7 +216,7 @@ document.addEventListener('DOMContentLoaded', () => {
           console.error('Fetch Error:', err);
           Swal.fire({
               icon: 'error',
-              title: 'เกิดข้อผิดพลาด',
+              title: 'เกิดข้อผิดพลาด-7',
               text: 'ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้ กรุณาลองใหม่หรือติดต่อ Admin',
               confirmButtonText: 'ตกลง'
           });

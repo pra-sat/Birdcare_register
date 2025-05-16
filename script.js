@@ -1,7 +1,7 @@
 // ตรวจสอบการโหลด LIFF SDK
 
 
-let userId = '';
+//let userId = '';
 const liffId = '2007421084-0VKG7anQ';
 const webhookURL = 'https://script.google.com/macros/s/AKfycbx695vygp6UnaCMID5qAoqZNqxtnAQbCoaCkwLLZijZaeNSZZw6x1_dLhf5C5y7c1kB5g/exec';
 const confirmText = 'ตกลง';
@@ -9,50 +9,36 @@ const confirmText = 'ตกลง';
 
 async function initLIFF() {
     try {
-        console.log('Starting LIFF initialization with liffId:', liffId);
+        console.log('Initializing LIFF');
         await liff.init({ liffId });
-        console.log('LIFF initialized successfully');
+        console.log('LIFF Init OK');
 
         if (!liff.isInClient()) {
             showSwal({
                 icon: 'error',
                 title: '❗️ข้อผิดพลาด-0',
-                text: 'กรุณาเปิดหน้านี้ในแอป LINE เท่านั้น',
+                text: 'กรุณาเปิดหน้านี้ใน LINE App เท่านั้น',
                 confirmButtonText: confirmText
             });
             return;
         }
 
-        console.log('Checking login status...');
-        if (liff.isLoggedIn()) {
-            console.log('User is logged in');
-            const profile = await liff.getProfile();
-            userId = profile.userId;
-            console.log('Profile retrieved:', profile);
-            const userIdInput = document.getElementById('userId');
-            if (userIdInput) {
-                userIdInput.value = userId || 'no-userId';
-                console.log('userId set to:', userIdInput.value);
-            } else {
-                console.error('userId input element not found');
-            }
-            if (!userId || userId === 'no-userId') {
-                showSwal({
-                    icon: 'error',
-                    title: '❗️ข้อผิดพลาด-1',
-                    text: 'ไม่สามารถดึง UserID จาก LINE ได้ กรุณาลองใหม่หรือติดต่อ Admin',
-                    confirmButtonText: confirmText
-                });
-            }
+        const profile = await liff.getProfile();
+        console.log('Profile retrieved:', profile);
+
+        const userIdInput = document.getElementById('userId');
+        if (userIdInput) {
+            userIdInput.value = profile.userId || 'no-userId';
+            console.log('userId set to:', userIdInput.value);
         } else {
-            console.log('User not logged in, redirecting to login...');
-            liff.login({ redirectUri: window.location.href });
+            console.error('userId input element not found');
         }
+
     } catch (err) {
         console.error('LIFF Init Error:', err);
         showSwal({
             icon: 'error',
-            title: '❗️เกิดปัญหาการเชื่อต่อ LIFF SDK-2',
+            title: '❗️เกิดปัญหาการเชื่อมต่อ LIFF-1',
             text: 'กรุณาลองใหม่อีกครั้งหรือติดต่อ Admin',
             confirmButtonText: confirmText
         });
@@ -60,30 +46,23 @@ async function initLIFF() {
 }
 
 
+
 document.addEventListener('DOMContentLoaded', () => {
-    if (typeof liff !== 'undefined') {
-        liff.ready.then(() => {
-            console.log('LIFF SDK ready');
-            initLIFF();
-        }).catch(err => {
-            console.error('LIFF Ready Error:', err);
-            Swal.fire({
-                icon: 'error',
-                title: '❗️เกิดปัญหาการเชื่อต่อ LIFF SDK-Ready',
-                text: 'กรุณาลองใหม่อีกครั้งหรือติดต่อ Admin',
-                confirmButtonText: confirmText
-            });
-        });
-    } else {
-        console.error('LIFF SDK not loaded at all');
-        Swal.fire({
-            icon: 'error',
-            title: '❗️LIFF SDK ยังไม่โหลด',
-            text: 'กรุณาตรวจสอบการโหลด LIFF SDK หรือเช็คอินเทอร์เน็ต',
-            confirmButtonText: confirmText
-        });
-    }
+    initLIFF();
 });
+
+const userIdInput = document.getElementById('userId');
+const userId = userIdInput.value;
+if (!userId || userId === 'no-userId') {
+    showSwal({
+        icon: 'error',
+        title: '❗️ไม่สามารถดึง User ID จาก LINE-2',
+        text: 'กรุณาเปิดผ่าน LINE App หรือ Login ใหม่',
+        confirmButtonText: confirmText
+    });
+    return;
+}
+
 
 
 

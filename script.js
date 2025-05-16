@@ -69,12 +69,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const year = document.getElementById('year');
     const category = document.getElementById('category');
 
-    if (!brand || !model || !year) {
+    if (!brand || !model || !year || !category) {
         console.error('Required form elements not found');
         return;
     }
 
-    // ตรวจสอบว่า carData มีอยู่
     if (typeof carData === 'undefined') {
         console.error('carData is not defined. Ensure all_car_model.js is loaded.');
         Swal.fire({
@@ -100,12 +99,16 @@ document.addEventListener('DOMContentLoaded', () => {
         category.value = 'Unknown';
         document.getElementById('modelList').innerHTML = '';
         document.getElementById('yearList').innerHTML = '';
+        console.log('Selected Brand:', brand.value); // ดีบัก
+        console.log('Brand Data:', carData[brand.value]); // ดีบัก
         if (carData[brand.value]) {
             Object.keys(carData[brand.value].models).forEach(modelName => {
                 const opt = document.createElement('option');
                 opt.value = modelName;
                 document.getElementById('modelList').appendChild(opt);
             });
+        } else {
+            console.warn(`No models found for brand: ${brand.value}`);
         }
     });
 
@@ -116,6 +119,8 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('yearList').innerHTML = '';
         const brandVal = brand.value;
         const modelVal = model.value;
+        console.log('Selected Model:', modelVal); // ดีบัก
+        console.log('Model Data:', carData[brandVal]?.models[modelVal]); // ดีบัก
         if (carData[brandVal]?.models[modelVal]) {
             carData[brandVal].models[modelVal].years.forEach(y => {
                 const opt = document.createElement('option');
@@ -123,6 +128,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.getElementById('yearList').appendChild(opt);
             });
             category.value = carData[brandVal].models[modelVal].category;
+        } else {
+            console.warn(`No years found for brand: ${brandVal}, model: ${modelVal}`);
         }
     });
 

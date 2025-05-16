@@ -1,14 +1,5 @@
 // ตรวจสอบการโหลด LIFF SDK
-(function() {
-  const liffScript = document.createElement('script');
-  liffScript.src = 'https://static.line-scdn.net/liff/edge/2/sdk.js';
-  liffScript.onload = () => initLIFF();
-  document.head.appendChild(liffScript);
 
-  const swalScript = document.createElement('script');
-  swalScript.src = 'https://cdn.jsdelivr.net/npm/sweetalert2@11';
-  document.head.appendChild(swalScript);
-})();
 
 let userId = '';
 const liffId = '2007421084-6bzYVymA';
@@ -67,13 +58,20 @@ async function initLIFF() {
 }
 
 
-window.addEventListener('load', () => {
+document.addEventListener('DOMContentLoaded', () => {
   if (typeof liff === 'undefined') {
     console.error('LIFF SDK not loaded');
+    Swal.fire({
+        icon: 'error',
+        title: '❗️เกิดปัญหาการเชื่อต่อ LIFF SDK--1',
+        text: 'กรุณาลองใหม่อีกครั้งหรือติดต่อ Admin',
+        confirmButtonText: 'ตกลง'
+    });
   } else {
     initLIFF();
   }
 });
+
 
 document.addEventListener('DOMContentLoaded', () => {
     const phone = document.getElementById('phone');

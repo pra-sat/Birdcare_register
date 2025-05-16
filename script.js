@@ -1,13 +1,24 @@
 // ตรวจสอบการโหลด LIFF SDK
 (function() {
-  const liffScript = document.createElement('script');
-  liffScript.src = 'https://static.line-scdn.net/liff/edge/2/sdk.js';
-  liffScript.onload = () => initLIFF();
-  document.head.appendChild(liffScript);
+    const liffScript = document.createElement('script');
+    liffScript.src = 'https://static.line-scdn.net/liff/edge/2.3/sdk.js';
+    liffScript.onload = () => {
+        console.log('LIFF SDK loaded successfully'); // ยังคงไว้ใน console
+        initLIFF();
+    };
+    liffScript.onerror = () => {
+        Swal.fire({
+            icon: 'error',
+            title: 'เกิดปัญหาการเชื่อต่อ LIFF SDK--1',
+            text: 'กรุณาลองใหม่อีกครั้งหรือติดต่อ Admin',
+            confirmButtonText: 'ตกลง'
+        });
+    };
+    document.head.appendChild(liffScript);
 
-  const swalScript = document.createElement('script');
-  swalScript.src = 'https://cdn.jsdelivr.net/npm/sweetalert2@11';
-  document.head.appendChild(swalScript);
+    const swalScript = document.createElement('script');
+    swalScript.src = 'https://cdn.jsdelivr.net/npm/sweetalert2@11';
+    document.head.appendChild(swalScript);
 })();
 
 let userId = '';
@@ -15,43 +26,57 @@ const liffId = '2007421084-6bzYVymA';
 const webhookURL = 'https://script.google.com/macros/s/AKfycbyUj_iKVOAzGCCB4LilahJ2xZjlKvPQI1bB-F083-B8hkl1IYq_EovLKUAaps9uQCtQaw/exec';
 
 async function initLIFF() {
-  try {
-    await liff.init({ liffId });
-    if (!liff.isInClient()) {
-      Swal.fire({
-        icon: 'error',
-        title: 'ข้อผิดพลาด-0',
-        text: 'กรุณาเปิดหน้านี้ในแอป LINE เท่านั้น',
-        confirmButtonText: 'ตกลง'
-      });
-      return;
-    }
-    if (liff.isLoggedIn()) {
-      const profile = await liff.getProfile();
-      userId = profile.userId;
-      console.log('Profile:', profile);
-      document.getElementById('userId').value = userId || 'no-userId';
-      if (!userId || userId === 'no-userId') {
+    try {
+        console.log('Starting LIFF initialization with liffId:', liffId);
+        await liff.init({ liffId });
+        console.log('LIFF initialized successfully');
+
+        if (!liff.isInClient()) {
+            Swal.fire({
+                icon: 'error',
+                title: 'ข้อผิดพลาด-0',
+                text: 'กรุณาเปิดหน้านี้ในแอป LINE เท่านั้น',
+                confirmButtonText: 'ตกลง'
+            });
+            return;
+        }
+
+        console.log('Checking login status...');
+        if (liff.isLoggedIn()) {
+            console.log('User is logged in');
+            const profile = await liff.getProfile();
+            userId = profile.userId;
+            console.log('Profile retrieved:', profile);
+            const userIdInput = document.getElementById('userId');
+            if (userIdInput) {
+                userIdInput.value = userId || 'no-userId';
+                console.log('userId set to:', userIdInput.value);
+            } else {
+                console.error('userId input element not found');
+            }
+            if (!userId || userId === 'no-userId') {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'ข้อผิดพลาด-1',
+                    text: 'ไม่สามารถดึง UserID จาก LINE ได้ กรุณาลองใหม่หรือติดต่อ Admin',
+                    confirmButtonText: 'ตกลง'
+                });
+            }
+        } else {
+            console.log('User not logged in, redirecting to login...');
+            liff.login({ redirectUri: window.location.href });
+        }
+    } catch (err) {
+        console.error('LIFF Init Error:', err);
         Swal.fire({
-          icon: 'error',
-          title: 'ข้อผิดพลาด-1',
-          text: 'ไม่สามารถดึง UserID จาก LINE ได้ กรุณาลองใหม่หรือติดต่อ Admin',
-          confirmButtonText: 'ตกลง'
+            icon: 'error',
+            title: 'เกิดปัญหาการเชื่อต่อ LIFF SDK-2',
+            text: 'กรุณาลองใหม่อีกครั้งหรือติดต่อ Admin',
+            confirmButtonText: 'ตกลง'
         });
-      }
-    } else {
-      liff.login({ redirectUri: window.location.href });
     }
-  } catch (err) {
-    console.error('LIFF Init Error:', err);
-    Swal.fire({
-      icon: 'error',
-      title: 'เกิดข้อผิดพลาด-2',
-      text: 'ไม่สามารถเชื่อมต่อกับ LINE ได้ กรุณาลองใหม่หรือติดต่อ Admin',
-      confirmButtonText: 'ตกลง'
-    });
-  }
 }
+
 
 window.addEventListener('load', () => {
   if (typeof liff === 'undefined') {

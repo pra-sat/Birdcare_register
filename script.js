@@ -32,8 +32,8 @@ async function initLIFF() {
 
         const userIdInput = document.getElementById('userId');
         if (userIdInput) {
-            userIdInput.value = profile.userId || 'no-userId';
-            userIdInput.value = userId;
+            userId = profile.userId || 'no-userId'; // เก็บในตัวแปร userId
+            userIdInput.value = userId;             // และใส่ลง input เหมือนเดิม
             console.log('userId set to:', userId);
         } else {
             console.error('userId input element not found');

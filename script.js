@@ -8,7 +8,7 @@ const liffId = '2007421084-6bzYVymA';
 // สคริปต์จัดการ UI และ LIFF
 window.addEventListener('DOMContentLoaded', () => {
     // เริ่ม LIFF application
-    liff.init({liffId: liffId});
+    liff.init({liffId: liffId})
         .then(() => {
             if (liff.isLoggedIn()) {
                 liff.getProfile().then(profile => {

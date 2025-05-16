@@ -1,7 +1,7 @@
 // ตรวจสอบการโหลด LIFF SDK
 
 
-//let userId = '';
+let userId = '';
 const liffId = '2007421084-0VKG7anQ';
 const webhookURL = 'https://script.google.com/macros/s/AKfycbx695vygp6UnaCMID5qAoqZNqxtnAQbCoaCkwLLZijZaeNSZZw6x1_dLhf5C5y7c1kB5g/exec';
 const confirmText = 'ตกลง';
@@ -50,7 +50,7 @@ async function initLIFF() {
 document.addEventListener('DOMContentLoaded', () => {
     initLIFF();
 });
-
+/*
 const userIdInput = document.getElementById('userId');
 const userId = userIdInput.value;
 if (!userId || userId === 'no-userId') {
@@ -62,7 +62,7 @@ if (!userId || userId === 'no-userId') {
     });
     return;
 }
-
+*/
 
 
 

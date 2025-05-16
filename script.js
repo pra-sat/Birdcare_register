@@ -18,7 +18,7 @@ async function initLIFF() {
                 icon: 'error',
                 title: '❗️ข้อผิดพลาด-0',
                 text: 'กรุณาเปิดหน้านี้ในแอป LINE เท่านั้น',
-                confirmButtonText: 'confirmText'
+                confirmButtonText: confirmText
             });
             return;
         }
@@ -41,7 +41,7 @@ async function initLIFF() {
                     icon: 'error',
                     title: '❗️ข้อผิดพลาด-1',
                     text: 'ไม่สามารถดึง UserID จาก LINE ได้ กรุณาลองใหม่หรือติดต่อ Admin',
-                    confirmButtonText: 'confirmText'
+                    confirmButtonText: confirmText
                 });
             }
         } else {
@@ -54,7 +54,7 @@ async function initLIFF() {
             icon: 'error',
             title: '❗️เกิดปัญหาการเชื่อต่อ LIFF SDK-2',
             text: 'กรุณาลองใหม่อีกครั้งหรือติดต่อ Admin',
-            confirmButtonText: 'confirmText'
+            confirmButtonText: confirmText
         });
     }
 }
@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 icon: 'error',
                 title: '❗️เกิดปัญหาการเชื่อต่อ LIFF SDK-Ready',
                 text: 'กรุณาลองใหม่อีกครั้งหรือติดต่อ Admin',
-                confirmButtonText: 'confirmText'
+                confirmButtonText: confirmText
             });
         });
     } else {
@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
             icon: 'error',
             title: '❗️LIFF SDK ยังไม่โหลด',
             text: 'กรุณาตรวจสอบการโหลด LIFF SDK หรือเช็คอินเทอร์เน็ต',
-            confirmButtonText: 'confirmText'
+            confirmButtonText: confirmText
         });
     }
 });
@@ -106,7 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
             icon: 'error',
             title: '❗️ข้อผิดพลาด-3',
             text: 'ไม่สามารถโหลดข้อมูลยี่ห้อรถได้ กรุณาลองใหม่หรือติดต่อ Admin',
-            confirmButtonText: 'confirmText'
+            confirmButtonText: confirmText
         });
         return;
     }
@@ -167,7 +167,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 icon: 'error',
                 title: '❗️เบอร์โทรไม่ถูกต้อง',
                 text: 'กรุณากรอกเบอร์โทร 10 หลัก',
-                confirmButtonText: 'confirmText'
+                confirmButtonText: confirmText
             });
             return;
         }
@@ -176,7 +176,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 icon: 'error',
                 title: '❗️ข้อผิดพลาด-4',
                 text: 'ไม่สามารถดึง UserID จาก LINE ได้ กรุณาลองใหม่หรือติดต่อ Admin',
-                confirmButtonText: 'confirmText'
+                confirmButtonText: confirmText
             });
             return;
         }
@@ -228,14 +228,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     icon: 'error',
                     title: '❗️เกิดข้อผิดพลาด-5',
                     text: 'ไม่สามารถบันทึกข้อมูลได้ กรุณาลองใหม่หรือติดต่อ Admin',
-                    confirmButtonText: 'confirmText'
+                    confirmButtonText: confirmText
                 });
             } else {
                 showSwal({
                     icon: 'error',
                     title: '❗️เกิดข้อผิดพลาด-6',
                     text: 'การตอบกลับจากเซิร์ฟเวอร์ไม่ถูกต้อง กรุณาลองใหม่',
-                    confirmButtonText: 'confirmText'
+                    confirmButtonText: confirmText
                 });
             }
         } catch (err) {
@@ -244,7 +244,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 icon: 'error',
                 title: '❗️เกิดข้อผิดพลาดในการส่งข้อมูล-7',
                 text: `ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้: ${err.message} กรุณาลองใหม่หรือติดต่อ Admin`,
-                confirmButtonText: 'confirmText'
+                confirmButtonText: confirmText
             });
         }
     });

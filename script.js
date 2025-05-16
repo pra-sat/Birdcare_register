@@ -136,89 +136,90 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
-  // เมื่อคลิกสมัครสมาชิก
-document.getElementById('registerForm').addEventListener('submit', async e => {
-    e.preventDefault();
+    // เมื่อคลิกสมัครสมาชิก
+  document.getElementById('registerForm').addEventListener('submit', async e => {
+      e.preventDefault();
 
-    if (!/^\d{10}$/.test(phone.value)) {
-        Swal.fire({
-            icon: 'error',
-            title: 'เบอร์โทรไม่ถูกต้อง',
-            text: 'กรุณากรอกเบอร์โทร 10 หลัก',
-            confirmButtonText: 'ตกลง'
-        });
-        return;
-    }
-    if (!userId || userId === 'no-userId') {
-        Swal.fire({
-            icon: 'error',
-            title: 'ข้อผิดพลาด-4',
-            text: 'ไม่สามารถดึง UserID จาก LINE ได้ กรุณาลองใหม่หรือติดต่อ Admin',
-            confirmButtonText: 'ตกลง'
-        });
-        return;
-    }
+      if (!/^\d{10}$/.test(phone.value)) {
+          Swal.fire({
+              icon: 'error',
+              title: 'เบอร์โทรไม่ถูกต้อง',
+              text: 'กรุณากรอกเบอร์โทร 10 หลัก',
+              confirmButtonText: 'ตกลง'
+          });
+          return;
+      }
+      if (!userId || userId === 'no-userId') {
+          Swal.fire({
+              icon: 'error',
+              title: 'ข้อผิดพลาด-4',
+              text: 'ไม่สามารถดึง UserID จาก LINE ได้ กรุณาลองใหม่หรือติดต่อ Admin',
+              confirmButtonText: 'ตกลง'
+          });
+          return;
+      }
 
-    const url = webhookURL;
-    const data = {
-        userId: userId,
-        phone: phone.value,
-        name: name.value,
-        brand: brand.value,
-        model: model.value,
-        year: year.value,
-        category: category.value || 'Unknown'
-    };
+      const url = webhookURL;
+      const data = {
+          userId: userId,
+          phone: phone.value,
+          name: name.value,
+          brand: brand.value,
+          model: model.value,
+          year: year.value,
+          category: category.value || 'Unknown'
+      };
 
-    try {
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        });
+      try {
+          const response = await fetch(url, {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(data)
+          });
 
-        const text = await response.text();
-        console.log('Server Response:', text); // ดีบัก
-        console.log('Data to Send:', data);
-        if (text.includes('OK')) {
-            Swal.fire({
-                icon: 'success',
-                title: 'สมัครสมาชิกสำเร็จ'
-            }).then(() => {
-                document.getElementById('registerForm').reset();
-                liff.closeWindow();
-            });
-        } else if (text.includes('Duplicate')) {
-            Swal.fire({
-                icon: 'error',
-                title: 'มีข้อมูลอยู่แล้วในระบบ'
-            }).then(() => {
-                liff.closeWindow();
-            });
-        } else if (text.includes('ERROR')) {
-            Swal.fire({
-                icon: 'error',
-                title: 'เกิดข้อผิดพลาด-5',
-                text: 'ไม่สามารถบันทึกข้อมูลได้ กรุณาลองใหม่หรือติดต่อ Admin',
-                confirmButtonText: 'ตกลง'
-            });
-        } else {
-            Swal.fire({
-                icon: 'error',
-                title: 'เกิดข้อผิดพลาด-6',
-                text: 'การตอบกลับจากเซิร์ฟเวอร์ไม่ถูกต้อง กรุณาลองใหม่',
-                confirmButtonText: 'ตกลง'
-            });
-        }
-    } catch (err) {
-        console.error('Fetch Error:', err);
-        Swal.fire({
-            icon: 'error',
-            title: 'เกิดข้อผิดพลาด',
-            text: 'ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้ กรุณาลองใหม่หรือติดต่อ Admin',
-            confirmButtonText: 'ตกลง'
-        });
-    }
+          const text = await response.text();
+          console.log('Server Response:', text); // ดีบัก
+          console.log('Data to Send:', data);
+          if (text.includes('OK')) {
+              Swal.fire({
+                  icon: 'success',
+                  title: 'สมัครสมาชิกสำเร็จ'
+              }).then(() => {
+                  document.getElementById('registerForm').reset();
+                  liff.closeWindow();
+              });
+          } else if (text.includes('Duplicate')) {
+              Swal.fire({
+                  icon: 'error',
+                  title: 'มีข้อมูลอยู่แล้วในระบบ'
+              }).then(() => {
+                  liff.closeWindow();
+              });
+          } else if (text.includes('ERROR')) {
+              Swal.fire({
+                  icon: 'error',
+                  title: 'เกิดข้อผิดพลาด-5',
+                  text: 'ไม่สามารถบันทึกข้อมูลได้ กรุณาลองใหม่หรือติดต่อ Admin',
+                  confirmButtonText: 'ตกลง'
+              });
+          } else {
+              Swal.fire({
+                  icon: 'error',
+                  title: 'เกิดข้อผิดพลาด-6',
+                  text: 'การตอบกลับจากเซิร์ฟเวอร์ไม่ถูกต้อง กรุณาลองใหม่',
+                  confirmButtonText: 'ตกลง'
+              });
+          }
+      } catch (err) {
+          console.error('Fetch Error:', err);
+          Swal.fire({
+              icon: 'error',
+              title: 'เกิดข้อผิดพลาด',
+              text: 'ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้ กรุณาลองใหม่หรือติดต่อ Admin',
+              confirmButtonText: 'ตกลง'
+          });
+      }
+  });
 });

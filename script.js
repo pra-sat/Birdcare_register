@@ -33,9 +33,9 @@ window.addEventListener('DOMContentLoaded', () => {
         yearInput.value = '';
         selectedCategory = '';
 
-        if (allCarModels[brand]) {
+        if (carData[brand]) {
             // เพิ่ม option ให้รุ่นต่างๆ ในแบรนด์นี้
-            const models = Object.keys(allCarModels[brand]);
+            const models = Object.keys(carData[brand]);
             models.forEach(model => {
                 const option = document.createElement('option');
                 option.value = model;
@@ -52,15 +52,15 @@ window.addEventListener('DOMContentLoaded', () => {
         yearInput.value = '';
         selectedCategory = '';
 
-        if (allCarModels[brand] && allCarModels[brand][model]) {
-            const years = allCarModels[brand][model].years;
+        if (carData[brand] && carData[brand][model]) {
+            const years = carData[brand][model].years;
             years.forEach(y => {
                 const option = document.createElement('option');
                 option.value = y;
                 yearList.appendChild(option);
             });
             // เก็บประเภทจากข้อมูลรุ่นรถ
-            selectedCategory = allCarModels[brand][model].category;
+            selectedCategory = carData[brand][model].category;
         }
     });
 

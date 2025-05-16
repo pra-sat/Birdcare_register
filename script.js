@@ -1,59 +1,24 @@
-// ตรวจสอบการโหลด LIFF SDK และ SweetAlert2
+// ตรวจสอบการโหลด LIFF SDK
 (function() {
-    let loadAttempts = 0;
-    const maxAttempts = 3;
-    let isSwalLoaded = false;
+    const liffScript = document.createElement('script');
+    liffScript.src = 'https://static.line-scdn.net/liff/edge/2.3/sdk.js';
+    liffScript.onload = () => {
+        console.log('LIFF SDK loaded successfully'); // ยังคงไว้ใน console
+        initLIFF();
+    };
+    liffScript.onerror = () => {
+        Swal.fire({
+            icon: 'error',
+            title: '❗️เกิดปัญหาการเชื่อต่อ LIFF SDK--1',
+            text: 'กรุณาลองใหม่อีกครั้งหรือติดต่อ Admin',
+            confirmButtonText: 'ตกลง'
+        });
+    };
+    document.head.appendChild(liffScript);
 
-    // โหลด SweetAlert2
     const swalScript = document.createElement('script');
     swalScript.src = 'https://cdn.jsdelivr.net/npm/sweetalert2@11';
-    swalScript.onload = () => {
-        console.log('SweetAlert2 loaded');
-        isSwalLoaded = true;
-    };
-    swalScript.onerror = () => {
-        console.error('Failed to load SweetAlert2');
-        alert('ไม่สามารถโหลด SweetAlert2 ได้ กรุณาลองใหม่'); // แจ้งเตือนแบบพื้นฐานหาก SweetAlert2 โหลดไม่ได้
-    };
     document.head.appendChild(swalScript);
-
-    // ฟังก์ชันสำหรับแสดง Swal
-    const showSwal = (options) => {
-        if (isSwalLoaded && typeof Swal !== 'undefined') {
-            Swal.fire(options);
-        } else {
-            console.error('SweetAlert2 not loaded yet');
-            alert(options.text); // แจ้งเตือนแบบพื้นฐาน
-        }
-    };
-
-    // โหลด LIFF SDK
-    const loadLIFFScript = () => {
-        const liffScript = document.createElement('script');
-        liffScript.src = 'https://static.line-scdn.net/liff/edge/2.19.3/sdk.js';
-        liffScript.onload = () => {
-            console.log('LIFF SDK loaded successfully');
-            initLIFF();
-        };
-        liffScript.onerror = () => {
-            loadAttempts++;
-            if (loadAttempts < maxAttempts) {
-                console.warn(`LIFF SDK load failed, retrying (${loadAttempts}/${maxAttempts})...`);
-                setTimeout(loadLIFFScript, 2000);
-            } else {
-                console.error('Failed to load LIFF SDK after max attempts');
-                showSwal({
-                    icon: 'error',
-                    title: '❗️เกิดปัญหาการเชื่อต่อ LIFF SDK--1',
-                    text: 'กรุณาลองใหม่อีกครั้งหรือติดต่อ Admin',
-                    confirmButtonText: 'ตกลง'
-                });
-            }
-        };
-        document.head.appendChild(liffScript);
-    };
-
-    loadLIFFScript();
 })();
 
 let userId = '';

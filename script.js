@@ -179,7 +179,7 @@ document.getElementById('registerForm').addEventListener('submit', async e => {
 
         const text = await response.text();
         console.log('Server Response:', text); // ดีบัก
-
+        console.log('Data to Send:', data);
         if (text.includes('OK')) {
             Swal.fire({
                 icon: 'success',

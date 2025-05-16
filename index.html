@@ -13,22 +13,22 @@
 <body>
     <div class="container">
         <h2>สมัครสมาชิก</h2>
-        <form id="regForm">
+        <form id="registerForm">
             <div class="form-group">
                 <label for="userId">User ID (LINE):</label>
                 <input type="text" id="userId" name="userId" readonly>
             </div>
             <div class="form-group">
-                <label for="nameInput">ชื่อ:</label>
-                <input type="text" id="nameInput" name="name">
+                <label for="name">ชื่อ:</label>
+                <input type="text" id="name" name="name">
             </div>
             <div class="form-group">
-                <label for="phoneInput">เบอร์โทร:</label>
-                <input type="tel" id="phoneInput" name="phone" placeholder="0812345678">
+                <label for="phone">เบอร์โทร:</label>
+                <input type="tel" id="phone" name="phone" placeholder="0812345678">
             </div>
             <div class="form-group">
-                <label for="brandInput">ยี่ห้อ:</label>
-                <input list="brandList" id="brandInput" name="brand" placeholder="เลือกยี่ห้อ">
+                <label for="brand">ยี่ห้อ:</label>
+                <input list="brandList" id="brand" name="brand" placeholder="เลือกยี่ห้อ">
                 <datalist id="brandList">
                     <option value="Audi">
                     <option value="Yamaha">
@@ -37,16 +37,16 @@
                 </datalist>
             </div>
             <div class="form-group">
-                <label for="modelInput">รุ่น:</label>
-                <input list="modelList" id="modelInput" name="model" placeholder="เลือกหรือพิมพ์รุ่น">
+                <label for="model">รุ่น:</label>
+                <input list="modelList" id="model" name="model" placeholder="เลือกหรือพิมพ์รุ่น">
                 <datalist id="modelList"></datalist>
             </div>
             <div class="form-group">
-                <label for="yearInput">ปี:</label>
-                <input list="yearList" id="yearInput" name="year" placeholder="เลือกปี">
+                <label for="year">ปี:</label>
+                <input list="yearList" id="year" name="year" placeholder="เลือกปี">
                 <datalist id="yearList"></datalist>
             </div>
-            <button type="button" id="registerBtn">สมัครสมาชิก</button>
+            <button type="submit">สมัครสมาชิก</button>
         </form>
     </div>
     <!-- เชื่อมต่อไฟล์ข้อมูลและสคริปต์หลัก -->

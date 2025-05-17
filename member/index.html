@@ -11,16 +11,15 @@
   <div class="container">
     <h2>ข้อมูลสมาชิก</h2>
 
-    <!-- ✅ ตรงนี้ไม่ต้องแสดงข้อความรอโหลดแล้ว -->
     <div id="memberInfo" class="card"></div>
 
-    <!-- ✅ ปุ่ม toggle ประวัติ -->
-    <button class="btn btn-toggle" id="toggleHistory">📂 ดูประวัติการใช้บริการ</button>
+    <!-- แถบกดดูประวัติ -->
+    <button class="btn history-toggle" id="toggleHistory">▼ ดูประวัติการใช้บริการ</button>
 
-    <!-- ✅ พื้นที่แสดงประวัติ -->
+    <!-- พื้นที่แสดงประวัติ -->
     <div id="historySection" class="card hidden"></div>
 
-    <button class="btn btn-close" onclick="liff.closeWindow()">ปิดหน้าต่าง</button>
+    <button class="btn close small" onclick="liff.closeWindow()">ปิดหน้าต่าง</button>
     <p class="notice">📌 หากต้องการแก้ไขข้อมูล กรุณาทักแชทหรือแจ้ง Admin</p>
   </div>
 

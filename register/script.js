@@ -110,6 +110,7 @@ async function sendData(payload) {
             liff.closeWindow();
         } else {
             throw new Error(data.message || 'Registration failed.');
+            confirmButtonText: confirmText
             liff.closeWindow();
         }
     } catch (error) {
@@ -218,7 +219,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (isDuplicate) {
             await Swal.fire("❗️ข้อมูลซ้ำ", "เบอร์โทร และ รถรุ่นนี้มีในระบบแล้ว", "error");
             submitBtn.disabled = false;
-            submitBtn.textContent = "Submit";
+            confirmButtonText: confirmText
             return;
         }
 

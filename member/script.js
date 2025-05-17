@@ -1,69 +1,67 @@
 const GAS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxdxUvmwLS3_nETwGLk4J8ipPq2LYNSWyhJ2ZwVsEJQgONG11NSSX3jVaeqWCU1TXvE5g/exec';
 
 document.addEventListener('DOMContentLoaded', async () => {
+  const memberInfoEl = document.getElementById('memberInfo');
+  const historySection = document.getElementById('historySection');
+  const toggleBtn = document.getElementById('toggleHistory');
+
   try {
     await liff.init({ liffId: '2007421084-WXmXrzZY' });
-    if (!liff.isLoggedIn()) return liff.login();
-
-    const profile = await liff.getProfile();
-    const userId = profile.userId;
-    console.log('UserId:', userId);
-
-    // ดึงข้อมูลสมาชิก
-    const res = await fetch(`${GAS_ENDPOINT}?action=member&userId=${userId}`);
-    const data = await res.json();
-
-    if (!data || !data.name) {
-      document.getElementById('memberInfo').innerHTML = "❗️ ไม่พบข้อมูลสมาชิกในระบบ กรุณาติดต่อ Admin";
+    if (!liff.isLoggedIn()) {
+      liff.login();
       return;
     }
 
-    document.getElementById('memberInfo').innerHTML = `
-👤 ${data.name}
-📱 เบอร์โทร: ${data.phone}
-🚗 รถ: ${data.brand} ${data.model} (${data.year})
-🏷 หมวดหมู่: ${data.category}
-💳 แต้มสะสม: ${data.point} แต้ม
-⏰ แต้มหมดอายุ: ${new Date(data.expirationDate).toLocaleDateString('th-TH', { dateStyle: 'full' })}
+    const profile = await liff.getProfile();
+    const userId = profile.userId;
+
+    const res = await fetch(GAS_ENDPOINT + '?action=member&userId=' + encodeURIComponent(userId));
+    if (!res.ok) throw new Error('ไม่สามารถโหลดข้อมูล');
+
+    const data = await res.json();
+    if (!data || !data.name) {
+      memberInfoEl.innerHTML = "❗️ ไม่พบข้อมูลสมาชิก กรุณาติดต่อ Admin";
+      return;
+    }
+
+    const expDate = formatDate(data.expirationDate);
+
+    memberInfoEl.innerHTML = `
+      <p>👤 <b>${data.name}</b></p>
+      <p>📱 เบอร์โทร: ${data.phone}</p>
+      <p>🚗 รถ: ${data.brand} ${data.model} (${data.year})</p>
+      <p>📎 หมวดหมู่: ${data.category}</p>
+      <p>💳 แต้มสะสม: ${data.point} แต้ม</p>
+      <p>⏰ แต้มหมดอายุ: ${expDate}</p>
     `;
 
-    // Toggle ปุ่มแสดง/ซ่อน
-    const toggleBtn = document.getElementById('toggleService');
-    const historyDiv = document.getElementById('serviceHistory');
-    let isLoaded = false;
-
-    toggleBtn.addEventListener('click', async () => {
-      if (historyDiv.classList.contains('hidden')) {
-        toggleBtn.textContent = 'ซ่อนประวัติการใช้บริการ ▲';
-        historyDiv.classList.remove('hidden');
-
-        // โหลดข้อมูลประวัติครั้งแรก
-        if (!isLoaded) {
-          try {
-            const res2 = await fetch(`${GAS_ENDPOINT}?action=service&userId=${userId}`);
-            const serviceData = await res2.json();
-
-            if (!serviceData || serviceData.length === 0) {
-              historyDiv.innerHTML = "– ไม่มีประวัติการใช้บริการ";
-            } else {
-              historyDiv.innerHTML = serviceData.map(s =>
-                `📅 ${s.date}\n🛠 บริการ: ${s.service}\n💰 ราคา: ${s.price} บาท\n💳 แต้ม: ${s.point} แต้ม\n📌 หมายเหตุ: ${s.note || '-'}`
-              ).join('\n\n');
-            }
-
-            isLoaded = true;
-          } catch (err) {
-            historyDiv.innerHTML = "❗️ โหลดประวัติไม่สำเร็จ กรุณาลองใหม่";
-          }
-        }
-      } else {
-        toggleBtn.textContent = 'ดูประวัติการใช้บริการ ▼';
-        historyDiv.classList.add('hidden');
-      }
+    // แสดงประวัติการใช้บริการ
+    toggleBtn.addEventListener('click', () => {
+      historySection.classList.toggle('hidden');
     });
 
+    const history = data.serviceHistory || [];
+    if (history.length === 0) {
+      historySection.innerHTML = "-";
+    } else {
+      historySection.innerHTML = history.map(item => `
+        <div>
+          📅 ${item.date} | 🛠 ${item.service} | 💵 ${item.price}฿ | 🎁 ${item.point} แต้ม
+          ${item.note ? `| 📝 ${item.note}` : ''}
+        </div>
+      `).join('<hr style="border:0.5px dashed #888;">');
+    }
+
   } catch (err) {
-    console.error('Error:', err);
-    document.getElementById('memberInfo').innerHTML = "❗️ เกิดข้อผิดพลาดในการโหลดข้อมูล กรุณาลองใหม่หรือติดต่อ Admin";
+    console.error(err);
+    memberInfoEl.innerHTML = "❗️ เกิดข้อผิดพลาดในการโหลดข้อมูล กรุณาลองใหม่หรือติดต่อ Admin";
   }
 });
+
+function formatDate(rawDate) {
+  const d = new Date(rawDate);
+  const day = d.getDate().toString().padStart(2, '0');
+  const month = (d.getMonth() + 1).toString().padStart(2, '0');
+  const year = d.getFullYear();
+  return `${day}/${month}/${year}`;
+}

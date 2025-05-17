@@ -206,25 +206,34 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log("Server Response:", data);
 
             if (data.status === "success") {
-                console.log("Sending payload:", payload);
                 await Swal.fire("✅ Registration Successful", "Your membership has been registered.", "success");
-                form.reset();
-                const statusMsg = document.getElementById('statusMessage');
-                if (statusMsg) statusMsg.textContent = "✅ บันทึกเรียบร้อย";
-                document.getElementById('userId').value = userId;  // ให้คง Masked UserId แสดงหลัง reset
-                document.getElementById('name').value = name;
-                document.getElementById('name').focus();
             } else {
-                await Swal.fire("❗️Registration Failed", data.message || "❗️Registration could not be completed.", "error");
-                form.reset();
+                await Swal.fire({
+                    icon: 'error',
+                    title: '❗️Registration Failed-1',
+                    text: data.message || 'Registration could not be completed.',
+                    confirmButtonText: confirmText
+                });
             }
+
         } catch (error) {
             console.error("Error during fetch:", error);
-            await Swal.fire("Error", "❗️Unable to submit form. Please try again.", "error");
-            form.reset();
+            await Swal.fire({
+                icon: 'error',
+                title: '❗️Registration Failed-2',
+                text: error.message || 'Unable to submit form. Please try again.',
+                confirmButtonText: confirmText
+            });
         } finally {
+            form.reset();
+            // ✅ ป้องกัน userId เต็มโชว์ ต้อง masked ทุกครั้งหลัง reset
+            const userIdInput = document.getElementById('userId');
+            if (userIdInput) {
+                userIdInput.value = userId.substring(0, 8) + 'xxx...';
+            }
+            document.getElementById('name').focus();
             submitBtn.disabled = false;
-            submitBtn.textContent = "Submit";
+            submitBtn.textContent = "✅Submit";
         }
     });
 });

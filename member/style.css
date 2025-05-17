@@ -1,47 +1,59 @@
+/* โทนฟ้าเข้ม (แบบเดียวกับที่ส่งมา) */
 body {
-    background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+    background: linear-gradient(135deg, #001f3f, #002960);
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
     color: #fff;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    text-align: center;
-    padding: 2rem;
+    height: 100vh;
 }
 
 .container {
     max-width: 400px;
-    margin: auto;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: rgba(0, 0, 0, 0.4);
+    border-radius: 8px;
+    text-align: center;
+}
+
+h2 {
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: #fff;
 }
 
 .card {
-    background-color: rgba(0, 0, 0, 0.6);
-    border-radius: 15px;
-    padding: 20px;
+    padding: 15px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
     margin-bottom: 20px;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+    font-size: 16px;
 }
 
 .btn {
-    background-color: #00c3ff;
+    width: 100%;
+    padding: 12px;
+    background-color: #005f9e;
     border: none;
-    padding: 12px 24px;
-    border-radius: 30px;
+    border-radius: 4px;
     color: #fff;
-    font-size: 1rem;
+    font-size: 16px;
     cursor: pointer;
-    transition: background-color 0.3s;
 }
 
 .btn:hover {
-    background-color: #00a0cc;
+    background-color: #004880;
 }
 
-h3 {
-    margin-top: 0;
-    font-size: 1.5rem;
-}
-
-small {
-    color: #ccc;
-    display: block;
+.notice {
+    font-size: 12px;
+    color: #ddd;
     margin-top: 15px;
-    font-size: 0.85rem;
+}
+
+@media (max-width: 600px) {
+    .container {
+        margin: 20px;
+    }
 }

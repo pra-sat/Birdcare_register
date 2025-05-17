@@ -33,7 +33,7 @@ function validatePhone(phoneInput) {
     let phoneRaw = phoneInput.value.replace(/\D/g, '');
     if (/^0[689]/.test(phoneRaw)) {
         if (!/^0[689][0-9]{8}$/.test(phoneRaw)) {
-            Swal.fire("Invalid Phone", "กรุณากรอกเบอร์โทรให้ถูกต้อง", "warning");
+            Swal.fire("Invalid Phone", "เบอร์ขึ้นต้นด้วย 08, 06, 09 ต้องมี 10 หลักเท่านั้น", "warning");
             phoneInput.focus();
             return null;
         }
@@ -69,64 +69,12 @@ function preparePayload() {
         return null;
     }
 
-    if (typeof carData === 'undefined') {
-        console.error('carData is not defined. Ensure all_car_model.js is loaded.');
-        Swal.fire({
-            icon: 'error',
-            title: '❗️ข้อผิดพลาด-3',
-            text: 'ไม่สามารถโหลดข้อมูลยี่ห้อรถได้ กรุณาลองใหม่หรือติดต่อ Admin',
-            confirmButtonText: confirmText
-        });
-        return;
+    const currentYear = new Date().getFullYear();
+    const yearNum = parseInt(year, 10);
+    if (isNaN(yearNum) || yearNum < 1900 || yearNum > currentYear) {
+        Swal.fire("Invalid Year", `โปรดใส่ปีให้ถูกต้อง (1900 - ${currentYear})`, "warning");
+        return null;
     }
-
-    // Populate brand list
-    for (let brandName in carData) {
-        const opt = document.createElement('option');
-        opt.value = brandName;
-        document.getElementById('brandList').appendChild(opt);
-    }
-
-    // Update model list based on brand (รองรับพิมพ์ฟรี)
-    brand.addEventListener('input', () => {
-        model.value = '';
-        year.value = '';
-        category.value = 'Unknown';
-        document.getElementById('modelList').innerHTML = '';
-        document.getElementById('yearList').innerHTML = '';
-        const brandVal = brand.value.trim();
-        console.log('Selected Brand:', brandVal);
-        if (carData[brandVal]) {
-            Object.keys(carData[brandVal].models).forEach(modelName => {
-                const opt = document.createElement('option');
-                opt.value = modelName;
-                document.getElementById('modelList').appendChild(opt);
-            });
-        } else {
-            console.warn(`No models found for brand: ${brandVal}. Proceeding with manual input.`);
-        }
-    });
-
-    // Update year list and category based on model (รองรับพิมพ์ฟรี)
-    model.addEventListener('input', () => {
-        year.value = '';
-        category.value = 'Unknown';
-        document.getElementById('yearList').innerHTML = '';
-        const brandVal = brand.value.trim();
-        const modelVal = model.value.trim();
-        console.log('Selected Model:', modelVal);
-        if (carData[brandVal]?.models[modelVal]) {
-            carData[brandVal].models[modelVal].years.forEach(y => {
-                const opt = document.createElement('option');
-                opt.value = y;
-                document.getElementById('yearList').appendChild(opt);
-                console.log('Selected year:', y);
-            });
-            category.value = carData[brandVal].models[modelVal].category;
-        } else {
-            console.warn(`No years found for brand: ${brandVal}, model: ${modelVal}. Proceeding with manual input.`);
-        }
-    });
 
     return { userId, phone: phoneFormatted, name, brand, model, year, category, channel };
 }
@@ -187,6 +135,66 @@ document.addEventListener('DOMContentLoaded', () => {
             phoneInput.value = raw;
         }
     });
+
+    if (typeof carData === 'undefined') {
+        console.error('carData is not defined. Ensure all_car_model.js is loaded.');
+        Swal.fire({
+            icon: 'error',
+            title: '❗️ข้อผิดพลาด-3',
+            text: 'ไม่สามารถโหลดข้อมูลยี่ห้อรถได้ กรุณาลองใหม่หรือติดต่อ Admin',
+            confirmButtonText: confirmText
+        });
+        return;
+    }
+
+    // Populate brand list
+    for (let brandName in carData) {
+        const opt = document.createElement('option');
+        opt.value = brandName;
+        document.getElementById('brandList').appendChild(opt);
+    }
+
+    // Update model list based on brand (รองรับพิมพ์ฟรี)
+    brand.addEventListener('input', () => {
+        model.value = '';
+        year.value = '';
+        category.value = 'Unknown';
+        document.getElementById('modelList').innerHTML = '';
+        document.getElementById('yearList').innerHTML = '';
+        const brandVal = brand.value.trim();
+        console.log('Selected Brand:', brandVal);
+        if (carData[brandVal]) {
+            Object.keys(carData[brandVal].models).forEach(modelName => {
+                const opt = document.createElement('option');
+                opt.value = modelName;
+                document.getElementById('modelList').appendChild(opt);
+            });
+        } else {
+            console.warn(`No models found for brand: ${brandVal}. Proceeding with manual input.`);
+        }
+    });
+
+    // Update year list and category based on model (รองรับพิมพ์ฟรี)
+    model.addEventListener('input', () => {
+        year.value = '';
+        category.value = 'Unknown';
+        document.getElementById('yearList').innerHTML = '';
+        const brandVal = brand.value.trim();
+        const modelVal = model.value.trim();
+        console.log('Selected Model:', modelVal);
+        if (carData[brandVal]?.models[modelVal]) {
+            carData[brandVal].models[modelVal].years.forEach(y => {
+                const opt = document.createElement('option');
+                opt.value = y;
+                document.getElementById('yearList').appendChild(opt);
+                console.log('Selected year:', y);
+            });
+            category.value = carData[brandVal].models[modelVal].category;
+        } else {
+            console.warn(`No years found for brand: ${brandVal}, model: ${modelVal}. Proceeding with manual input.`);
+        }
+    });
+
 
     const form = document.getElementById('registrationForm');
     form.addEventListener('submit', async event => {

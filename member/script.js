@@ -43,9 +43,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     await showPopupLoading();
     await liff.init({ liffId: '2007421084-WXmXrzZY' });
       if (!liff.isLoggedIn()) {
+        console.log("login line...");
         liff.login();
+        console.log("login line : No, do it again. ❌");
         return;
       }
+    console.log("login line : succeed ✅");
     const profile = await liff.getProfile();
     const userId = profile.userId;
     console.log("✅ userId:", userId);
@@ -53,9 +56,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     const res = await fetch(`${GAS_ENDPOINT}?action=member&userId=${userId}`);
     console.log("✅ response status:", res.status);
     
-    if (!res.ok) throw new Error("ไม่สามารถโหลดข้อมูลจากเซิร์ฟเวอร์ได้");
+    if (!res.ok) throw new Error(" ❗️ ไม่สามารถโหลดข้อมูลจากเซิร์ฟเวอร์ได้");
     const data = await res.json();
-    if (!data || !data.name) throw new Error('ไม่พบข้อมูลสมาชิก');
+    if (!data || !data.name) throw new Error(' ❌ ไม่พบข้อมูลสมาชิก');
     Swal.close(); // ✅ ปิดหลังเช็ค name
 
 

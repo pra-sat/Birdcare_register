@@ -4,7 +4,7 @@ const liffId = '2007421084-0VKG7anQ';
 const GAS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxdxUvmwLS3_nETwGLk4J8ipPq2LYNSWyhJ2ZwVsEJQgONG11NSSX3jVaeqWCU1TXvE5g/exec';
 const confirmText = 'ตกลง';
 
-// ✅ ฟังก์ชันโหลด LIFF และดึง userId
+// ✅ ฟังก์ชันโหลด LIFF
 async function initLIFF() {
     try {
         await liff.init({ liffId });
@@ -28,7 +28,7 @@ async function initLIFF() {
     }
 }
 
-// ✅ ฟังก์ชัน format phone + ตรวจสอบ + return phone พร้อม format xxx-xxx-xxxx
+// ✅ Format phone + ตรวจสอบ
 function validatePhone(phoneInput) {
     let phoneRaw = phoneInput.value.replace(/\D/g, '');
     if (/^0[689]/.test(phoneRaw)) {
@@ -42,14 +42,10 @@ function validatePhone(phoneInput) {
             return null;
         }
     }
-    // ✅ บังคับ format กลับเสมอ
-    if (phoneRaw.length === 10) {
-        return `${phoneRaw.slice(0, 3)}-${phoneRaw.slice(3, 6)}-${phoneRaw.slice(6)}`;
-    }
-    return phoneRaw;
+    return phoneRaw.length === 10 ? `${phoneRaw.slice(0, 3)}-${phoneRaw.slice(3, 6)}-${phoneRaw.slice(6)}` : phoneRaw;
 }
 
-// ✅ ฟังก์ชันเตรียม Payload อย่างปลอดภัย
+// ✅ เตรียม Payload
 function preparePayload() {
     const name = document.getElementById('name').value.trim();
     const phoneInput = document.getElementById('phone');
@@ -77,7 +73,7 @@ function preparePayload() {
     return { userId, phone: phoneFormatted, name, brand, model, year, category, channel };
 }
 
-// ✅ ฟังก์ชันเช็คซ้ำเบอร์+รถรุ่นก่อนส่ง
+// ✅ เช็คซ้ำเบอร์+รถรุ่น
 async function checkDuplicate(payload) {
     try {
         const checkResponse = await fetch(`${GAS_ENDPOINT}?check=1`);
@@ -91,11 +87,11 @@ async function checkDuplicate(payload) {
     } catch (error) {
         console.error("Error checking duplicates:", error);
         Swal.fire("⚠ ไม่สามารถตรวจสอบข้อมูลซ้ำได้", "ระบบจะดำเนินการต่อ โปรดตรวจสอบข้อมูลอีกครั้ง", "warning");
-        return false; // ให้ไปต่อแบบเช็คไม่ได้
+        return false;
     }
 }
 
-// ✅ ฟังก์ชันส่งข้อมูลจริง
+// ✅ ส่งข้อมูลจริง
 async function sendData(payload) {
     try {
         const response = await fetch(GAS_ENDPOINT, {
@@ -106,17 +102,13 @@ async function sendData(payload) {
         const data = await response.json();
         if (data.status === "success") {
             await Swal.fire("✅ Registration Successful", "Your membership has been registered.", "success");
-            submitBtn.textContent = "✅Submit";
             liff.closeWindow();
         } else {
             throw new Error(data.message || 'Registration failed.');
-            confirmButtonText: confirmText
-            liff.closeWindow();
         }
     } catch (error) {
         console.error("Error sending data:", error);
         Swal.fire("❗️ส่งข้อมูลล้มเหลว", error.message, "error");
-        liff.closeWindow();
     }
 }
 
@@ -124,8 +116,12 @@ async function sendData(payload) {
 document.addEventListener('DOMContentLoaded', () => {
     initLIFF();
     const phoneInput = document.getElementById('phone');
+    const brand = document.getElementById('brand');
+    const model = document.getElementById('model');
+    const year = document.getElementById('year');
+    const category = document.getElementById('category');
 
-    // ✅ Format phone ขณะพิมพ์
+    // Format phone ขณะพิมพ์
     phoneInput.addEventListener('input', () => {
         let raw = phoneInput.value.replace(/\D/g, '');
         if (raw.length > 10) raw = raw.slice(0, 10);
@@ -138,65 +134,41 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    if (typeof carData === 'undefined') {
-        console.error('carData is not defined. Ensure all_car_model.js is loaded.');
-        Swal.fire({
-            icon: 'error',
-            title: '❗️ข้อผิดพลาด-3',
-            text: 'ไม่สามารถโหลดข้อมูลยี่ห้อรถได้ กรุณาลองใหม่หรือติดต่อ Admin',
-            confirmButtonText: confirmText
-        });
-        return;
+    // ✅ Populate brand list แบบแนะนำ + ปล่อย user พิมพ์เองได้
+    if (typeof carData !== 'undefined') {
+        for (let brandName in carData) {
+            const opt = document.createElement('option');
+            opt.value = brandName;
+            document.getElementById('brandList').appendChild(opt);
+        }
     }
 
-    // Populate brand list
-    for (let brandName in carData) {
-        const opt = document.createElement('option');
-        opt.value = brandName;
-        document.getElementById('brandList').appendChild(opt);
-    }
-
-    // Update model list based on brand (รองรับพิมพ์ฟรี)
     brand.addEventListener('input', () => {
-        model.value = '';
-        year.value = '';
-        category.value = 'Unknown';
         document.getElementById('modelList').innerHTML = '';
         document.getElementById('yearList').innerHTML = '';
         const brandVal = brand.value.trim();
-        console.log('Selected Brand:', brandVal);
-        if (carData[brandVal]) {
+        if (carData?.[brandVal]) {
             Object.keys(carData[brandVal].models).forEach(modelName => {
                 const opt = document.createElement('option');
                 opt.value = modelName;
                 document.getElementById('modelList').appendChild(opt);
             });
-        } else {
-            console.warn(`No models found for brand: ${brandVal}. Proceeding with manual input.`);
-        }
+        } // ✅ ถ้าไม่เจอ → อนุญาตให้พิมพ์เอง
     });
 
-    // Update year list and category based on model (รองรับพิมพ์ฟรี)
     model.addEventListener('input', () => {
-        year.value = '';
-        category.value = 'Unknown';
         document.getElementById('yearList').innerHTML = '';
         const brandVal = brand.value.trim();
         const modelVal = model.value.trim();
-        console.log('Selected Model:', modelVal);
-        if (carData[brandVal]?.models[modelVal]) {
+        if (carData?.[brandVal]?.models[modelVal]) {
             carData[brandVal].models[modelVal].years.forEach(y => {
                 const opt = document.createElement('option');
                 opt.value = y;
                 document.getElementById('yearList').appendChild(opt);
-                console.log('Selected year:', y);
             });
             category.value = carData[brandVal].models[modelVal].category;
-        } else {
-            console.warn(`No years found for brand: ${brandVal}, model: ${modelVal}. Proceeding with manual input.`);
-        }
+        } // ✅ ถ้าไม่เจอ → อนุญาตให้พิมพ์เอง
     });
-
 
     const form = document.getElementById('registrationForm');
     form.addEventListener('submit', async event => {
@@ -219,7 +191,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (isDuplicate) {
             await Swal.fire("❗️ข้อมูลซ้ำ", "เบอร์โทร และ รถรุ่นนี้มีในระบบแล้ว", "error");
             submitBtn.disabled = false;
-            confirmButtonText: confirmText
+            submitBtn.textContent = "ส่งข้อมูล";
             return;
         }
 

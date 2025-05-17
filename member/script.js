@@ -5,7 +5,7 @@ const memberInfoEl = document.getElementById('memberInfo');
 const historySection = document.getElementById('historySection');
 const toggleBtn = document.getElementById('toggleHistory');
 
-async function showPopupLoading() {
+function showPopupLoading() {
   await Swal.fire({
     title: '⏳ กำลังโหลดข้อมูลสมาชิก...',
     allowOutsideClick: false,
@@ -40,30 +40,14 @@ function formatDateTime(rawDate) {
 
 document.addEventListener('DOMContentLoaded', async () => {
   try {
-    // await showPopupLoading();
+    showPopupLoading();
     
     console.log("Start login line...");
     await liff.init({ liffId: '2007421084-WXmXrzZY' });
     if (!liff.isLoggedIn()) {
-      console.log("login line...");
       liff.login();
-     console.log("login line : No, do it again. ❌");
      return;
    }
-
-    // console.log("✅ liff.isInClient():", liff.isInClient());
-    
-    // if (!liff.isInClient()) {
-    //   Swal.fire({
-    //     icon: 'warning',
-    //     title: '⚠ กรุณาเปิดในแอป LINE',
-    //     text: 'ระบบนี้รองรับเฉพาะในแอป LINE',
-    //     confirmButtonText: 'ปิด',
-    //   });
-    //   return;
-    // }
-
-    console.log("login line : succeed ✅");
     
     const profile = await liff.getProfile();
     const userId = profile.userId;

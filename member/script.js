@@ -15,7 +15,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     const profile = await liff.getProfile();
     const userId = profile.userId;
 
-    const res = await fetch(GAS_ENDPOINT + '?action=member&userId=' + encodeURIComponent(userId));
+    const res = await fetch(GAS_ENDPOINT + '?action=member&userId=' + userId)
+    
     if (!res.ok) throw new Error('ไม่สามารถโหลดข้อมูล');
 
     const data = await res.json();

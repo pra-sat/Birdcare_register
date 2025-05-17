@@ -70,6 +70,11 @@ document.addEventListener('DOMContentLoaded', async () => {
       <p>💳 แต้มสะสม: ${data.point} แต้ม</p>
       <p>⏰ แต้มหมดอายุ: ${data.expirationDate && data.expirationDate.trim() ? data.expirationDate : '-'}</p>
     `;
+    
+    toggleBtn.disabled = true;
+    historySection.innerHTML = '<p>⏳ กำลังโหลดประวัติ...</p>';
+    // แล้วเปิดให้กด toggleBtn ได้หลังจากโหลดเสร็จ
+    toggleBtn.disabled = false;
 
     toggleBtn.addEventListener('click', () => {
       historySection.classList.toggle('hidden');

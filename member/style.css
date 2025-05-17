@@ -24,11 +24,13 @@ h2 {
 }
 
 .card {
-    padding: 15px;
-    background-color: rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
-    margin-bottom: 20px;
-    font-size: 16px;
+  padding: 15px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-size: 16px;
+  text-align: left;  /* ✅ ชิดซ้าย */
+  white-space: pre-line;
 }
 
 .btn {
@@ -57,3 +59,19 @@ h2 {
         margin: 20px;
     }
 }
+
+
+
+.hidden {
+  display: none;
+}
+
+.close-btn {
+  margin-top: 10px;
+  background-color: #004880;
+}
+
+#toggleService {
+  margin-bottom: 10px;
+}
+

@@ -228,8 +228,10 @@ form.addEventListener('submit', async event => {
     if (!confirm.isConfirmed) return;
 
     const submitBtn = document.getElementById('submitBtn');  // ✅ ตรงนี้ควรอยู่ใน handler เสมอ
+    if (submitBtn.disabled) return;  // ดักทันที
     submitBtn.disabled = true;
     submitBtn.textContent = "Submitting...";
+    
     Swal.fire({
         title: 'กำลังส่งข้อมูล...',
         text: 'กรุณารอสักครู่',
@@ -296,6 +298,8 @@ form.addEventListener('submit', async event => {
             await Swal.fire("✅ Registration Successful", "Your membership has been registered.", "success");
             submitBtn.textContent = "✅Submit";
             liff.closeWindow();
+            console.log("Final Sending Payload:", JSON.stringify(payload));
+
         } else {
             throw new Error(data.message || "Registration failed");
         }

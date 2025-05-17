@@ -87,9 +87,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     // แล้วเปิดให้กด toggleBtn ได้หลังจากโหลดเสร็จ
     toggleBtn.disabled = false;
 
-    toggleBtn.addEventListener('click', () => {
-      historySection.classList.toggle('hidden');
-    });
+    if (!toggleBtn.classList.contains('bound')) {
+      toggleBtn.addEventListener('click', () => {
+        historySection.classList.toggle('hidden');
+      });
+      toggleBtn.classList.add('bound');
+    }
 
     const history = Array.isArray(data.serviceHistory) ? data.serviceHistory : [];
     if (history.length === 0) {
@@ -124,10 +127,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     toggleBtn.disabled = false;
-toggleBtn.classList.remove("disabled"); // เพิ่มความสวยงามกรณีใส่ CSS .disabled
+    toggleBtn.classList.remove("disabled"); // เพิ่มความสวยงามกรณีใส่ CSS .disabled
 
 
   } catch (err) {
+    hideLoadingOverlay();
     console.error('Error:', err);
     Swal.fire({
       icon: 'error',

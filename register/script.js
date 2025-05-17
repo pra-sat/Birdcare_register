@@ -45,7 +45,7 @@ function validatePhone(phoneInput) {
     return phoneRaw.length === 10 ? `${phoneRaw.slice(0, 3)}-${phoneRaw.slice(3, 6)}-${phoneRaw.slice(6)}` : phoneRaw;
 }
 
-// ✅ เตรียม Payload
+// ✅ เตรียม Payload (พร้อม fallback category)
 function preparePayload() {
     const name = document.getElementById('name').value.trim();
     const phoneInput = document.getElementById('phone');
@@ -55,18 +55,14 @@ function preparePayload() {
     const brand = document.getElementById('brand').value.trim();
     const model = document.getElementById('model').value.trim();
     const year = document.getElementById('year').value.trim();
-    const category = document.getElementById('category').value;
-    const channel = document.getElementById('channel')?.value.trim() || 'LINE';
+    let category = document.getElementById('category').value.trim();
 
-    if (!userId || !name || !phoneFormatted || !brand || !model || !year || !category) {
+    if (!userId || !name || !phoneFormatted || !brand || !model || !year) {
         Swal.fire("Incomplete Data", "กรุณากรอกข้อมูลให้ครบทุกช่อง", "warning");
         return null;
     }
-    
-    // ✅ ถ้าไม่ได้ถูกกำหนดจาก carData ให้เป็น 'Unknown'
-    if (!category) {
-        category = 'Unknown';
-    }
+
+    if (!category) category = 'Unknown';
 
     const currentYear = new Date().getFullYear();
     const yearNum = parseInt(year, 10);
@@ -75,7 +71,7 @@ function preparePayload() {
         return null;
     }
 
-    return { userId, phone: phoneFormatted, name, brand, model, year, category, channel };
+    return { userId, phone: phoneFormatted, name, brand, model, year, category, channel: 'LINE' };
 }
 
 // ✅ เช็คซ้ำเบอร์+รถรุ่น
@@ -139,7 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // ✅ Populate brand list แบบแนะนำ + ปล่อย user พิมพ์เองได้
+    // Populate brand list
     if (typeof carData !== 'undefined') {
         for (let brandName in carData) {
             const opt = document.createElement('option');
@@ -158,7 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 opt.value = modelName;
                 document.getElementById('modelList').appendChild(opt);
             });
-        } // ✅ ถ้าไม่เจอ → อนุญาตให้พิมพ์เอง
+        }
     });
 
     model.addEventListener('input', () => {
@@ -172,7 +168,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.getElementById('yearList').appendChild(opt);
             });
             category.value = carData[brandVal].models[modelVal].category;
-        } // ✅ ถ้าไม่เจอ → อนุญาตให้พิมพ์เอง
+        }
     });
 
     const form = document.getElementById('registrationForm');
@@ -184,6 +180,28 @@ document.addEventListener('DOMContentLoaded', () => {
         const submitBtn = document.getElementById('submitBtn');
         submitBtn.disabled = true;
         submitBtn.textContent = "Submitting...";
+
+        // ✅ เพิ่ม popup ยืนยันก่อนส่งจริง
+        const confirm = await Swal.fire({
+            title: 'ยืนยันข้อมูลก่อนส่ง',
+            html: `
+                ชื่อ: ${payload.name}<br>
+                เบอร์โทร: ${payload.phone}<br>
+                ยี่ห้อ: ${payload.brand}<br>
+                รุ่น: ${payload.model}<br>
+                ปี: ${payload.year}<br>
+                หมวดหมู่: ${payload.category}`,
+            icon: 'info',
+            showCancelButton: true,
+            confirmButtonText: 'ยืนยันส่งข้อมูล',
+            cancelButtonText: 'ยกเลิก'
+        });
+
+        if (!confirm.isConfirmed) {
+            submitBtn.disabled = false;
+            submitBtn.textContent = "ส่งข้อมูล";
+            return;
+        }
 
         Swal.fire({
             title: 'กำลังส่งข้อมูล...',

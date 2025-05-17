@@ -242,7 +242,7 @@ form.addEventListener('submit', async event => {
     });
 
     try {
-        const checkResponse = await fetch(`${GAS_ENDPOINT}?check=1`);
+        const checkResponse = await fetch(`${GAS_ENDPOINT}?action=register&check=1`);
         const checkData = await checkResponse.json();
         const duplicate = checkData.find(row =>
             row.phone.replace(/\D/g, '') === phoneRaw &&  // ✅ เปรียบเทียบแบบไม่มี -

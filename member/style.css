@@ -88,11 +88,12 @@ table.history-table {
 }
 
 table {
+  table-layout: fixed; /* บังคับให้ใช้ width ที่กำหนด */
   width: 100%;
   border-collapse: collapse;
   margin-top: 10px;
-  font-size: 14px;
-  background: rgba(255,255,255,0.05);
+  font-size: 16px;
+  background: rgba(255, 255, 255, 0.05);
   border-radius: 6px;
   overflow: hidden;
 }
@@ -106,4 +107,31 @@ td, th {
   padding: 8px;
   border-bottom: 1px solid #666;
   text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
+
+/* ✅ กำหนดความกว้างของแต่ละคอลัมน์ */
+td:nth-child(1), th:nth-child(1) {
+  width: 150px; /* วันที่ */
+}
+
+td:nth-child(2), th:nth-child(2) {
+  width: 100px; /* บริการ */
+}
+
+td:nth-child(3), th:nth-child(3) {
+  width: 60px; /* ราคา */
+}
+
+td:nth-child(4), th:nth-child(4) {
+  width: 60px; /* แต้ม */
+}
+
+td:nth-child(5), th:nth-child(5) {
+  width: auto; /* หมายเหตุ ปล่อยยืด */
+  white-space: normal;
+  overflow: visible;
+}
+

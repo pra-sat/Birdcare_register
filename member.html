@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <title>ข้อมูลสมาชิก</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Prompt', sans-serif;
+            background: linear-gradient(135deg, #005f9e, #003f6f);
+            color: #fff;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .container {
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 15px;
+            padding: 20px;
+            max-width: 400px;
+            margin: 50px auto;
+            box-shadow: 0 0 20px rgba(0,0,0,0.2);
+        }
+        h3 {
+            margin-top: 0;
+            font-size: 22px;
+        }
+        p {
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        .note {
+            font-size: 12px;
+            color: #ffef96;
+            margin-top: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            border-radius: 10px;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #00c2ff;
+            border: none;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        button:hover {
+            background-color: #009ad9;
+        }
+        .loading {
+            text-align: center;
+            margin-top: 100px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="memberInfo">
+        <div class="loading">⏳ กำลังโหลดข้อมูลสมาชิก...</div>
+    </div>
+    <button onclick="liff.closeWindow()">ปิดหน้าต่าง</button>
+
+    <script>
+        const GAS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxdxUvmwLS3_nETwGLk4J8ipPq2LYNSWyhJ2ZwVsEJQgONG11NSSX3jVaeqWCU1TXvE5g/exec';
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                await liff.init({ liffId: '2007421084-WXmXrzZY' });
+                if (!liff.isLoggedIn()) {
+                    liff.login();
+                    return;
+                }
+
+                const profile = await liff.getProfile();
+                if (!profile.userId) {
+                    document.getElementById('memberInfo').innerHTML = "<p>❗️ ไม่สามารถตรวจสอบ LINE ID ได้ กรุณาลองใหม่ผ่าน LINE APP</p>";
+                    return;
+                }
+
+                const userId = profile.userId;
+                console.log('UserId:', userId);
+
+                const res = await fetch(`${GAS_ENDPOINT}?getMember=1&userId=${userId}`);
+                if (!res.ok) throw new Error('ไม่สามารถติดต่อ Server ได้');
+
+                const data = await res.json();
+                if (!data || !data.name) {
+                    document.getElementById('memberInfo').innerHTML = "<p>❗️ ไม่พบข้อมูลสมาชิกในระบบ กรุณาติดต่อ Admin</p>";
+                    return;
+                }
+
+                document.getElementById('memberInfo').innerHTML = `
+                    <h3>👤 ชื่อสมาชิก: ${data.name}</h3>
+                    <p>📱 เบอร์โทร: ${data.phone}<br>
+                    🚗 รถ: ${data.brand} ${data.model} (${data.year})<br>
+                    🏷 หมวดหมู่: ${data.category}<br>
+                    💳 แต้มสะสม: ${data.point} แต้ม<br>
+                    ⏰ แต้มหมดอายุ: ${data.expirationDate}</p>
+                    <div class="note">⚠ หากต้องการแก้ไขข้อมูล กรุณาติดต่อ Admin หรือทักแชท Line OA ได้เลยครับ</div>
+                `;
+            } catch (err) {
+                console.error('Error:', err);
+                document.getElementById('memberInfo').innerHTML = "<p>❗️ เกิดข้อผิดพลาดในการโหลดข้อมูล กรุณาลองใหม่หรือติดต่อ Admin</p>";
+            }
+        });
+    </script>
+</body>
+</html>

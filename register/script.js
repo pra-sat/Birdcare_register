@@ -110,10 +110,12 @@ async function sendData(payload) {
             liff.closeWindow();
         } else {
             throw new Error(data.message || 'Registration failed.');
+            liff.closeWindow();
         }
     } catch (error) {
         console.error("Error sending data:", error);
         Swal.fire("❗️ส่งข้อมูลล้มเหลว", error.message, "error");
+        liff.closeWindow();
     }
 }
 

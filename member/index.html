@@ -2,6 +2,7 @@
 <html lang="th">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ข้อมูลสมาชิก</title>
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -17,7 +18,11 @@
     <button class="btn history-toggle" id="toggleHistory">▼ ดูประวัติการใช้บริการ</button>
 
     <!-- พื้นที่แสดงประวัติ -->
-    <div id="historySection" class="card hidden"></div>
+    <div id="historySection" class="card hidden">
+      <div class="history-section-wrapper">
+        <!-- ตารางจะถูกเติมผ่าน JS -->
+      </div>
+    </div>
 
     <button class="btn close small" onclick="liff.closeWindow()">ปิดหน้าต่าง</button>
     <p class="notice">📌 หากต้องการแก้ไขข้อมูล กรุณาทักแชทหรือแจ้ง Admin</p>

@@ -3,7 +3,7 @@
 
 let userId = '';
 const liffId = '2007421084-0VKG7anQ';
-const GAS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwKQEw1_HWUZrf792z7IB2ZFvVSRYcGGrmr3AbUy1Rit7lb_uZSpCe81-dNg-WEQFYwSg/exec';
+const GAS_ENDPOINT = 'https://script.google.com/macros/s/AKfycby2sqx0PeQgE3-shAfk6OmcwgYTx0lxgDG2BmhZMEuVwXl-yGMQya6OhjByTM9oUcTwBw/exec';
 const confirmText = 'ตกลง';
 
 

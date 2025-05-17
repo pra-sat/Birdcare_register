@@ -90,6 +90,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (!toggleBtn.classList.contains('bound')) {
       toggleBtn.addEventListener('click', () => {
         historySection.classList.toggle('hidden');
+        toggleBtn.textContent = historySection.classList.contains('hidden')
+          ? '▼ ดูประวัติการใช้บริการ'
+          : '▲ ซ่อนประวัติการใช้บริการ';
       });
       toggleBtn.classList.add('bound');
     }

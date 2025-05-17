@@ -68,31 +68,36 @@ document.addEventListener('DOMContentLoaded', async () => {
     console.log("✅ response status:", res.status);
     
     if (!res.ok) {
-      hideLoadingOverlay();
+      hideLoadingOverlay(); // ✅ ต้องมาก่อน popup
+    
       Swal.fire({
         icon: 'error',
         title: '❗️ ไม่สามารถโหลดข้อมูลจากเซิร์ฟเวอร์ได้',
         text: 'กรุณาลองใหม่อีกครั้งหรือติดต่อ Admin',
         confirmButtonText: 'Close'
+      }).then(() => {
+        liff.closeWindow(); // ✅ ปิดหลังจาก popup ปิด
       });
     
-      liff.closeWindow(); 
       return;
     }
     
     const data = await res.json();
     if (!data || !data.name) {
-      hideLoadingOverlay();
+      hideLoadingOverlay(); // ✅ ก่อน Swal.fire
+    
       Swal.fire({
         icon: 'error',
         title: '❌ ไม่พบข้อมูลสมาชิก',
         text: 'กรุณาคลิกที่เมนู สมัครสมาชิก',
         confirmButtonText: 'Close'
+      }).then(() => {
+        liff.closeWindow(); // ✅ หลัง popup ปิด
       });
     
-      liff.closeWindow(); // ❗ ย้ายมาไว้หลังจาก `await`
       return;
     }
+
 
     // Swal.close(); // ✅ ปิดหลังเช็ค name
     

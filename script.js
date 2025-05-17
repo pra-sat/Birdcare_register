@@ -226,10 +226,12 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         } finally {
             form.reset();
-            // ✅ ป้องกัน userId เต็มโชว์ ต้อง masked ทุกครั้งหลัง reset
-            const userIdInput = document.getElementById('userId');
-            if (userIdInput) {
-                userIdInput.value = userId.substring(0, 8) + 'xxx...';
+            // ป้องกันกรณี userId หายระหว่าง session
+            if (userId) {
+                const userIdInput = document.getElementById('userId');
+                if (userIdInput) {
+                    userIdInput.value = userId.substring(0, 8) + 'xxx...';
+                }
             }
             document.getElementById('name').focus();
             submitBtn.disabled = false;

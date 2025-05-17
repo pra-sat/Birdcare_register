@@ -67,9 +67,27 @@ document.addEventListener('DOMContentLoaded', async () => {
     const res = await fetch(`${GAS_ENDPOINT}?action=member&userId=${userId}`);
     console.log("✅ response status:", res.status);
     
-    if (!res.ok) throw new Error(" ❗️ ไม่สามารถโหลดข้อมูลจากเซิร์ฟเวอร์ได้");
+    if (!res.ok) {
+      // throw new Error(" ❗️ ไม่สามารถโหลดข้อมูลจากเซิร์ฟเวอร์ได้");
+      await Swal.fire({
+            icon: 'error',
+            title: '❗️ ไม่สามารถโหลดข้อมูลจากเซิร์ฟเวอร์ได้',
+            text: error.message,
+            confirmButtonText: 'Close'
+        });
+        liff.closeWindow();
+     }
     const data = await res.json();
-    if (!data || !data.name) throw new Error(' ❌ ไม่พบข้อมูลสมาชิก');
+    if (!data || !data.name) {
+      // throw new Error(' ❌ ไม่พบข้อมูลสมาชิก');
+      await Swal.fire({
+            icon: 'error',
+            title: '❌ ไม่พบข้อมูลสมาชิก',
+            text: error.message,
+            confirmButtonText: 'Close'
+        });
+        liff.closeWindow();
+     }
     // Swal.close(); // ✅ ปิดหลังเช็ค name
     
 
@@ -164,7 +182,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       icon: 'error',
       title: 'เกิดข้อผิดพลาด',
       text: 'ไม่สามารถโหลดข้อมูลสมาชิกได้',
-      confirmButtonText: 'OK'
+      confirmButtonText: 'Close'
     });
     liff.closeWindow();
   }

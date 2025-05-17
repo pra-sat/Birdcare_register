@@ -181,7 +181,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // Prepare data payload
-        const payload = { userId: currentUserId, phone, name, brand, model, year, category, channel };
         const submitBtn = document.getElementById('submitBtn');
         submitBtn.disabled = true;
         submitBtn.textContent = "Submitting...";
@@ -194,7 +193,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
         
-        // ตรวจสอบเบอร์ + ยี่ห้อ + รุ่น + ปี ซ้ำ ฝั่ง Client ก่อนส่ง
+        // ✅ ก่อน check ตรวจสอบซ้ำ
         try {
             const checkResponse = await fetch(`${GAS_ENDPOINT}?check=1`);
             const checkData = await checkResponse.json();
@@ -215,7 +214,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } catch (checkError) {
             console.error("Error checking duplicates:", checkError);
-            // อาจให้ผ่านไป แต่แจ้งเตือนว่าตรวจซ้ำไม่ได้
             await Swal.fire({
                 icon: 'warning',
                 title: '⚠ ไม่สามารถตรวจสอบข้อมูลซ้ำได้',
@@ -223,6 +221,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 confirmButtonText: confirmText
             });
         }
+
+        // ✅ ค่อย prepare payload หลังตรวจสอบเสร็จ
+        const payload = { 
+            userId: currentUserId, 
+            phone: phone.trim(), 
+            name: name.trim(), 
+            brand: brand.trim(), 
+            model: model.trim(), 
+            year: year.trim(), 
+            category, 
+            channel 
+        };
+        console.log("Preparing to send payload:", payload);
 
         try {
             console.log("Preparing to send payload:", payload);

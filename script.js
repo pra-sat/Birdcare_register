@@ -210,6 +210,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     text: 'เบอร์โทร และ รถรุ่นนี้ มีในระบบแล้ว\n\nกรุณาติดต่อ Admin',
                     confirmButtonText: confirmText
                 });
+                liff.closeWindow();
                 return; // ไม่ส่งต่อไป GAS
             }
         } catch (checkError) {
@@ -220,6 +221,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 text: 'ระบบจะดำเนินการต่อ โปรดตรวจสอบข้อมูลอีกครั้ง',
                 confirmButtonText: confirmText
             });
+            liff.closeWindow();
         }
 
         // ✅ ค่อย prepare payload หลังตรวจสอบเสร็จ
@@ -248,6 +250,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (data.status === "success") {
                 await Swal.fire("✅ Registration Successful", "Your membership has been registered.", "success");
+                submitBtn.textContent = "✅Submit";
+                liff.closeWindow();
             } else {
                 await Swal.fire({
                     icon: 'error',
@@ -255,6 +259,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     text: data.message || 'Registration could not be completed.',
                     confirmButtonText: confirmText
                 });
+                liff.closeWindow();
             }
 
         } catch (error) {
@@ -265,6 +270,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 text: error.message || 'Unable to submit form. Please try again.',
                 confirmButtonText: confirmText
             });
+            liff.closeWindow();
         } finally {
             form.reset();
             // ป้องกันกรณี userId หายระหว่าง session
@@ -276,7 +282,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             document.getElementById('name').focus();
             submitBtn.disabled = false;
-            submitBtn.textContent = "✅Submit";
         }
     });
 });

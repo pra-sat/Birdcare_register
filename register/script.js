@@ -34,13 +34,11 @@ function validatePhone(phoneInput) {
     if (/^0[689]/.test(phoneRaw)) {
         if (!/^0[689][0-9]{8}$/.test(phoneRaw)) {
             Swal.fire("Invalid Phone", "เบอร์ขึ้นต้นด้วย 08, 06, 09 ต้องมี 10 หลักเท่านั้น", "warning");
-            phoneInput.focus();
             return null;
         }
     } else {
         if (!/^0[0-9]{8,14}$/.test(phoneRaw)) {
             Swal.fire("Invalid Phone", "เบอร์โทรควรเริ่มด้วย 0 และมี 9-15 หลัก", "warning");
-            phoneInput.focus();
             return null;
         }
     }

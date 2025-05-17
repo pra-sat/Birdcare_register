@@ -101,33 +101,53 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (history.length === 0) {
       historySection.innerHTML = '<p>-</p>';
     } else {
-      const rows = history.map(row => `
-        <tr>
-          <td>${formatDateTime(row.date)}</td>
-          <td>${row.service}</td>
-          <td>${row.price} ฿</td>
-          <td>${row.point}</td>
-          <td>${row.note}</td>
-        </tr>`).join('');
-          historySection.innerHTML = `
-            <div class="history-section-wrapper">
-              <table>
-                <thead>
-                  <tr>
-                    <th>วันที่</th>
-                    <th>บริการ</th>
-                    <th>ราคา</th>
-                    <th>แต้ม</th>
-                    <th>หมายเหตุ</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  ${rows}
-                </tbody>
-              </table>
-            </div>
-          `;
+      // 🔃 เรียงลำดับวันที่ล่าสุดมาก่อน
+      history.sort((a, b) => new Date(b.date) - new Date(a.date));
+    
+      // 🔀 Responsive View: แยกมือถือกับ Desktop
+      if (window.innerWidth <= 480) {
+        // 📱 Mobile: ใช้ Card
+        historySection.innerHTML = history.map(row => `
+          <div class="history-card">
+            <p><b>📅 วันที่:</b> ${formatDateTime(row.date)}</p>
+            <p><b>🛠 บริการ:</b> ${row.service}</p>
+            <p><b>💰 ราคา:</b> ${row.price} ฿</p>
+            <p><b>🏅 แต้ม:</b> ${row.point}</p>
+            <p><b>📝 หมายเหตุ:</b> ${row.note}</p>
+          </div>
+        `).join('');
+      } else {
+        // 🖥️ Desktop: ใช้ตาราง
+        const rows = history.map(row => `
+          <tr>
+            <td>${formatDateTime(row.date)}</td>
+            <td>${row.service}</td>
+            <td>${row.price} ฿</td>
+            <td>${row.point}</td>
+            <td>${row.note}</td>
+          </tr>`).join('');
+    
+        historySection.innerHTML = `
+          <div class="history-section-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>วันที่</th>
+                  <th>บริการ</th>
+                  <th>ราคา</th>
+                  <th>แต้ม</th>
+                  <th>หมายเหตุ</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${rows}
+              </tbody>
+            </table>
+          </div>
+        `;
+      }
     }
+
     hideLoadingOverlay();
     toggleBtn.disabled = false;
     toggleBtn.classList.remove("disabled"); // เพิ่มความสวยงามกรณีใส่ CSS .disabled

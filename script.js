@@ -209,7 +209,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.log("Sending payload:", payload);
                 await Swal.fire("✅ Registration Successful", "Your membership has been registered.", "success");
                 form.reset();
-                document.getElementById('statusMessage').textContent = "✅ บันทึกเรียบร้อย";
+                const statusMsg = document.getElementById('statusMessage');
+                if (statusMsg) statusMsg.textContent = "✅ บันทึกเรียบร้อย";
                 document.getElementById('userId').value = userId;  // ให้คง Masked UserId แสดงหลัง reset
                 document.getElementById('name').value = name;
                 document.getElementById('name').focus();

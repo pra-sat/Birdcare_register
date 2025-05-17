@@ -12,12 +12,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         const userId = profile.userId;
         console.log('UserId:', userId);
 
-        const res = await fetch(GAS_ENDPOINT, {
+        const res = await fetch(GAS_ENDPOINT + '?action=member', {
             method: "POST",
             redirect: "follow",
-            body: JSON.stringify({ proxy: "getMember", userId }),
+            body: JSON.stringify({ userId }),
             headers: { "Content-Type": "text/plain;charset=utf-8" }
         });
+
 
         if (!res.ok) throw new Error('ไม่สามารถติดต่อ Server ได้');
 

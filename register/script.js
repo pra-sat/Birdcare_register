@@ -257,7 +257,8 @@ form.addEventListener('submit', async event => {
                 text: 'เบอร์โทร และ รถรุ่นนี้ มีในระบบแล้ว\n\nกรุณาติดต่อ Admin',
                 confirmButtonText: confirmText
             });
-            liff.closeWindow();
+                submitBtn.disabled = false; // ✅ คืนค่า
+                submitBtn.textContent = "Submit"; // ✅ คืนข้อความ
             return;
         }
     } catch (checkError) {
@@ -268,6 +269,7 @@ form.addEventListener('submit', async event => {
             text: 'ระบบจะดำเนินการต่อ โปรดตรวจสอบข้อมูลอีกครั้ง',
             confirmButtonText: confirmText
         });
+        liff.closeWindow();
     }
 
         console.log("Preparing to send payload:", payload);

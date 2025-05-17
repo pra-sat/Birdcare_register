@@ -134,7 +134,13 @@ td:nth-child(5), th:nth-child(5) {
   white-space: normal;
   overflow: visible;
 }
+
 .history-section-wrapper {
   overflow-x: auto;
 }
+
+tbody tr:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
 

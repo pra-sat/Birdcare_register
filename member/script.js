@@ -41,8 +41,6 @@ function formatDateTime(rawDate) {
 
 document.addEventListener('DOMContentLoaded', async () => {
   try {
-    // await showPopupLoading();
-    
     console.log("Start login line...");
     await liff.init({ liffId: '2007421084-WXmXrzZY' });
     if (!liff.isLoggedIn()) {
@@ -50,6 +48,7 @@ document.addEventListener('DOMContentLoaded', async () => {
      return;
    }
     
+    await showPopupLoading();
     const profile = await liff.getProfile();
     const userId = profile.userId;
     console.log("✅ userId:", userId);

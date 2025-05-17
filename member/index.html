@@ -1,21 +1,27 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-    <meta charset="UTF-8">
-    <title>ข้อมูลสมาชิก</title>
-    <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <title>ข้อมูลสมาชิก</title>
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <h2>ข้อมูลสมาชิก</h2>
-        <div id="memberInfo" class="card">
-            ⏳ กำลังโหลดข้อมูลสมาชิก...
-        </div>
-        <button class="btn" onclick="liff.closeWindow()">ปิดหน้าต่าง</button>
-        <p class="notice">📌 หากต้องการแก้ไขข้อมูล กรุณาทักแชทหรือแจ้ง Admin</p>
+  <div class="container">
+    <h2>ข้อมูลสมาชิก</h2>
+    <div id="memberInfo" class="card">
+      ⏳ กำลังโหลดข้อมูลสมาชิก...
     </div>
 
-    <script src="script.js"></script>
+    <button class="btn" id="toggleService">ดูประวัติการใช้บริการ ▼</button>
+    <div id="serviceHistory" class="card hidden">
+      ⏳ กำลังโหลดประวัติ...
+    </div>
+
+    <button class="btn close-btn" onclick="liff.closeWindow()">ปิดหน้าต่าง</button>
+    <p class="notice">📌 หากต้องการแก้ไขข้อมูล กรุณาทักแชทหรือแจ้ง Admin</p>
+  </div>
+
+  <script src="script.js"></script>
 </body>
 </html>

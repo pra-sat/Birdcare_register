@@ -32,8 +32,9 @@ async function initLIFF() {
 
         const userIdInput = document.getElementById('userId');
         if (userIdInput) {
-            userId = profile.userId || 'no-userId'; // เก็บในตัวแปร userId
-            userIdInput.value = userId;             // และใส่ลง input เหมือนเดิม
+            userId = profile.userId || 'no-userId'; // เก็บตัวเต็มในตัวแปร
+            const maskedUserId = userId.substring(0, 8) + 'xxx...';  // แสดงแค่ 8 ตัว + xxx
+            userIdInput.value = maskedUserId;  // แสดงในช่อง input
             console.log('userId set to:', userId);
         } else {
             console.error('userId input element not found');
@@ -141,7 +142,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const model = document.getElementById('model').value;
             const year = document.getElementById('year').value.trim();
             const category = document.getElementById('category').value;
-            const channel = document.getElementById('channel').value.trim();
+            const channelElement = document.getElementById('channel');
+            const channel = channelElement ? channelElement.value.trim() : 'LINE';
+
 
         // Basic form validation
         if (!userId) {
@@ -153,13 +156,13 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
         }
             // ✅ ตรวจสอบเบอร์ และเพิ่ม 0 ถ้าไม่มี
+        let phone = document.getElementById('phone').value.trim();
         if (!phone.startsWith('0') && /^[0-9]{8,9}$/.test(phone)) {
             phone = '0' + phone;
         }
-        // Validate phone (digits only, length 8-15)
-        if (!/^[0-9]{8,15}$/.test(phone)) {
-        Swal.fire("Invalid Phone", "Phone number should be 8-15 digits.", "warning");
-        return;
+        if (!/^[0-9]{9,15}$/.test(phone)) {
+            Swal.fire("Invalid Phone", "Phone number should be 9-15 digits and start with 0.", "warning");
+            return;
         }
         // Validate year (reasonable range)
         const currentYear = new Date().getFullYear();

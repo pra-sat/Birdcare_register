@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const data = await res.json();
     if (!data || !data.name) throw new Error(' ❌ ไม่พบข้อมูลสมาชิก');
     // Swal.close(); // ✅ ปิดหลังเช็ค name
-    hideLoadingOverlay();
+    
 
     memberInfoEl.innerHTML = `
       <p><b>👤 ${data.name}</b></p>
@@ -128,7 +128,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             </div>
           `;
     }
-
+    hideLoadingOverlay();
     toggleBtn.disabled = false;
     toggleBtn.classList.remove("disabled"); // เพิ่มความสวยงามกรณีใส่ CSS .disabled
 

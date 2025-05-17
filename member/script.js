@@ -12,7 +12,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         const userId = profile.userId;
         console.log('UserId:', userId);
 
-        // ✅ เรียกผ่าน proxy mode แบบหลบ CORS
         const res = await fetch(GAS_ENDPOINT, {
             method: "POST",
             redirect: "follow",
@@ -29,13 +28,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         document.getElementById('memberInfo').innerHTML = `
-            <h3>👤 ชื่อสมาชิก: ${data.name}</h3>
+            <h3>👤 ${data.name}</h3>
             <p>📱 เบอร์โทร: ${data.phone}<br>
             🚗 รถ: ${data.brand} ${data.model} (${data.year})<br>
             🏷 หมวดหมู่: ${data.category}<br>
             💳 แต้มสะสม: ${data.point} แต้ม<br>
             ⏰ แต้มหมดอายุ: ${data.expirationDate}</p>
-            <small>📌 หากต้องการแก้ไขข้อมูล กรุณาทักแชทหรือแจ้ง Admin</small>
         `;
     } catch (err) {
         console.error('Error:', err);

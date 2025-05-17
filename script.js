@@ -155,15 +155,13 @@ document.addEventListener('DOMContentLoaded', () => {
         Swal.fire("Incomplete Data", "Please fill in all required fields.", "warning");
         return;
         }
-            // ✅ ตรวจสอบเบอร์ และเพิ่ม 0 ถ้าไม่มี
-        let phone = document.getElementById('phone').value.trim();
-        if (!phone.startsWith('0') && /^[0-9]{8,9}$/.test(phone)) {
-            phone = '0' + phone;
-        }
+        // ✅ ตรวจสอบเบอร์ และเพิ่ม 0 ถ้าไม่มี
+        phone = phone.startsWith('0') ? phone : (/^[0-9]{8,9}$/.test(phone) ? '0' + phone : phone);
         if (!/^[0-9]{9,15}$/.test(phone)) {
-            Swal.fire("Invalid Phone", "Phone number should be 9-15 digits and start with 0.", "warning");
+            Swal.fire("Invalid Phone", "Phone number should be 9-15 digits.", "warning");
             return;
         }
+
         // Validate year (reasonable range)
         const currentYear = new Date().getFullYear();
         const yearNum = parseInt(year, 10);

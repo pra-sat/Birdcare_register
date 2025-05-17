@@ -193,6 +193,37 @@ document.addEventListener('DOMContentLoaded', () => {
                 Swal.showLoading();
             }
         });
+        
+        // ตรวจสอบเบอร์ + ยี่ห้อ + รุ่น + ปี ซ้ำ ฝั่ง Client ก่อนส่ง
+        try {
+            const checkResponse = await fetch(`${GAS_ENDPOINT}?check=1`);
+            const checkData = await checkResponse.json();
+            const duplicate = checkData.find(row =>
+                row.phone === phone &&
+                row.brand === brand &&
+                row.model === model &&
+                row.year === year
+            );
+            if (duplicate) {
+                await Swal.fire({
+                    .+
+                    icon: 'error',
+                    title: '❗️ข้อมูลซ้ำ',
+                    text: 'เบอร์โทร และ รถรุ่นนี้ มีในระบบแล้ว\n\nกรุณาติดต่อ Admin',
+                    confirmButtonText: confirmText
+                });
+                return; // ไม่ส่งต่อไป GAS
+            }
+        } catch (checkError) {
+            console.error("Error checking duplicates:", checkError);
+            // อาจให้ผ่านไป แต่แจ้งเตือนว่าตรวจซ้ำไม่ได้
+            await Swal.fire({
+                icon: 'warning',
+                title: '⚠ ไม่สามารถตรวจสอบข้อมูลซ้ำได้',
+                text: 'ระบบจะดำเนินการต่อ โปรดตรวจสอบข้อมูลอีกครั้ง',
+                confirmButtonText: confirmText
+            });
+        }
 
         try {
             console.log("Preparing to send payload:", payload);

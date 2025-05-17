@@ -152,6 +152,10 @@ document.addEventListener('DOMContentLoaded', () => {
         Swal.fire("Incomplete Data", "Please fill in all required fields.", "warning");
         return;
         }
+            // ✅ ตรวจสอบเบอร์ และเพิ่ม 0 ถ้าไม่มี
+        if (!phone.startsWith('0') && /^[0-9]{8,9}$/.test(phone)) {
+            phone = '0' + phone;
+        }
         // Validate phone (digits only, length 8-15)
         if (!/^[0-9]{8,15}$/.test(phone)) {
         Swal.fire("Invalid Phone", "Phone number should be 8-15 digits.", "warning");

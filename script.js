@@ -124,7 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const opt = document.createElement('option');
                 opt.value = y;
                 document.getElementById('yearList').appendChild(opt);
-                console.log('Selected yearList:', y);
+                console.log('Selected year:', y);
             });
             category.value = carData[brandVal].models[modelVal].category;
         } else {

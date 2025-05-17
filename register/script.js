@@ -1,7 +1,6 @@
 let userId = '';
 const liffId = '2007421084-0VKG7anQ';
 const GAS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxdxUvmwLS3_nETwGLk4J8ipPq2LYNSWyhJ2ZwVsEJQgONG11NSSX3jVaeqWCU1TXvE5g/exec';
-const confirmText = 'ตกลง';
 
 async function initLIFF() {
     try {
@@ -18,8 +17,7 @@ async function initLIFF() {
         Swal.fire({
             icon: 'error',
             title: '❗️เกิดปัญหาการเชื่อมต่อ LIFF',
-            text: 'กรุณาลองใหม่อีกครั้ง',
-            confirmButtonText: confirmText
+            text: 'กรุณาลองใหม่อีกครั้ง'
         });
     }
 }
@@ -91,17 +89,42 @@ async function sendData(payload) {
         const data = await response.json();
         if (data.status === "success") {
             await Swal.fire("✅ Registration Successful", "Your membership has been registered.", "success");
-            confirmButtonText: confirmText
             liff.closeWindow();
         } else {
             throw new Error(data.message || 'Registration failed.');
-            confirmButtonText: confirmText
-            liff.closeWindow();
         }
     } catch (error) {
         Swal.fire("❗️ส่งข้อมูลล้มเหลว", error.message, "error");
-        confirmButtonText: confirmText
-        liff.closeWindow();
+    }
+}
+
+function updateModelList() {
+    model.value = '';
+    year.value = '';
+    document.getElementById('modelList').innerHTML = '';
+    document.getElementById('yearList').innerHTML = '';
+    const brandVal = brand.value.trim();
+    if (carData?.[brandVal]) {
+        Object.keys(carData[brandVal].models).forEach(modelName => {
+            const opt = document.createElement('option');
+            opt.value = modelName;
+            document.getElementById('modelList').appendChild(opt);
+        });
+    }
+}
+
+function updateYearList() {
+    year.value = '';
+    document.getElementById('yearList').innerHTML = '';
+    const brandVal = brand.value.trim();
+    const modelVal = model.value.trim();
+    if (carData?.[brandVal]?.models[modelVal]) {
+        carData[brandVal].models[modelVal].years.forEach(y => {
+            const opt = document.createElement('option');
+            opt.value = y;
+            document.getElementById('yearList').appendChild(opt);
+        });
+        category.value = carData[brandVal].models[modelVal].category;
     }
 }
 
@@ -120,53 +143,19 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-        // Populate brand list
+    // Populate brand list
     for (let brandName in carData) {
         const opt = document.createElement('option');
         opt.value = brandName;
         document.getElementById('brandList').appendChild(opt);
     }
 
-    // Update model list based on brand (รองรับพิมพ์ฟรี)
-    brand.addEventListener('input', () => {
-        model.value = '';
-        year.value = '';
-        category.value = 'Unknown';
-        document.getElementById('modelList').innerHTML = '';
-        document.getElementById('yearList').innerHTML = '';
-        const brandVal = brand.value.trim();
-        console.log('Selected Brand:', brandVal);
-        if (carData[brandVal]) {
-            Object.keys(carData[brandVal].models).forEach(modelName => {
-                const opt = document.createElement('option');
-                opt.value = modelName;
-                document.getElementById('modelList').appendChild(opt);
-            });
-        } else {
-            console.warn(`No models found for brand: ${brandVal}. Proceeding with manual input.`);
-        }
-    });
+    // ✅ รองรับทั้ง input และ change
+    brand.addEventListener('input', updateModelList);
+    brand.addEventListener('change', updateModelList);
 
-    // Update year list and category based on model (รองรับพิมพ์ฟรี)
-    model.addEventListener('input', () => {
-        year.value = '';
-        category.value = 'Unknown';
-        document.getElementById('yearList').innerHTML = '';
-        const brandVal = brand.value.trim();
-        const modelVal = model.value.trim();
-        console.log('Selected Model:', modelVal);
-        if (carData[brandVal]?.models[modelVal]) {
-            carData[brandVal].models[modelVal].years.forEach(y => {
-                const opt = document.createElement('option');
-                opt.value = y;
-                document.getElementById('yearList').appendChild(opt);
-                console.log('Selected year:', y);
-            });
-            category.value = carData[brandVal].models[modelVal].category;
-        } else {
-            console.warn(`No years found for brand: ${brandVal}, model: ${modelVal}. Proceeding with manual input.`);
-        }
-    });
+    model.addEventListener('input', updateYearList);
+    model.addEventListener('change', updateYearList);
 
     const form = document.getElementById('registrationForm');
     form.addEventListener('submit', async event => {

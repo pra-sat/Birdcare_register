@@ -5,15 +5,24 @@ const memberInfoEl = document.getElementById('memberInfo');
 const historySection = document.getElementById('historySection');
 const toggleBtn = document.getElementById('toggleHistory');
 
-async function showPopupLoading() {
-  return await Swal.fire({
-    title: '⏳ กำลังโหลดข้อมูลสมาชิก...',
-    allowOutsideClick: false,
-    allowEscapeKey: false,
-    showConfirmButton: false,
-    didOpen: () => Swal.showLoading()
-  });
+// async function showPopupLoading() {
+//   return await Swal.fire({
+//     title: '⏳ กำลังโหลดข้อมูลสมาชิก...',
+//     allowOutsideClick: false,
+//     allowEscapeKey: false,
+//     showConfirmButton: false,
+//     didOpen: () => Swal.showLoading()
+//   });
+// }
+
+function showLoadingOverlay() {
+  document.getElementById('loadingOverlay').classList.remove('hidden');
 }
+
+function hideLoadingOverlay() {
+  document.getElementById('loadingOverlay').classList.add('hidden');
+}
+
 
 
 function formatPhone(phone) {
@@ -41,6 +50,8 @@ function formatDateTime(rawDate) {
 
 document.addEventListener('DOMContentLoaded', async () => {
   try {
+    // await showPopupLoading();
+    showLoadingOverlay();
     console.log("Start login line...");
     await liff.init({ liffId: '2007421084-WXmXrzZY' });
     if (!liff.isLoggedIn()) {
@@ -48,7 +59,7 @@ document.addEventListener('DOMContentLoaded', async () => {
      return;
    }
     
-    await showPopupLoading();
+    
     const profile = await liff.getProfile();
     const userId = profile.userId;
     console.log("✅ userId:", userId);
@@ -59,8 +70,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (!res.ok) throw new Error(" ❗️ ไม่สามารถโหลดข้อมูลจากเซิร์ฟเวอร์ได้");
     const data = await res.json();
     if (!data || !data.name) throw new Error(' ❌ ไม่พบข้อมูลสมาชิก');
-    Swal.close(); // ✅ ปิดหลังเช็ค name
-
+    // Swal.close(); // ✅ ปิดหลังเช็ค name
+    hideLoadingOverlay();
 
     memberInfoEl.innerHTML = `
       <p><b>👤 ${data.name}</b></p>

@@ -4,21 +4,23 @@
   <meta charset="UTF-8">
   <title>ข้อมูลสมาชิก</title>
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="container">
     <h2>ข้อมูลสมาชิก</h2>
-    <div id="memberInfo" class="card">
-      ⏳ กำลังโหลดข้อมูลสมาชิก...
-    </div>
 
-    <button class="btn" id="toggleService">ดูประวัติการใช้บริการ ▼</button>
-    <div id="serviceHistory" class="card hidden">
-      ⏳ กำลังโหลดประวัติ...
-    </div>
+    <!-- ✅ ตรงนี้ไม่ต้องแสดงข้อความรอโหลดแล้ว -->
+    <div id="memberInfo" class="card"></div>
 
-    <button class="btn close-btn" onclick="liff.closeWindow()">ปิดหน้าต่าง</button>
+    <!-- ✅ ปุ่ม toggle ประวัติ -->
+    <button class="btn btn-secondary" id="toggleHistory">ดูประวัติการใช้บริการ ▼</button>
+
+    <!-- ✅ พื้นที่แสดงประวัติ -->
+    <div id="historySection" class="card hidden"></div>
+
+    <button class="btn" onclick="liff.closeWindow()">ปิดหน้าต่าง</button>
     <p class="notice">📌 หากต้องการแก้ไขข้อมูล กรุณาทักแชทหรือแจ้ง Admin</p>
   </div>
 

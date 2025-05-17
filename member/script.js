@@ -142,5 +142,6 @@ document.addEventListener('DOMContentLoaded', async () => {
       text: 'ไม่สามารถโหลดข้อมูลสมาชิกได้',
       confirmButtonText: 'OK'
     });
+    liff.closeWindow();
   }
 });

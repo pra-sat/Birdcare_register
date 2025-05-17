@@ -3,7 +3,7 @@
 
 let userId = '';
 const liffId = '2007421084-0VKG7anQ';
-const webhookURL = 'https://script.google.com/macros/s/AKfycbzGFqR4VwgXdd5OiEbeEGqWGQB2QEASnSknrluxLrxesDfHxLF2D0daraLiKEum5aJtcA/exec';
+const GAS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxoq0MeGR7whf4o9wqo1MpsEFcFCIeQBhAC9D-GFMxXI431hA6bznUl9ZEnJoF8bxZxmw/exec';
 const confirmText = 'ตกลง';
 
 
@@ -41,7 +41,7 @@ async function initLIFF() {
 
     } catch (err) {
         console.error('LIFF Init Error:', err);
-        showSwal({
+        Swal.fire({
             icon: 'error',
             title: '❗️เกิดปัญหาการเชื่อมต่อ LIFF-1',
             text: 'กรุณาลองใหม่อีกครั้งหรือติดต่อ Admin',
@@ -54,24 +54,6 @@ async function initLIFF() {
 
 document.addEventListener('DOMContentLoaded', () => {
     initLIFF();
-});
-/*
-const userIdInput = document.getElementById('userId');
-const userId = userIdInput.value;
-if (!userId || userId === 'no-userId') {
-    showSwal({
-        icon: 'error',
-        title: '❗️ไม่สามารถดึง User ID จาก LINE-2',
-        text: 'กรุณาเปิดผ่าน LINE App หรือ Login ใหม่',
-        confirmButtonText: confirmText
-    });
-    return;
-}
-*/
-
-
-
-document.addEventListener('DOMContentLoaded', () => {
     const phone = document.getElementById('phone');
     const name = document.getElementById('name');
     const brand = document.getElementById('brand');
@@ -86,7 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (typeof carData === 'undefined') {
         console.error('carData is not defined. Ensure all_car_model.js is loaded.');
-        showSwal({
+        Swal.fire({
             icon: 'error',
             title: '❗️ข้อผิดพลาด-3',
             text: 'ไม่สามารถโหลดข้อมูลยี่ห้อรถได้ กรุณาลองใหม่หรือติดต่อ Admin',
@@ -142,99 +124,86 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // เมื่อคลิกสมัครสมาชิก
-    document.getElementById('registerForm').addEventListener('submit', async e => {
-        e.preventDefault();
 
-        if (!/^\d{10}$/.test(phone.value)) {
-            showSwal({
-                icon: 'error',
-                title: '❗️เบอร์โทรไม่ถูกต้อง',
-                text: 'กรุณากรอกเบอร์โทร 10 หลัก',
-                confirmButtonText: confirmText
-            });
-            return;
+        const form = document.getElementById('registrationForm');
+    if (!form) {
+        console.error('Registration form not found');
+        return;
+    }
+        // เมื่อคลิกสมัครสมาชิก
+        // Form submission handler
+    form.addEventListener('submit', async event => {
+            event.preventDefault();
+            const userId = document.getElementById('userId').value;
+            const name = document.getElementById('name').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const brand = document.getElementById('brand').value;
+            const model = document.getElementById('model').value;
+            const year = document.getElementById('year').value.trim();
+            const category = document.getElementById('category').value;
+            const channel = document.getElementById('channel').value.trim();
+
+        // Basic form validation
+        if (!userId) {
+        Swal.fire("Error", "❗️Could not get LINE user profile. Please try again in LINE app.-4", "error");
+        return;
         }
-        if (!userId || userId === 'no-userId') {
-            showSwal({
-                icon: 'error',
-                title: '❗️ข้อผิดพลาด-4',
-                text: 'ไม่สามารถดึง UserID จาก LINE ได้ กรุณาลองใหม่หรือติดต่อ Admin',
-                confirmButtonText: confirmText
-            });
-            return;
+        if (!name || !phone || !brand || !model || !year || !category) {
+        Swal.fire("Incomplete Data", "Please fill in all required fields.", "warning");
+        return;
+        }
+        // Validate phone (digits only, length 8-15)
+        if (!/^[0-9]{8,15}$/.test(phone)) {
+        Swal.fire("Invalid Phone", "Phone number should be 8-15 digits.", "warning");
+        return;
+        }
+        // Validate year (reasonable range)
+        const currentYear = new Date().getFullYear();
+        const yearNum = parseInt(year, 10);
+        if (isNaN(yearNum) || yearNum < 1900 || yearNum > currentYear) {
+        Swal.fire("Invalid Year", "Please enter a valid year (1900 - " + currentYear + ").", "warning");
+        return;
         }
 
-        const url = webhookURL;
-        const data = {
-            userId: userId,
-            phone: phone.value,
-            name: name.value,
-            brand: brand.value,
-            model: model.value,
-            year: year.value,
-            category: category.value || 'Unknown'
-        };
+        // Prepare data payload
+        const payload = { userId, phone, name, brand, model, year, category, channel };
+        const submitBtn = document.getElementById('submitBtn');
+        submitBtn.disabled = true;
+        submitBtn.textContent = "Submitting...";
+        Swal.fire({
+            title: 'กำลังส่งข้อมูล...',
+            text: 'กรุณารอสักครู่',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
 
         try {
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
+            const response = await fetch(GAS_ENDPOINT, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
             });
+            const data = await response.json();
+            console.log("Server Response:", data);
 
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-
-            const text = await response.text();
-            console.log('Server Response:', text);
-            console.log('Data to Send:', data);
-            if (text.includes('OK')) {
-                showSwal({
-                    icon: 'success',
-                    title: '✅ สมัครสมาชิกสำเร็จ'
-                }).then(() => {
-                    document.getElementById('registerForm').reset();
-                    liff.closeWindow();
-                });
-            } else if (text.includes('Duplicate')) {
-                showSwal({
-                    icon: 'error',
-                    title: '❌ มีข้อมูลอยู่แล้วในระบบ'
-                }).then(() => {
-                    liff.closeWindow();
-                });
-            } else if (text.includes('ERROR')) {
-                showSwal({
-                    icon: 'error',
-                    title: '❗️เกิดข้อผิดพลาด-5',
-                    text: 'ไม่สามารถบันทึกข้อมูลได้ กรุณาลองใหม่หรือติดต่อ Admin',
-                    confirmButtonText: confirmText
-                });
+            if (data.status === "success") {
+                Swal.fire("✅ Registration Successful", "Your membership has been registered.", "success");
+                form.reset();
+                document.getElementById('userId').value = userId;
+                document.getElementById('name').value = name;
+                document.getElementById('name').focus();
             } else {
-                showSwal({
-                    icon: 'error',
-                    title: '❗️เกิดข้อผิดพลาด-6',
-                    text: 'การตอบกลับจากเซิร์ฟเวอร์ไม่ถูกต้อง กรุณาลองใหม่',
-                    confirmButtonText: confirmText
-                });
+                Swal.fire("❗️Registration Failed-5", data.message || "❗️Registration could not be completed.-6", "error");
             }
-        } catch (err) {
-            console.error('Fetch Error:', err);
-            showSwal({
-                icon: 'error',
-                title: '❗️เกิดข้อผิดพลาดในการส่งข้อมูล-7',
-                text: `ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้: ${err.message} กรุณาลองใหม่หรือติดต่อ Admin`,
-                confirmButtonText: confirmText
-            });
+        } catch (error) {
+            console.error("Error during fetch:", error);
+            Swal.fire("Error", "❗️Unable to submit form. Please try again.-7", "error");
+        } finally {
+            Swal.close(); // ปิด loading popup ก่อนคืนปุ่ม
+            submitBtn.disabled = false;
+            submitBtn.textContent = "Submit";
         }
     });
 });
-
-
-
-
-

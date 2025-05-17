@@ -43,12 +43,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     await showPopupLoading();
         console.log("Start login line...");
     await liff.init({ liffId: '2007421084-WXmXrzZY' });
-      if (!liff.isLoggedIn()) {
-        console.log("login line...");
-        liff.login();
-        console.log("login line : No, do it again. ❌");
-        return;
-      }
+      // if (!liff.isLoggedIn()) {
+      //   console.log("login line...");
+      //   liff.login();
+      //   console.log("login line : No, do it again. ❌");
+      //   return;
+      // }
 
     console.log("✅ liff.isInClient():", liff.isInClient());
     

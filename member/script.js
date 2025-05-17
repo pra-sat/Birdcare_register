@@ -42,18 +42,22 @@ document.addEventListener('DOMContentLoaded', async () => {
   try {
     await showPopupLoading();
     await liff.init({ liffId: '2007421084-WXmXrzZY' });
-    if (!liff.isLoggedIn()) return liff.login();
-
+      if (!liff.isLoggedIn()) {
+        liff.login();
+        return;
+      }
     const profile = await liff.getProfile();
     const userId = profile.userId;
-    //console.log('UserId:', userId);
-
-    // ✅ เรียก API ด้วย userId ที่ได้แล้ว
+    console.log("✅ userId:", userId);
+    
     const res = await fetch(`${GAS_ENDPOINT}?action=member&userId=${userId}`);
+    console.log("✅ response status:", res.status);
+    
     const data = await res.json();
-
-    if (!data || !data.name) throw new Error('ไม่พบข้อมูลสมาชิก');
+    if (!res.ok) throw new Error("ไม่สามารถโหลดข้อมูลจากเซิร์ฟเวอร์ได้");
     Swal.close();
+    
+    if (!data || !data.name) throw new Error('ไม่พบข้อมูลสมาชิก');
 
     memberInfoEl.innerHTML = `
       <p><b>👤 ${data.name}</b></p>

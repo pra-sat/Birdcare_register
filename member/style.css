@@ -232,3 +232,7 @@ tbody tr:hover {
   -webkit-overflow-scrolling: touch;
 }
 
+.history-section-wrapper table {
+  min-width: 700px;
+}
+

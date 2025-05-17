@@ -68,6 +68,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     console.log("✅ response status:", res.status);
     
     if (!res.ok) {
+      hideLoadingOverlay();
       await Swal.fire({
         icon: 'error',
         title: '❗️ ไม่สามารถโหลดข้อมูลจากเซิร์ฟเวอร์ได้',
@@ -81,6 +82,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     const data = await res.json();
     if (!data || !data.name) {
+      hideLoadingOverlay();
       await Swal.fire({
         icon: 'error',
         title: '❌ ไม่พบข้อมูลสมาชิก',

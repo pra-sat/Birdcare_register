@@ -53,11 +53,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     const res = await fetch(`${GAS_ENDPOINT}?action=member&userId=${userId}`);
     console.log("✅ response status:", res.status);
     
-    const data = await res.json();
     if (!res.ok) throw new Error("ไม่สามารถโหลดข้อมูลจากเซิร์ฟเวอร์ได้");
-    Swal.close();
-    
+    const data = await res.json();
     if (!data || !data.name) throw new Error('ไม่พบข้อมูลสมาชิก');
+    Swal.close(); // ✅ ปิดหลังเช็ค name
+
 
     memberInfoEl.innerHTML = `
       <p><b>👤 ${data.name}</b></p>

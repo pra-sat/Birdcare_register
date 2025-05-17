@@ -65,8 +65,10 @@ h2 {
 }
 
 .hidden {
-  display: none;
+  display: none !important;
+  opacity: 0;
 }
+
 
 table.history-table {
   width: 100%;

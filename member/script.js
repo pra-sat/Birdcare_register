@@ -93,20 +93,29 @@ document.addEventListener('DOMContentLoaded', async () => {
           <td>${row.point}</td>
           <td>${row.note}</td>
         </tr>`).join('');
-      historySection.innerHTML = `
-        <table>
-          <thead>
-            <tr>
-              <th>วันที่</th>
-              <th>บริการ</th>
-              <th>ราคา</th>
-              <th>แต้ม</th>
-              <th>หมายเหตุ</th>
-            </tr>
-          </thead>
-          <tbody>${rows}</tbody>
-        </table>`;
+          historySection.innerHTML = `
+            <div class="history-section-wrapper">
+              <table>
+                <thead>
+                  <tr>
+                    <th>วันที่</th>
+                    <th>บริการ</th>
+                    <th>ราคา</th>
+                    <th>แต้ม</th>
+                    <th>หมายเหตุ</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${rows}
+                </tbody>
+              </table>
+            </div>
+          `;
     }
+
+    toggleBtn.disabled = false;
+toggleBtn.classList.remove("disabled"); // เพิ่มความสวยงามกรณีใส่ CSS .disabled
+
 
   } catch (err) {
     console.error('Error:', err);

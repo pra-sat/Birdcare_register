@@ -41,7 +41,7 @@ function formatDateTime(rawDate) {
 
 document.addEventListener('DOMContentLoaded', async () => {
   try {
-    await showPopupLoading();
+    // await showPopupLoading();
     
     console.log("Start login line...");
     await liff.init({ liffId: '2007421084-WXmXrzZY' });

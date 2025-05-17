@@ -61,14 +61,14 @@ document.addEventListener('DOMContentLoaded', async () => {
       <p>🚗 รถ: ${data.brand} ${data.model} (${data.year})</p>
       <p>📎 หมวดหมู่: ${data.category}</p>
       <p>💳 แต้มสะสม: ${data.point} แต้ม</p>
-      <p>⏰ แต้มหมดอายุ: ${data.expirationDate || '-'}</p>
+      <p>⏰ แต้มหมดอายุ: ${data.expirationDate && data.expirationDate.trim() ? data.expirationDate : '-'}</p>
     `;
 
     toggleBtn.addEventListener('click', () => {
       historySection.classList.toggle('hidden');
     });
 
-    const history = data.serviceHistory || [];
+    const history = Array.isArray(data.serviceHistory) ? data.serviceHistory : [];
     if (history.length === 0) {
       historySection.innerHTML = '<p>-</p>';
     } else {

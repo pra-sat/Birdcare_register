@@ -271,7 +271,6 @@ form.addEventListener('submit', async event => {
         console.log("Preparing to send payload:", payload);
 
     try {
-        console.log("Preparing to send payload:", payload);
         const response = await fetch(GAS_ENDPOINT, {
             redirect: "follow",
             method: "POST",
@@ -279,40 +278,39 @@ form.addEventListener('submit', async event => {
             body: JSON.stringify(payload)
         });
 
-        const textData = await response.text();  // อ่านเป็น text ก่อน
-        let data;
-        try {
-            data = JSON.parse(textData);  // พยายาม parse เป็น JSON
-        } catch (parseError) {
-            throw new Error(`Invalid response: ${textData}`);
+        const textData = await response.text();
+        console.log('Full Response:', textData);
+
+        if (!response.ok) {
+            throw new Error(`Server returned ${response.status}: ${textData}`);
         }
 
-        console.log("Server Response:", data);
+        let data;
+        try {
+            data = JSON.parse(textData);
+        } catch (parseError) {
+            throw new Error(`Invalid JSON response: ${textData}`);
+        }
 
         if (data.status === "success") {
             await Swal.fire("✅ Registration Successful", "Your membership has been registered.", "success");
             submitBtn.textContent = "✅Submit";
             liff.closeWindow();
         } else {
-            await Swal.fire({
-                icon: 'error',
-                title: '❗️Registration Failed-1',
-                text: data.message || 'Registration could not be completed.',
-                confirmButtonText: confirmText
-            });
-            liff.closeWindow();
+            throw new Error(data.message || "Registration failed");
         }
 
     } catch (error) {
         console.error("Error during fetch:", error);
         await Swal.fire({
             icon: 'error',
-            title: '❗️Registration Failed-2',
-            text: error.message || 'Unable to submit form. Please try again.',
+            title: '❗️Registration Failed',
+            text: error.message,
             confirmButtonText: confirmText
         });
         liff.closeWindow();
     }
+
     finally {
             form.reset();
             // ป้องกันกรณี userId หายระหว่าง session

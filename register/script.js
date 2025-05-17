@@ -163,11 +163,19 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
         }
 
-        // ✅ ตรวจสอบเบอร์โทร
+        // ✅ ตรวจสอบเบอร์โทร (เพิ่มเงื่อนไข 08, 06, 09 ต้อง 10 หลัก)
         phone = phone.startsWith('0') ? phone : (/^[0-9]{8,9}$/.test(phone) ? '0' + phone : phone);
-        if (!/^0[0-9]{8,14}$/.test(phone)) {
-            Swal.fire("Invalid Phone", "Phone number should be 9-15 digits and start with 0.", "warning");
-            return;
+        
+        if (/^0[689]/.test(phone)) {
+            if (!/^0[689][0-9]{8}$/.test(phone)) {
+                Swal.fire("Invalid Phone", "เบอร์ที่ขึ้นต้นด้วย 08, 06, 09 ต้องมี 10 หลักเท่านั้น", "warning");
+                return;
+            }
+        } else {
+            if (!/^0[0-9]{8,14}$/.test(phone)) {
+                Swal.fire("Invalid Phone", "เบอร์โทรควรเริ่มด้วย 0 และมี 9-15 หลัก.", "warning");
+                return;
+            }
         }
 
 

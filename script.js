@@ -216,10 +216,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.getElementById('name').focus();
             } else {
                 await Swal.fire("❗️Registration Failed", data.message || "❗️Registration could not be completed.", "error");
+                form.reset();
             }
         } catch (error) {
             console.error("Error during fetch:", error);
             await Swal.fire("Error", "❗️Unable to submit form. Please try again.", "error");
+            form.reset();
         } finally {
             submitBtn.disabled = false;
             submitBtn.textContent = "Submit";

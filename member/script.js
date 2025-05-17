@@ -74,12 +74,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     
 
     memberInfoEl.innerHTML = `
-      <p><b>👤 ${data.name}</b></p>
-      <p>📱 เบอร์โทร: ${formatPhone(data.phone)}</p>
-      <p>🚗 รถ: ${data.brand} ${data.model} (${data.year})</p>
-      <p>📎 หมวดหมู่: ${data.category}</p>
-      <p>💳 แต้มสะสม: ${data.point} แต้ม</p>
-      <p>⏰ แต้มหมดอายุ: ${data.expirationDate && data.expirationDate.trim() ? data.expirationDate : '-'}</p>
+      <p><b>👤 ชื่อ : ${data.name}</b></p>
+      <p>📱 เบอร์โทร : ${formatPhone(data.phone)}</p>
+      <p>🚗 รถ : ${data.brand} ${data.model} (${data.year})</p>
+      <p>📎 หมวดหมู่ : ${data.category}</p>
+      <p>💳 แต้มสะสม : ${data.point} แต้ม</p>
+      <p>⏰ แต้มหมดอายุ : ${data.expirationDate && data.expirationDate.trim() ? data.expirationDate : '-'}</p>
     `;
     
     toggleBtn.disabled = true;

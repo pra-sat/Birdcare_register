@@ -42,13 +42,32 @@ document.addEventListener('DOMContentLoaded', async () => {
   try {
     await showPopupLoading();
     await liff.init({ liffId: '2007421084-WXmXrzZY' });
-    if (!liff.isLoggedIn()) {
-      liff.login();
+
+    if (!liff.isInClient()) {
+      Swal.fire({
+        icon: 'warning',
+        title: '⚠ กรุณาเปิดในแอป LINE',
+        text: 'ระบบนี้รองรับการใช้งานเฉพาะในแอป LINE เท่านั้น',
+        confirmButtonText: 'ปิด',
+      });
       return;
     }
 
-    const profile = await liff.getProfile();
-    const userId = profile.userId;
+    let userId = "";
+    try {
+      const profile = await liff.getProfile();
+      userId = profile.userId;
+    } catch (err) {
+      Swal.fire({
+        icon: 'error',
+        title: 'ไม่สามารถดึงข้อมูลจาก LINE',
+        text: 'กรุณาลองใหม่อีกครั้งในแอป LINE',
+        confirmButtonText: 'ตกลง'
+      });
+      return;
+    }
+
+    // ✅ เรียก API ด้วย userId ที่ได้แล้ว
     const res = await fetch(`${GAS_ENDPOINT}?action=member&userId=${userId}`);
     const data = await res.json();
 
@@ -94,6 +113,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           <tbody>${rows}</tbody>
         </table>`;
     }
+
   } catch (err) {
     console.error('Error:', err);
     Swal.fire({

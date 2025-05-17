@@ -249,9 +249,14 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log("Server Response:", data);
 
             if (data.status === "success") {
-                await Swal.fire("✅ Registration Successful", "Your membership has been registered.", "success");
+                  await Swal.fire({
+                    icon: 'success',
+                    title: '✅ สมัครสมาชิกสำเร็จ',
+                    text: 'ระบบจะพาไปยังหน้าข้อมูลสมาชิก',
+                    confirmButtonText: confirmText
+                });
                 submitBtn.textContent = "✅Submit";
-                liff.closeWindow();
+                window.location.href = `member.html`;
             } else {
                 await Swal.fire({
                     icon: 'error',

@@ -86,3 +86,24 @@ table.history-table {
   color: #ffc;
   font-weight: bold;
 }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  font-size: 14px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+thead {
+  background-color: #004880;
+  color: #fff;
+}
+
+td, th {
+  padding: 8px;
+  border-bottom: 1px solid #666;
+  text-align: left;
+}

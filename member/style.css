@@ -227,3 +227,8 @@ tbody tr:hover {
   line-height: 1.6;
 }
 
+.history-section-wrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+

@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       await Swal.fire({
             icon: 'error',
             title: '❗️ ไม่สามารถโหลดข้อมูลจากเซิร์ฟเวอร์ได้',
-            text: error.message,
+            text: 'กรุณาลองใหม่อีกครั้งหรือติดต่อ Admin',
             confirmButtonText: 'Close'
         });
         liff.closeWindow();
@@ -83,7 +83,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       await Swal.fire({
             icon: 'error',
             title: '❌ ไม่พบข้อมูลสมาชิก',
-            text: error.message,
+            text: 'กรุณาคลิกที่เมนู สมัครสมาชิก',
             confirmButtonText: 'Close'
         });
         liff.closeWindow();

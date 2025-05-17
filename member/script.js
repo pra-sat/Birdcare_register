@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     if (!res.ok) {
       hideLoadingOverlay();
-      await Swal.fire({
+      Swal.fire({
         icon: 'error',
         title: '❗️ ไม่สามารถโหลดข้อมูลจากเซิร์ฟเวอร์ได้',
         text: 'กรุณาลองใหม่อีกครั้งหรือติดต่อ Admin',
@@ -83,7 +83,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const data = await res.json();
     if (!data || !data.name) {
       hideLoadingOverlay();
-      await Swal.fire({
+      Swal.fire({
         icon: 'error',
         title: '❌ ไม่พบข้อมูลสมาชิก',
         text: 'กรุณาคลิกที่เมนู สมัครสมาชิก',

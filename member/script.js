@@ -98,18 +98,19 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     const history = Array.isArray(data.serviceHistory) ? data.serviceHistory : [];
+  
+    // 🔃 เรียงจากวันที่ใหม่ไปเก่า
+    history.sort((a, b) => new Date(b.date) - new Date(a.date));
+    
     if (history.length === 0) {
       historySection.innerHTML = '<p>-</p>';
     } else {
-      // 🔃 เรียงลำดับวันที่ล่าสุดมาก่อน
-      history.sort((a, b) => new Date(b.date) - new Date(a.date));
-    
-      // 🔀 Responsive View: แยกมือถือกับ Desktop
+      // 📱 Mobile View
       if (window.innerWidth <= 480) {
-        // 📱 Mobile: ใช้ Card
         historySection.innerHTML = history.map(row => `
           <div class="history-card">
             <p><b>📅 วันที่:</b> ${formatDateTime(row.date)}</p>
+            <p><b>🚘 ยี่ห้อ/รุ่น:</b> ${row.brand || '-'} ${row.model || '-'}</p>
             <p><b>🛠 บริการ:</b> ${row.service}</p>
             <p><b>💰 ราคา:</b> ${row.price} ฿</p>
             <p><b>🏅 แต้ม:</b> ${row.point}</p>
@@ -117,10 +118,11 @@ document.addEventListener('DOMContentLoaded', async () => {
           </div>
         `).join('');
       } else {
-        // 🖥️ Desktop: ใช้ตาราง
+        // 🖥️ Desktop Table View
         const rows = history.map(row => `
           <tr>
             <td>${formatDateTime(row.date)}</td>
+            <td>${row.brand || '-'} ${row.model || '-'}</td>
             <td>${row.service}</td>
             <td>${row.price} ฿</td>
             <td>${row.point}</td>
@@ -133,6 +135,7 @@ document.addEventListener('DOMContentLoaded', async () => {
               <thead>
                 <tr>
                   <th>วันที่</th>
+                  <th>ยี่ห้อ/รุ่น</th>
                   <th>บริการ</th>
                   <th>ราคา</th>
                   <th>แต้ม</th>
@@ -147,6 +150,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         `;
       }
     }
+
 
     hideLoadingOverlay();
     toggleBtn.disabled = false;

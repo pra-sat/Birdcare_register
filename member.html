@@ -2,69 +2,89 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <title>ข้อมูลสมาชิก</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ข้อมูลสมาชิก Bird Car Care</title>
     <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Prompt&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         body {
-            font-family: 'Prompt', sans-serif;
-            background: linear-gradient(135deg, #005f9e, #003f6f);
-            color: #fff;
+            font-family: 'Arial', sans-serif;
             margin: 0;
-            padding: 20px;
-            box-sizing: border-box;
+            padding: 0;
+            background: linear-gradient(to bottom right, #ffffff, #e0f7fa);
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
         }
-        .container {
-            background: rgba(0, 0, 0, 0.5);
-            border-radius: 15px;
+        .card {
+            background-color: #ffffffee;
+            border-radius: 12px;
             padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             max-width: 400px;
-            margin: 50px auto;
-            box-shadow: 0 0 20px rgba(0,0,0,0.2);
+            width: 90%;
+            text-align: center;
+            animation: fadeIn 0.5s ease-in-out;
         }
-        h3 {
-            margin-top: 0;
-            font-size: 22px;
+        h2 {
+            color: #00796b;
         }
         p {
-            line-height: 1.6;
-            margin-bottom: 20px;
-        }
-        .note {
-            font-size: 12px;
-            color: #ffef96;
-            margin-top: 20px;
-            background: rgba(255, 255, 255, 0.1);
-            padding: 10px;
-            border-radius: 10px;
-        }
-        button {
-            width: 100%;
-            padding: 12px;
-            background-color: #00c2ff;
-            border: none;
-            border-radius: 10px;
-            color: #fff;
+            margin: 8px 0;
             font-size: 16px;
+        }
+        .btn-close {
+            margin-top: 20px;
+            background-color: #00796b;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            border: none;
             cursor: pointer;
-            transition: background 0.3s ease;
+            font-size: 16px;
         }
-        button:hover {
-            background-color: #009ad9;
+        .btn-close:hover {
+            background-color: #004d40;
         }
-        .loading {
-            text-align: center;
-            margin-top: 100px;
-            font-size: 18px;
+        .notice {
+            font-size: 13px;
+            color: #888;
+            margin-top: 15px;
+        }
+        @keyframes fadeIn {
+            from {opacity: 0;}
+            to {opacity: 1;}
+        }
+
+        @media (prefers-color-scheme: dark) {
+            body {
+                background: linear-gradient(to bottom right, #121212, #1e1e1e);
+                color: #eee;
+            }
+            .card {
+                background-color: #222;
+            }
+            h2 {
+                color: #4dd0e1;
+            }
+            .btn-close {
+                background-color: #4dd0e1;
+                color: #000;
+            }
+            .btn-close:hover {
+                background-color: #00acc1;
+            }
+            .notice {
+                color: #aaa;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container" id="memberInfo">
-        <div class="loading">⏳ กำลังโหลดข้อมูลสมาชิก...</div>
-    </div>
-    <button onclick="liff.closeWindow()">ปิดหน้าต่าง</button>
+    <div class="card" id="memberInfo">⏳ กำลังโหลดข้อมูลสมาชิก...</div>
+    <button class="btn-close" onclick="liff.closeWindow()">ปิดหน้าต่าง</button>
 
     <script>
         const GAS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxdxUvmwLS3_nETwGLk4J8ipPq2LYNSWyhJ2ZwVsEJQgONG11NSSX3jVaeqWCU1TXvE5g/exec';
@@ -78,35 +98,30 @@
                 }
 
                 const profile = await liff.getProfile();
-                if (!profile.userId) {
-                    document.getElementById('memberInfo').innerHTML = "<p>❗️ ไม่สามารถตรวจสอบ LINE ID ได้ กรุณาลองใหม่ผ่าน LINE APP</p>";
-                    return;
-                }
-
                 const userId = profile.userId;
-                console.log('UserId:', userId);
 
                 const res = await fetch(`${GAS_ENDPOINT}?getMember=1&userId=${userId}`);
-                if (!res.ok) throw new Error('ไม่สามารถติดต่อ Server ได้');
+                if (!res.ok) throw new Error('ไม่สามารถติดต่อเซิร์ฟเวอร์');
 
                 const data = await res.json();
                 if (!data || !data.name) {
-                    document.getElementById('memberInfo').innerHTML = "<p>❗️ ไม่พบข้อมูลสมาชิกในระบบ กรุณาติดต่อ Admin</p>";
+                    document.getElementById('memberInfo').innerHTML = "❗️ ไม่พบข้อมูลสมาชิกในระบบ กรุณาติดต่อ Admin";
                     return;
                 }
 
                 document.getElementById('memberInfo').innerHTML = `
-                    <h3>👤 ชื่อสมาชิก: ${data.name}</h3>
-                    <p>📱 เบอร์โทร: ${data.phone}<br>
-                    🚗 รถ: ${data.brand} ${data.model} (${data.year})<br>
-                    🏷 หมวดหมู่: ${data.category}<br>
-                    💳 แต้มสะสม: ${data.point} แต้ม<br>
-                    ⏰ แต้มหมดอายุ: ${data.expirationDate}</p>
-                    <div class="note">⚠ หากต้องการแก้ไขข้อมูล กรุณาติดต่อ Admin หรือทักแชท Line OA ได้เลยครับ</div>
+                    <h2>ข้อมูลสมาชิก</h2>
+                    <p>👤 ชื่อ: ${data.name}</p>
+                    <p>📱 เบอร์โทร: ${data.phone}</p>
+                    <p>🚗 รถ: ${data.brand} ${data.model} (${data.year})</p>
+                    <p>🏷 หมวดหมู่: ${data.category}</p>
+                    <p>💳 แต้มสะสม: <b>${data.point}</b> แต้ม</p>
+                    <p>⏰ แต้มหมดอายุ: ${data.expirationDate}</p>
+                    <div class="notice">📌 หากต้องการแก้ไขข้อมูล กรุณาทักไลน์ OA หรือแจ้ง Admin</div>
                 `;
             } catch (err) {
                 console.error('Error:', err);
-                document.getElementById('memberInfo').innerHTML = "<p>❗️ เกิดข้อผิดพลาดในการโหลดข้อมูล กรุณาลองใหม่หรือติดต่อ Admin</p>";
+                document.getElementById('memberInfo').innerHTML = "❗️ เกิดข้อผิดพลาดในการโหลดข้อมูล กรุณาลองใหม่หรือติดต่อ Admin";
             }
         });
     </script>

@@ -273,7 +273,7 @@ form.addEventListener('submit', async event => {
         console.log("Preparing to send payload:", payload);
 
     try {
-        const response = await fetch(GAS_ENDPOINT, {
+        const response = await fetch(GAS_ENDPOINT + '?action=register', {
             redirect: "follow",
             method: "POST",
             headers: { "Content-Type": "text/plain;charset=utf-8" },

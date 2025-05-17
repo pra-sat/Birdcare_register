@@ -17,6 +17,7 @@ async function initLIFF() {
             liff.login();
         }  
 
+
         // if (!liff.isInClient()) {
         //     showSwal({
         //         icon: 'error',
@@ -30,11 +31,16 @@ async function initLIFF() {
         const profile = await liff.getProfile();
         console.log('Profile retrieved:', profile);
 
+       if (!profile.userId) {
+            Swal.fire("❗️User ID ไม่ถูกต้อง", "กรุณาลองใหม่อีกครั้งใน LINE APP", "error");
+            return;
+        }
+
+        userId = profile.userId;  // เก็บ userId เต็มตรงนี้เท่านั้น
+        const maskedUserId = userId.substring(0, 8) + 'xxx...';
         const userIdInput = document.getElementById('userId');
         if (userIdInput) {
-            userId = profile.userId || 'no-userId'; // เก็บตัวเต็มในตัวแปร
-            const maskedUserId = userId.substring(0, 8) + 'xxx...';  // แสดงแค่ 8 ตัว + xxx
-            userIdInput.value = maskedUserId;  // แสดงในช่อง input
+            userIdInput.value = maskedUserId;
             console.log('userId set to:', userId);
         } else {
             console.error('userId input element not found');
@@ -118,6 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const opt = document.createElement('option');
                 opt.value = y;
                 document.getElementById('yearList').appendChild(opt);
+                console.log('Selected yearList:', years);
             });
             category.value = carData[brandVal].models[modelVal].category;
         } else {
@@ -135,7 +142,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Form submission handler
     form.addEventListener('submit', async event => {
             event.preventDefault();
-            const userId = document.getElementById('userId').value;
+            const currentUserId = userId;
             const name = document.getElementById('name').value.trim();
             let phone = document.getElementById('phone').value.trim();
             const brand = document.getElementById('brand').value;
@@ -174,7 +181,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // Prepare data payload
-        const payload = { userId, phone, name, brand, model, year, category, channel };
+        const payload = { userId: currentUserId, phone, name, brand, model, year, category, channel };
         const submitBtn = document.getElementById('submitBtn');
         submitBtn.disabled = true;
         submitBtn.textContent = "Submitting...";
@@ -188,6 +195,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         try {
+            console.log("Preparing to send payload:", payload);
             const response = await fetch(GAS_ENDPOINT, {
                 redirect: "follow",
                 method: "POST",
@@ -198,19 +206,20 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log("Server Response:", data);
 
             if (data.status === "success") {
-                Swal.fire("✅ Registration Successful", "Your membership has been registered.", "success");
+                console.log("Sending payload:", payload);
+                await Swal.fire("✅ Registration Successful", "Your membership has been registered.", "success");
                 form.reset();
-                document.getElementById('userId').value = userId;
+                document.getElementById('statusMessage').textContent = "✅ บันทึกเรียบร้อย";
+                document.getElementById('userId').value = userId;  // ให้คง Masked UserId แสดงหลัง reset
                 document.getElementById('name').value = name;
                 document.getElementById('name').focus();
             } else {
-                Swal.fire("❗️Registration Failed-5", data.message || "❗️Registration could not be completed.-6", "error");
+                await Swal.fire("❗️Registration Failed", data.message || "❗️Registration could not be completed.", "error");
             }
         } catch (error) {
             console.error("Error during fetch:", error);
-            Swal.fire("Error", "❗️Unable to submit form. Please try again.-7", "error");
+            await Swal.fire("Error", "❗️Unable to submit form. Please try again.", "error");
         } finally {
-            Swal.close(); // ปิด loading popup ก่อนคืนปุ่ม
             submitBtn.disabled = false;
             submitBtn.textContent = "Submit";
         }

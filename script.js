@@ -206,7 +206,6 @@ document.addEventListener('DOMContentLoaded', () => {
             );
             if (duplicate) {
                 await Swal.fire({
-                    .+
                     icon: 'error',
                     title: '❗️ข้อมูลซ้ำ',
                     text: 'เบอร์โทร และ รถรุ่นนี้ มีในระบบแล้ว\n\nกรุณาติดต่อ Admin',

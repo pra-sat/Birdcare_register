@@ -297,11 +297,13 @@ form.addEventListener('submit', async event => {
         }
 
         if (data.status === "success") {
-            await Swal.fire("✅ Registration Successful", "Your membership has been registered.", "success");
-            submitBtn.textContent = "✅Submit";
-            liff.closeWindow();
-            console.log("Final Sending Payload:", JSON.stringify(payload));
-
+          await Swal.fire("✅ สมัครสมาชิกสำเร็จ", "ระบบจะพาไปดูข้อมูลของคุณ", "success");
+          submitBtn.textContent = "✅Submit";
+          liff.openWindow({
+            url: 'https://liff.line.me/2007421084-WXmXrzZY',
+            external: false
+          });
+          return;
         } else {
             throw new Error(data.message || "Registration failed");
         }

@@ -6,7 +6,7 @@ const historySection = document.getElementById('historySection');
 const toggleBtn = document.getElementById('toggleHistory');
 
 function showPopupLoading() {
-  await Swal.fire({
+  Swal.fire({
     title: '⏳ กำลังโหลดข้อมูลสมาชิก...',
     allowOutsideClick: false,
     allowEscapeKey: false,

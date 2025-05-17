@@ -1,6 +1,6 @@
 body {
   background: linear-gradient(135deg, #001f3f, #002960);
-  font-family: Arial, sans-serif;
+  font-family: 'Sarabun', sans-serif;
   margin: 0;
   padding: 0;
   color: #fff;
@@ -8,70 +8,81 @@ body {
 }
 
 .container {
-  max-width: 95%;
-  width: 100%;
-  margin: 30px auto;
+  max-width: 600px;
+  margin: auto;
   padding: 20px;
   background-color: rgba(0, 0, 0, 0.4);
   border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.4);
 }
 
 h2 {
   text-align: center;
-  font-size: 24px;
-  margin-bottom: 15px;
+  font-size: 26px;
+  margin-bottom: 20px;
 }
 
 .card {
   padding: 15px;
   background-color: rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
+  border-radius: 10px;
+  font-size: 17px;
   margin-bottom: 15px;
-  font-size: 16px;
   text-align: left;
+  line-height: 1.6;
 }
 
 .btn {
-  display: block;
-  width: 100%;
-  padding: 10px;
-  margin-top: 10px;
+  display: inline-block;
+  padding: 10px 16px;
   border: none;
-  border-radius: 6px;
-  background-color: #005f9e;
+  border-radius: 8px;
+  background-color: #0078d4;
   color: #fff;
-  font-size: 15px;
+  font-size: 14px;
   cursor: pointer;
+  margin: 5px auto;
+  text-align: center;
 }
 
 .btn:hover {
-  background-color: #004880;
+  background-color: #005fa3;
 }
 
-.btn.small {
-  font-size: 14px;
-  padding: 8px;
+.btn-secondary {
+  background-color: #555;
 }
 
-.btn.close {
+.btn-secondary:hover {
   background-color: #444;
 }
 
 .notice {
-  font-size: 12px;
-  color: #ddd;
-  margin-top: 15px;
+  font-size: 13px;
+  color: #ccc;
+  margin-top: 20px;
   text-align: center;
-}
-
-.history {
-  margin-top: 10px;
-  padding: 10px;
-  background-color: rgba(255, 255, 255, 0.05);
-  border-radius: 6px;
-  font-size: 14px;
 }
 
 .hidden {
   display: none;
+}
+
+table.history-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+.history-table th,
+.history-table td {
+  padding: 8px;
+  text-align: left;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.3);
+}
+
+.history-table th {
+  color: #ffc;
+  font-weight: bold;
 }

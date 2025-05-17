@@ -297,7 +297,7 @@ form.addEventListener('submit', async event => {
         }
 
         if (data.status === "success") {
-          await Swal.fire("✅ สมัครสมาชิกสำเร็จ", "ระบบจะพาไปดูข้อมูลของคุณ", "success");
+          await Swal.fire("✅ สมัครสมาชิกสำเร็จ", "แตะ 'OK' เพื่อดูข้อมูลสมาชิกของคุณ", "success");
           submitBtn.textContent = "✅Submit";
           liff.openWindow({
             url: 'https://liff.line.me/2007421084-WXmXrzZY',

@@ -62,6 +62,11 @@ function preparePayload() {
         Swal.fire("Incomplete Data", "กรุณากรอกข้อมูลให้ครบทุกช่อง", "warning");
         return null;
     }
+    
+    // ✅ ถ้าไม่ได้ถูกกำหนดจาก carData ให้เป็น 'Unknown'
+    if (!category) {
+        category = 'Unknown';
+    }
 
     const currentYear = new Date().getFullYear();
     const yearNum = parseInt(year, 10);

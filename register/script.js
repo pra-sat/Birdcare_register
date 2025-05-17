@@ -105,7 +105,8 @@ async function sendData(payload) {
         });
         const data = await response.json();
         if (data.status === "success") {
-            await Swal.fire("✅ สำเร็จ", "บันทึกข้อมูลเรียบร้อย", "success");
+            await Swal.fire("✅ Registration Successful", "Your membership has been registered.", "success");
+            submitBtn.textContent = "✅Submit";
             liff.closeWindow();
         } else {
             throw new Error(data.message || 'Registration failed.');

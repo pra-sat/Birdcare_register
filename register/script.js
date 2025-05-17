@@ -45,24 +45,24 @@ function validatePhone(phoneInput) {
     return phoneRaw.length === 10 ? `${phoneRaw.slice(0, 3)}-${phoneRaw.slice(3, 6)}-${phoneRaw.slice(6)}` : phoneRaw;
 }
 
-// ✅ เตรียม Payload (พร้อม fallback category)
+// ✅ เตรียม Payload
 function preparePayload() {
     const name = document.getElementById('name').value.trim();
     const phoneInput = document.getElementById('phone');
     const phoneFormatted = validatePhone(phoneInput);
     if (!phoneFormatted) return null;
+    const phoneClean = phoneFormatted.replace(/-/g, '');
 
     const brand = document.getElementById('brand').value.trim();
     const model = document.getElementById('model').value.trim();
     const year = document.getElementById('year').value.trim();
     let category = document.getElementById('category').value.trim();
+    if (!category) category = 'Unknown';
 
-    if (!userId || !name || !phoneFormatted || !brand || !model || !year) {
+    if (!userId || !name || !phoneClean || !brand || !model || !year) {
         Swal.fire("Incomplete Data", "กรุณากรอกข้อมูลให้ครบทุกช่อง", "warning");
         return null;
     }
-
-    if (!category) category = 'Unknown';
 
     const currentYear = new Date().getFullYear();
     const yearNum = parseInt(year, 10);
@@ -71,7 +71,7 @@ function preparePayload() {
         return null;
     }
 
-    return { userId, phone: phoneFormatted, name, brand, model, year, category, channel: 'LINE' };
+    return { userId, phone: phoneClean, name, brand, model, year, category, channel: 'LINE' };
 }
 
 // ✅ เช็คซ้ำเบอร์+รถรุ่น
@@ -117,10 +117,6 @@ async function sendData(payload) {
 document.addEventListener('DOMContentLoaded', () => {
     initLIFF();
     const phoneInput = document.getElementById('phone');
-    const brand = document.getElementById('brand');
-    const model = document.getElementById('model');
-    const year = document.getElementById('year');
-    const category = document.getElementById('category');
 
     // Format phone ขณะพิมพ์
     phoneInput.addEventListener('input', () => {
@@ -135,42 +131,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Populate brand list
-    if (typeof carData !== 'undefined') {
-        for (let brandName in carData) {
-            const opt = document.createElement('option');
-            opt.value = brandName;
-            document.getElementById('brandList').appendChild(opt);
-        }
-    }
-
-    brand.addEventListener('input', () => {
-        document.getElementById('modelList').innerHTML = '';
-        document.getElementById('yearList').innerHTML = '';
-        const brandVal = brand.value.trim();
-        if (carData?.[brandVal]) {
-            Object.keys(carData[brandVal].models).forEach(modelName => {
-                const opt = document.createElement('option');
-                opt.value = modelName;
-                document.getElementById('modelList').appendChild(opt);
-            });
-        }
-    });
-
-    model.addEventListener('input', () => {
-        document.getElementById('yearList').innerHTML = '';
-        const brandVal = brand.value.trim();
-        const modelVal = model.value.trim();
-        if (carData?.[brandVal]?.models[modelVal]) {
-            carData[brandVal].models[modelVal].years.forEach(y => {
-                const opt = document.createElement('option');
-                opt.value = y;
-                document.getElementById('yearList').appendChild(opt);
-            });
-            category.value = carData[brandVal].models[modelVal].category;
-        }
-    });
-
     const form = document.getElementById('registrationForm');
     form.addEventListener('submit', async event => {
         event.preventDefault();
@@ -181,16 +141,14 @@ document.addEventListener('DOMContentLoaded', () => {
         submitBtn.disabled = true;
         submitBtn.textContent = "Submitting...";
 
-        // ✅ เพิ่ม popup ยืนยันก่อนส่งจริง
         const confirm = await Swal.fire({
             title: 'ยืนยันข้อมูลก่อนส่ง',
             html: `
                 ชื่อ: ${payload.name}<br>
-                เบอร์โทร: ${payload.phone}<br>
+                เบอร์โทร: ${document.getElementById('phone').value}<br>
                 ยี่ห้อ: ${payload.brand}<br>
                 รุ่น: ${payload.model}<br>
-                ปี: ${payload.year}<br>
-                หมวดหมู่: ${payload.category}`,
+                ปี: ${payload.year}`,
             icon: 'info',
             showCancelButton: true,
             confirmButtonText: 'ยืนยันส่งข้อมูล',

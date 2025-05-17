@@ -68,26 +68,30 @@ document.addEventListener('DOMContentLoaded', async () => {
     console.log("✅ response status:", res.status);
     
     if (!res.ok) {
-      // throw new Error(" ❗️ ไม่สามารถโหลดข้อมูลจากเซิร์ฟเวอร์ได้");
       await Swal.fire({
-            icon: 'error',
-            title: '❗️ ไม่สามารถโหลดข้อมูลจากเซิร์ฟเวอร์ได้',
-            text: 'กรุณาลองใหม่อีกครั้งหรือติดต่อ Admin',
-            confirmButtonText: 'Close'
-        });
-        liff.closeWindow();
-     }
+        icon: 'error',
+        title: '❗️ ไม่สามารถโหลดข้อมูลจากเซิร์ฟเวอร์ได้',
+        text: 'กรุณาลองใหม่อีกครั้งหรือติดต่อ Admin',
+        confirmButtonText: 'Close'
+      });
+    
+      liff.closeWindow(); 
+      return;
+    }
+    
     const data = await res.json();
     if (!data || !data.name) {
-      // throw new Error(' ❌ ไม่พบข้อมูลสมาชิก');
       await Swal.fire({
-            icon: 'error',
-            title: '❌ ไม่พบข้อมูลสมาชิก',
-            text: 'กรุณาคลิกที่เมนู สมัครสมาชิก',
-            confirmButtonText: 'Close'
-        });
-        liff.closeWindow();
-     }
+        icon: 'error',
+        title: '❌ ไม่พบข้อมูลสมาชิก',
+        text: 'กรุณาคลิกที่เมนู สมัครสมาชิก',
+        confirmButtonText: 'Close'
+      });
+    
+      liff.closeWindow(); // ❗ ย้ายมาไว้หลังจาก `await`
+      return;
+    }
+
     // Swal.close(); // ✅ ปิดหลังเช็ค name
     
 

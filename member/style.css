@@ -160,6 +160,7 @@ tbody tr:hover {
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  transition: opacity 0.3s ease;
 }
 
 .loading-box {
@@ -181,5 +182,33 @@ tbody tr:hover {
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+@media (max-width: 480px) {
+  .card {
+    font-size: 16px;
+    padding: 12px;
+  }
+
+  table {
+    font-size: 14px;
+  }
+
+  td:nth-child(1),
+  th:nth-child(1) {
+    width: 120px;
+  }
+
+  td:nth-child(2),
+  th:nth-child(2) {
+    width: 80px;
+  }
+
+  td:nth-child(3),
+  td:nth-child(4),
+  th:nth-child(3),
+  th:nth-child(4) {
+    width: 50px;
+  }
 }
 

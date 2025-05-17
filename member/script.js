@@ -40,27 +40,28 @@ function formatDateTime(rawDate) {
 
 document.addEventListener('DOMContentLoaded', async () => {
   try {
-    await showPopupLoading();
-        console.log("Start login line...");
-    await liff.init({ liffId: '2007421084-WXmXrzZY' });
-      // if (!liff.isLoggedIn()) {
-      //   console.log("login line...");
-      //   liff.login();
-      //   console.log("login line : No, do it again. ❌");
-      //   return;
-      // }
-
-    console.log("✅ liff.isInClient():", liff.isInClient());
+    // await showPopupLoading();
     
-    if (!liff.isInClient()) {
-      Swal.fire({
-        icon: 'warning',
-        title: '⚠ กรุณาเปิดในแอป LINE',
-        text: 'ระบบนี้รองรับเฉพาะในแอป LINE',
-        confirmButtonText: 'ปิด',
-      });
-      return;
-    }
+    console.log("Start login line...");
+    await liff.init({ liffId: '2007421084-WXmXrzZY' });
+    if (!liff.isLoggedIn()) {
+      console.log("login line...");
+      liff.login();
+     console.log("login line : No, do it again. ❌");
+     return;
+   }
+
+    // console.log("✅ liff.isInClient():", liff.isInClient());
+    
+    // if (!liff.isInClient()) {
+    //   Swal.fire({
+    //     icon: 'warning',
+    //     title: '⚠ กรุณาเปิดในแอป LINE',
+    //     text: 'ระบบนี้รองรับเฉพาะในแอป LINE',
+    //     confirmButtonText: 'ปิด',
+    //   });
+    //   return;
+    // }
 
     console.log("login line : succeed ✅");
     

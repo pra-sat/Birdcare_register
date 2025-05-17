@@ -2,89 +2,17 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <title>ข้อมูลสมาชิก Bird Car Care</title>
+    <title>ข้อมูลสมาชิก</title>
     <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            margin: 0;
-            padding: 0;
-            background: linear-gradient(to bottom right, #ffffff, #e0f7fa);
-            color: #333;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-        }
-        .card {
-            background-color: #ffffffee;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            max-width: 400px;
-            width: 90%;
-            text-align: center;
-            animation: fadeIn 0.5s ease-in-out;
-        }
-        h2 {
-            color: #00796b;
-        }
-        p {
-            margin: 8px 0;
-            font-size: 16px;
-        }
-        .btn-close {
-            margin-top: 20px;
-            background-color: #00796b;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 25px;
-            border: none;
-            cursor: pointer;
-            font-size: 16px;
-        }
-        .btn-close:hover {
-            background-color: #004d40;
-        }
-        .notice {
-            font-size: 13px;
-            color: #888;
-            margin-top: 15px;
-        }
-        @keyframes fadeIn {
-            from {opacity: 0;}
-            to {opacity: 1;}
-        }
-
-        @media (prefers-color-scheme: dark) {
-            body {
-                background: linear-gradient(to bottom right, #121212, #1e1e1e);
-                color: #eee;
-            }
-            .card {
-                background-color: #222;
-            }
-            h2 {
-                color: #4dd0e1;
-            }
-            .btn-close {
-                background-color: #4dd0e1;
-                color: #000;
-            }
-            .btn-close:hover {
-                background-color: #00acc1;
-            }
-            .notice {
-                color: #aaa;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="card" id="memberInfo">⏳ กำลังโหลดข้อมูลสมาชิก...</div>
-    <button class="btn-close" onclick="liff.closeWindow()">ปิดหน้าต่าง</button>
+    <div class="container">
+        <div id="memberInfo" class="card">
+            ⏳ กำลังโหลดข้อมูลสมาชิก...
+        </div>
+        <button class="btn" onclick="liff.closeWindow()">ปิดหน้าต่าง</button>
+    </div>
 
     <script>
         const GAS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxdxUvmwLS3_nETwGLk4J8ipPq2LYNSWyhJ2ZwVsEJQgONG11NSSX3jVaeqWCU1TXvE5g/exec';
@@ -99,9 +27,17 @@
 
                 const profile = await liff.getProfile();
                 const userId = profile.userId;
+                console.log('UserId:', userId);
 
-                const res = await fetch(`${GAS_ENDPOINT}?getMember=1&userId=${userId}`);
-                if (!res.ok) throw new Error('ไม่สามารถติดต่อเซิร์ฟเวอร์');
+                // ✅ เรียกผ่าน proxy mode แบบหลบ CORS
+                const res = await fetch(GAS_ENDPOINT, {
+                    method: "POST",
+                    redirect: "follow",
+                    body: JSON.stringify({ proxy: "getMember", userId }),
+                    headers: { "Content-Type": "text/plain;charset=utf-8" }
+                });
+
+                if (!res.ok) throw new Error('ไม่สามารถติดต่อ Server ได้');
 
                 const data = await res.json();
                 if (!data || !data.name) {
@@ -110,14 +46,13 @@
                 }
 
                 document.getElementById('memberInfo').innerHTML = `
-                    <h2>ข้อมูลสมาชิก</h2>
-                    <p>👤 ชื่อ: ${data.name}</p>
-                    <p>📱 เบอร์โทร: ${data.phone}</p>
-                    <p>🚗 รถ: ${data.brand} ${data.model} (${data.year})</p>
-                    <p>🏷 หมวดหมู่: ${data.category}</p>
-                    <p>💳 แต้มสะสม: <b>${data.point}</b> แต้ม</p>
-                    <p>⏰ แต้มหมดอายุ: ${data.expirationDate}</p>
-                    <div class="notice">📌 หากต้องการแก้ไขข้อมูล กรุณาทักไลน์ OA หรือแจ้ง Admin</div>
+                    <h3>👤 ชื่อสมาชิก: ${data.name}</h3>
+                    <p>📱 เบอร์โทร: ${data.phone}<br>
+                    🚗 รถ: ${data.brand} ${data.model} (${data.year})<br>
+                    🏷 หมวดหมู่: ${data.category}<br>
+                    💳 แต้มสะสม: ${data.point} แต้ม<br>
+                    ⏰ แต้มหมดอายุ: ${data.expirationDate}</p>
+                    <small>📌 หากต้องการแก้ไขข้อมูล กรุณาทักแชทหรือแจ้ง Admin</small>
                 `;
             } catch (err) {
                 console.error('Error:', err);

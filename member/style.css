@@ -116,7 +116,7 @@ td, th {
 
 /* ✅ กำหนดความกว้างของแต่ละคอลัมน์ */
 td:nth-child(1), th:nth-child(1) {
-  width: 150px; /* วันที่ */
+  width: 80px; /* วันที่ */
 }
 
 td:nth-child(2), th:nth-child(2) {

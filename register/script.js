@@ -230,6 +230,14 @@ form.addEventListener('submit', async event => {
     const submitBtn = document.getElementById('submitBtn');  // ✅ ตรงนี้ควรอยู่ใน handler เสมอ
     submitBtn.disabled = true;
     submitBtn.textContent = "Submitting...";
+    Swal.fire({
+        title: 'กำลังส่งข้อมูล...',
+        text: 'กรุณารอสักครู่',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
 
     try {
         const checkResponse = await fetch(`${GAS_ENDPOINT}?check=1`);
@@ -259,44 +267,53 @@ form.addEventListener('submit', async event => {
             confirmButtonText: confirmText
         });
     }
-    
+
         console.log("Preparing to send payload:", payload);
 
+    try {
+        console.log("Preparing to send payload:", payload);
+        const response = await fetch(GAS_ENDPOINT, {
+            redirect: "follow",
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        });
+
+        const textData = await response.text();  // อ่านเป็น text ก่อน
+        let data;
         try {
-            console.log("Preparing to send payload:", payload);
-            const response = await fetch(GAS_ENDPOINT, {
-                redirect: "follow",
-                method: "POST",
-                headers: { "Content-Type": "text/plain;charset=utf-8" },
-                body: JSON.stringify(payload)
-            });
-            const data = await response.json();
-            console.log("Server Response:", data);
+            data = JSON.parse(textData);  // พยายาม parse เป็น JSON
+        } catch (parseError) {
+            throw new Error(`Invalid response: ${textData}`);
+        }
 
-            if (data.status === "success") {
-                await Swal.fire("✅ Registration Successful", "Your membership has been registered.", "success");
-                submitBtn.textContent = "✅Submit";
-                liff.closeWindow();
-            } else {
-                await Swal.fire({
-                    icon: 'error',
-                    title: '❗️Registration Failed-1',
-                    text: data.message || 'Registration could not be completed.',
-                    confirmButtonText: confirmText
-                });
-                liff.closeWindow();
-            }
+        console.log("Server Response:", data);
 
-        } catch (error) {
-            console.error("Error during fetch:", error);
+        if (data.status === "success") {
+            await Swal.fire("✅ Registration Successful", "Your membership has been registered.", "success");
+            submitBtn.textContent = "✅Submit";
+            liff.closeWindow();
+        } else {
             await Swal.fire({
                 icon: 'error',
-                title: '❗️Registration Failed-2',
-                text: error.message || 'Unable to submit form. Please try again.',
+                title: '❗️Registration Failed-1',
+                text: data.message || 'Registration could not be completed.',
                 confirmButtonText: confirmText
             });
             liff.closeWindow();
-        } finally {
+        }
+
+    } catch (error) {
+        console.error("Error during fetch:", error);
+        await Swal.fire({
+            icon: 'error',
+            title: '❗️Registration Failed-2',
+            text: error.message || 'Unable to submit form. Please try again.',
+            confirmButtonText: confirmText
+        });
+        liff.closeWindow();
+    }
+    finally {
             form.reset();
             // ป้องกันกรณี userId หายระหว่าง session
             if (userId) {

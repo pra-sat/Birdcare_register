@@ -328,7 +328,7 @@ form.addEventListener('submit', async event => {
                     userIdInput.value = userId.substring(0, 8) + 'xxx...';
                 }
             }
-            document.getElementById('name').focus();
+            // document.getElementById('name').focus();
             submitBtn.disabled = false;
         }
     });

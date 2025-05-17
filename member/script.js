@@ -5,8 +5,8 @@ const memberInfoEl = document.getElementById('memberInfo');
 const historySection = document.getElementById('historySection');
 const toggleBtn = document.getElementById('toggleHistory');
 
-function showPopupLoading() {
-  Swal.fire({
+async function showPopupLoading() {
+  return await Swal.fire({
     title: '⏳ กำลังโหลดข้อมูลสมาชิก...',
     allowOutsideClick: false,
     allowEscapeKey: false,
@@ -14,6 +14,7 @@ function showPopupLoading() {
     didOpen: () => Swal.showLoading()
   });
 }
+
 
 function formatPhone(phone) {
   const digits = phone.replace(/\D/g, '');
@@ -40,7 +41,7 @@ function formatDateTime(rawDate) {
 
 document.addEventListener('DOMContentLoaded', async () => {
   try {
-    showPopupLoading();
+    await showPopupLoading();
     
     console.log("Start login line...");
     await liff.init({ liffId: '2007421084-WXmXrzZY' });

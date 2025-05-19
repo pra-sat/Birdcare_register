@@ -162,13 +162,14 @@ document.addEventListener('DOMContentLoaded', async () => {
             historyCardsHtml += '</div>';
           } else {
             // Not rated yet: show Rate/Feedback button
-            historyCardsHtml += `<button class="btn feedback-btn"
-                data-date="${formatDateTime(row.date)}"
-                data-raw="${formatDateToYMD(row.date)}"   <!-- ✅ เพิ่มอันนี้ -->
-                data-service="${row.service}">
+            historyCardsHtml += `
+              <button class="btn feedback-btn"
+                data-date="${dateStr}"
+                data-service="${row.service || ''}">
                 ให้คะแนน / ข้อเสนอแนะ
               </button>
-              `;
+            `;
+
           }
           // Service details in card
           historyCardsHtml += `
@@ -440,6 +441,13 @@ document.addEventListener('DOMContentLoaded', async () => {
               cell.innerHTML = starsDisplay;
             }
           }
+          console.log("📦 ส่ง feedback", {
+            userId: currentUserId,
+            date: serviceDate,
+            service: serviceName,
+            rating: ratingVal,
+            feedback: feedbackText
+          });
           // Show success feedback
           Swal.fire({
             icon: 'success',

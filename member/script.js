@@ -403,8 +403,22 @@ document.addEventListener('DOMContentLoaded', async () => {
           }
 
           // Send feedback data to Google Apps Script (updates spreadsheet)
-         const url = `${GAS_ENDPOINT}?action=feedback&userId=${currentUserId}&date=${encodeURIComponent(serviceDate)}&service=${encodeURIComponent(serviceName)}&rating=${ratingVal}&feedback=${encodeURIComponent(feedbackText)}`;
-         const res = await fetch(url);
+         const res = await fetch(GAS_ENDPOINT + '?action=feedback', {
+            redirect: "follow",
+            method: 'POST',
+            headers: {
+              'Content-Type': 'text/plain;charset=utf-8'
+            },
+            body: JSON.stringify({
+              action: 'feedback',
+              userId: currentUserId,
+              date: serviceDate,
+              service: serviceName,
+              rating: ratingVal,
+              feedback: feedbackText
+            })
+          });
+
           
           if (!res.ok) {
             throw new Error(`HTTP ${res.status}`);

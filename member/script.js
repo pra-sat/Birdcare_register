@@ -5,6 +5,9 @@ const memberInfoEl = document.getElementById('memberInfo');
 const historySection = document.getElementById('historySection');
 const toggleBtn = document.getElementById('toggleHistory');
 
+// ⭐ Global variable to store current userId for later use (e.g., submitting feedback)
+let currentUserId = null;
+
 // async function showPopupLoading() {
 //   return await Swal.fire({
 //     title: '⏳ กำลังโหลดข้อมูลสมาชิก...',
@@ -63,6 +66,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const profile = await liff.getProfile();
     const userId = profile.userId;
     console.log("✅ userId:", userId);
+    currentUserId = userId;  // ⭐ store userId globally for later
     
     const res = await fetch(`${GAS_ENDPOINT}?action=member&userId=${userId}`);
     console.log("✅ response status:", res.status);
@@ -134,30 +138,96 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (history.length === 0) {
       historySection.innerHTML = '<p>-</p>';
     } else {
-      // 📱 Mobile View
+      // ⭐ Generate history list with rating/feedback feature
       if (window.innerWidth <= 480) {
-        historySection.innerHTML = history.map(row => `
-          <div class="history-card">
-            <p><b>📅 วันที่:</b> ${formatDateTime(row.date)}</p>
+        // 📱 Mobile View: use cards
+        let historyCardsHtml = '';
+        history.forEach((row, index) => {
+          const dateStr = formatDateTime(row.date);
+          // Card container (add 'rated' class if already rated to adjust style)
+          historyCardsHtml += `<div class="history-card${row.rating && row.feedback ? ' rated' : ''}">`;
+          if (row.rating && row.feedback) {
+            // Already rated: show stars given (static display in top-right)
+            historyCardsHtml += '<div class="rating-display">';
+            for (let s = 1; s <= 5; s++) {
+              historyCardsHtml += `<span class="star static${s <= row.rating ? ' filled' : ''}">${s <= row.rating ? '★' : '☆'}</span>`;
+            }
+            historyCardsHtml += '</div>';
+          } else {
+            // Not rated yet: show Rate/Feedback button
+            historyCardsHtml += `<button class="btn feedback-btn" data-date="${row.date}" data-service="${row.service}">ให้คะแนน / ข้อเสนอแนะ</button>`;
+          }
+          // Service details in card
+          historyCardsHtml += `
+            <p><b>📅 วันที่:</b> ${dateStr}</p>
             <p><b>🚘 ยี่ห้อ/รุ่น:</b> ${row.brand || '-'} ${row.model || '-'}</p>
             <p><b>🛠 บริการ:</b> ${row.service}</p>
             <p><b>💰 ราคา:</b> ${row.price} ฿</p>
             <p><b>🏅 แต้ม:</b> ${row.point}</p>
             <p><b>📝 หมายเหตุ:</b> ${row.note}</p>
-          </div>
-        `).join('');
+          `;
+          // Feedback form panel (hidden by default) for not-yet-rated service
+          if (!row.rating || !row.feedback) {
+            historyCardsHtml += `
+              <div class="feedback-panel">
+                <div class="star-selector">
+                  <span class="star">☆</span><span class="star">☆</span><span class="star">☆</span><span class="star">☆</span><span class="star">☆</span>
+                </div>
+                <textarea class="feedback-text" placeholder="ข้อเสนอแนะ..."></textarea>
+                <button class="btn submit-feedback-btn">ส่งความคิดเห็น</button>
+              </div>
+            `;
+          }
+          historyCardsHtml += `</div>`; // close .history-card
+        });
+        historySection.innerHTML = historyCardsHtml;
       } else {
-        // 🖥️ Desktop Table View
-        const rows = history.map(row => `
-          <tr>
-            <td>${formatDateTime(row.date)}</td>
-            <td>${row.brand || '-'} ${row.model || '-'}</td>
-            <td>${row.service}</td>
-            <td>${row.price} ฿</td>
-            <td>${row.point}</td>
-            <td>${row.note}</td>
-          </tr>`).join('');
-    
+        // 🖥️ Desktop View: use table
+        const rowsHtml = history.map((row, index) => {
+          const dateStr = formatDateTime(row.date);
+          if (row.rating && row.feedback) {
+            // Already rated: single row with static stars in last column
+            let starsTd = '';
+            for (let s = 1; s <= 5; s++) {
+              starsTd += `<span class="star static${s <= row.rating ? ' filled' : ''}">${s <= row.rating ? '★' : '☆'}</span>`;
+            }
+            return `
+              <tr class="history-entry">
+                <td>${dateStr}</td>
+                <td>${row.brand || '-'} ${row.model || '-'}</td>
+                <td>${row.service}</td>
+                <td>${row.price} ฿</td>
+                <td>${row.point}</td>
+                <td>${row.note}</td>
+                <td>${starsTd}</td>
+              </tr>
+            `;
+          } else {
+            // Not rated: main row + a hidden feedback form row
+            return `
+              <tr class="history-entry">
+                <td>${dateStr}</td>
+                <td>${row.brand || '-'} ${row.model || '-'}</td>
+                <td>${row.service}</td>
+                <td>${row.price} ฿</td>
+                <td>${row.point}</td>
+                <td>${row.note}</td>
+                <td><button class="btn feedback-btn" data-date="${row.date}" data-service="${row.service}">ให้คะแนน / ข้อเสนอแนะ</button></td>
+              </tr>
+              <tr class="feedback-row hidden">
+                <td colspan="7">
+                  <div class="feedback-panel">
+                    <div class="star-selector">
+                      <span class="star">☆</span><span class="star">☆</span><span class="star">☆</span><span class="star">☆</span><span class="star">☆</span>
+                    </div>
+                    <textarea class="feedback-text" placeholder="ข้อเสนอแนะ..."></textarea>
+                    <button class="btn submit-feedback-btn">ส่งความคิดเห็น</button>
+                  </div>
+                </td>
+              </tr>
+            `;
+          }
+        }).join('');
         historySection.innerHTML = `
           <div class="history-section-wrapper">
             <table>
@@ -169,10 +239,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                   <th>ราคา</th>
                   <th>แต้ม</th>
                   <th>หมายเหตุ</th>
+                  <th>คะแนน</th>
                 </tr>
               </thead>
               <tbody>
-                ${rows}
+                ${rowsHtml}
               </tbody>
             </table>
           </div>
@@ -180,12 +251,197 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
     }
 
-
     hideLoadingOverlay();
     toggleBtn.disabled = false;
     toggleBtn.classList.remove("disabled"); // เพิ่มความสวยงามกรณีใส่ CSS .disabled
-
-
+    
+    // ⭐ Event listeners for Rating/Feedback interactions
+    const feedbackButtons = document.querySelectorAll('.feedback-btn');
+    feedbackButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (window.innerWidth <= 480) {
+          // Mobile: Toggle slide-down panel in card
+          const card = btn.closest('.history-card');
+          const panel = card.querySelector('.feedback-panel');
+          if (panel) {
+            panel.classList.toggle('open');
+          }
+        } else {
+          // Desktop: Toggle slide-down panel row in table
+          const mainRow = btn.closest('tr');
+          const panelRow = mainRow.nextElementSibling;
+          if (panelRow && panelRow.classList.contains('feedback-row')) {
+            const panelDiv = panelRow.querySelector('.feedback-panel');
+            if (panelRow.classList.contains('hidden')) {
+              panelRow.classList.remove('hidden');
+              // force reflow before expanding (for smooth transition)
+              panelDiv.offsetHeight;
+              panelDiv.classList.add('open');
+            } else {
+              panelDiv.classList.remove('open');
+              setTimeout(() => {
+                panelRow.classList.add('hidden');
+              }, 300);  // hide row after transition
+            }
+          }
+        }
+      });
+    });
+    // Star rating selection events
+    const starContainers = document.querySelectorAll('.star-selector');
+    starContainers.forEach(container => {
+      const stars = container.querySelectorAll('.star');
+      container.dataset.rating = '0';  // initialize selected rating as 0
+      stars.forEach((starEl, idx) => {
+        // Highlight stars on hover (desktop only, no effect on mobile)
+        starEl.addEventListener('mouseenter', () => {
+          stars.forEach((s, i) => {
+            if (i <= idx) {
+              s.textContent = '★';
+              s.classList.add('filled');
+            } else {
+              s.textContent = '☆';
+              s.classList.remove('filled');
+            }
+          });
+        });
+        starEl.addEventListener('mouseleave', () => {
+          const currentRating = parseInt(container.dataset.rating) || 0;
+          stars.forEach((s, i) => {
+            if (i < currentRating) {
+              s.textContent = '★';
+              s.classList.add('filled');
+            } else {
+              s.textContent = '☆';
+              s.classList.remove('filled');
+            }
+          });
+        });
+        // Set rating on click
+        starEl.addEventListener('click', () => {
+          const selectedRating = idx + 1;
+          container.dataset.rating = String(selectedRating);
+          stars.forEach((s, i) => {
+            if (i < selectedRating) {
+              s.textContent = '★';
+              s.classList.add('filled');
+            } else {
+              s.textContent = '☆';
+              s.classList.remove('filled');
+            }
+          });
+        });
+      });
+    });
+    // Submit feedback event
+    const submitButtons = document.querySelectorAll('.submit-feedback-btn');
+    submitButtons.forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const panelDiv = btn.closest('.feedback-panel');
+        const ratingVal = parseInt(panelDiv.querySelector('.star-selector').dataset.rating) || 0;
+        const feedbackText = panelDiv.querySelector('.feedback-text').value.trim();
+        if (!ratingVal) {
+          // If no star selected, alert user
+          await Swal.fire({
+            icon: 'warning',
+            title: 'กรุณาให้คะแนน (เลือกจำนวนดาว)',
+            confirmButtonText: 'ตกลง'
+          });
+          return;
+        }
+        try {
+          // Show sending status (SweetAlert2 loading)
+          Swal.fire({
+            title: 'กำลังส่งความคิดเห็น...',
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            showConfirmButton: false,
+            didOpen: () => {
+              Swal.showLoading();
+            }
+          });
+          // Identify the service entry via data attributes
+          let serviceDate = '', serviceName = '';
+          let feedbackBtn;
+          if (window.innerWidth <= 480) {
+            const card = btn.closest('.history-card');
+            feedbackBtn = card.querySelector('.feedback-btn');
+          } else {
+            const panelRow = btn.closest('.feedback-row');
+            const mainRow = panelRow.previousElementSibling;
+            feedbackBtn = mainRow.querySelector('.feedback-btn');
+          }
+          if (feedbackBtn) {
+            serviceDate = feedbackBtn.getAttribute('data-date');
+            serviceName = feedbackBtn.getAttribute('data-service');
+          }
+          // Send feedback data to Google Apps Script (updates spreadsheet)
+          const res = await fetch(GAS_ENDPOINT, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              action: 'member',
+              userId: currentUserId,
+              date: serviceDate,
+              service: serviceName,
+              rating: ratingVal,
+              feedback: feedbackText
+            })
+          });
+          if (!res.ok) {
+            throw new Error(`HTTP ${res.status}`);
+          }
+          // On success, update the UI:
+          if (window.innerWidth <= 480) {
+            // Mobile: close form and show stars on card
+            const card = btn.closest('.history-card');
+            panelDiv.classList.remove('open');             // slide-up the panel
+            const fbButton = card.querySelector('.feedback-btn');
+            if (fbButton) fbButton.remove();               // remove "ให้คะแนน" button
+            // Display static stars in top-right corner
+            let staticStarsHtml = '<div class="rating-display">';
+            for (let s = 1; s <= 5; s++) {
+              staticStarsHtml += `<span class="star static${s <= ratingVal ? ' filled' : ''}">${s <= ratingVal ? '★' : '☆'}</span>`;
+            }
+            staticStarsHtml += '</div>';
+            card.insertAdjacentHTML('beforeend', staticStarsHtml);
+            card.classList.add('rated');  // mark card as rated (for styling)
+          } else {
+            // Desktop: remove form row and replace button with static stars in table
+            const panelRow = btn.closest('.feedback-row');
+            const mainRow = panelRow.previousElementSibling;
+            panelRow.remove();  // remove the feedback form row from table
+            const fbButton = mainRow.querySelector('.feedback-btn');
+            if (fbButton) {
+              const cell = fbButton.parentElement;
+              fbButton.remove();
+              // Insert static stars into the cell
+              let starsDisplay = '';
+              for (let s = 1; s <= 5; s++) {
+                starsDisplay += `<span class="star static${s <= ratingVal ? ' filled' : ''}">${s <= ratingVal ? '★' : '☆'}</span>`;
+              }
+              cell.innerHTML = starsDisplay;
+            }
+          }
+          // Show success feedback
+          Swal.fire({
+            icon: 'success',
+            title: 'ส่งความคิดเห็นสำเร็จ!',
+            text: 'ขอบคุณสำหรับความคิดเห็นของคุณ',
+            confirmButtonText: 'ตกลง'
+          });
+        } catch (error) {
+          console.error('Error sending feedback:', error);
+          // Show error message
+          Swal.fire({
+            icon: 'error',
+            title: '❌ ไม่สามารถส่งความคิดเห็นได้',
+            text: 'กรุณาลองใหม่อีกครั้ง',
+            confirmButtonText: 'ปิด'
+          });
+        }
+      });
+    });
   } catch (err) {
     hideLoadingOverlay();
     console.error('Error:', err);

@@ -155,7 +155,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     // 🔃 เรียงจากวันที่ใหม่ไปเก่า
     history.sort((a, b) => new Date(b.date) - new Date(a.date));
-
+/*
     history.forEach((entry, index) => {
       const entryCard = document.getElementById(`history-item-${index}`);       // โหนด DOM ของการ์ดรายการ (ระบุด้วย index หรือ ID เฉพาะ)
       const starContainer = entryCard.querySelector('.stars');                 // โหนด DOM ที่ใช้แสดงดาว
@@ -171,7 +171,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         feedbackButton.style.display = 'block';               // แสดงปุ่มให้คะแนนสำหรับรายการนี้
       }
     });
-
+*/
     
     if (history.length === 0) {
       historySection.innerHTML = `<p>-</p>`;

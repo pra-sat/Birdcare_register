@@ -166,7 +166,7 @@ document.addEventListener('DOMContentLoaded', async () => {
               <button class="btn feedback-btn"
                 data-date="${dateStr}"
                 data-raw="${formatDateToYMD(row.date)}"
-                data-service="${row.service || ''}"
+                data-service="${row.service || ''}">
                 ให้คะแนน / ข้อเสนอแนะ
               </button>
             `;

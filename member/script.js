@@ -250,8 +250,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             `;
           } else {
             // Not rated: main row + a hidden feedback form row
-            return 
-              <tr class="history-entry">`
+            return `
+              <tr class="history-entry">
                 <td>${dateStr}</td>
                 <td>${row.brand || '-'} ${row.model || '-'}</td>
                 <td>${row.service}</td>

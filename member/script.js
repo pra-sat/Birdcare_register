@@ -165,7 +165,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             historyCardsHtml += `
               <button class="btn feedback-btn"
                 data-date="${dateStr}"
-                data-service="${row.service || ''}">
+                data-raw="${formatDateToYMD(row.date)}"
+                data-service="${row.service || ''}"
                 ให้คะแนน / ข้อเสนอแนะ
               </button>
             `;
@@ -227,7 +228,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <td>${row.point}</td>
                 <td>${row.note}</td>
                 <td>  <button class="btn feedback-btn"
-                      data-date="${formatDateTime(row.date)}"
+                      data-date="${dateStr}"
                       data-raw="${formatDateToYMD(row.date)}"
                       data-service="${row.service}">
                       ให้คะแนน / ข้อเสนอแนะ
@@ -393,7 +394,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             feedbackBtn = mainRow.querySelector('.feedback-btn');
           }
           if (feedbackBtn) {
-            serviceDate = formatDateToYMD(feedbackBtn.getAttribute('data-raw'));
+            serviceDate = feedbackBtn.getAttribute('data-raw');  // เพราะมันถูก format มาแล้วเป็น yyyy-MM-dd
             serviceName = feedbackBtn.getAttribute('data-service');
           }
           if (!feedbackBtn) {

@@ -26,6 +26,13 @@ function hideLoadingOverlay() {
   document.getElementById('loadingOverlay').classList.add('hidden');
 }
 
+function formatDateToYMD(rawDate) {
+  const d = new Date(rawDate);
+  const year = d.getFullYear();
+  const month = (d.getMonth() + 1).toString().padStart(2, '0');
+  const day = d.getDate().toString().padStart(2, '0');
+  return `${year}-${month}-${day}`; // 📌 ตรงกับ Sheet ฝั่ง Admin ใส่
+}
 
 
 function formatPhone(phone) {
@@ -373,7 +380,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             feedbackBtn = mainRow.querySelector('.feedback-btn');
           }
           if (feedbackBtn) {
-            serviceDate = feedbackBtn.getAttribute('data-date');
+            serviceDate = formatDateToYMD(feedbackBtn.getAttribute('data-raw'));
             serviceName = feedbackBtn.getAttribute('data-service');
           }
           if (!feedbackBtn) {

@@ -376,18 +376,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             serviceName = feedbackBtn.getAttribute('data-service');
           }
           // Send feedback data to Google Apps Script (updates spreadsheet)
-          const res = await fetch(GAS_ENDPOINT, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              action: 'member',
-              userId: currentUserId,
-              date: serviceDate,
-              service: serviceName,
-              rating: ratingVal,
-              feedback: feedbackText
-            })
-          });
+         const url = `${GAS_ENDPOINT}?action=feedback&userId=${currentUserId}&date=${encodeURIComponent(serviceDate)}&service=${encodeURIComponent(serviceName)}&rating=${ratingVal}&feedback=${encodeURIComponent(feedbackText)}`;
+         const res = await fetch(url);
+          
           if (!res.ok) {
             throw new Error(`HTTP ${res.status}`);
           }

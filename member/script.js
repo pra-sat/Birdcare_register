@@ -164,7 +164,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             // Not rated yet: show Rate/Feedback button
             historyCardsHtml += `<button class="btn feedback-btn"
                 data-date="${dateStr}"
-                data-raw="${row.date}"  <!-- ✅ เพิ่มบรรทัดนี้ -->
                 data-service="${row.service}">
                 ให้คะแนน / ข้อเสนอแนะ
               </button>

@@ -58,19 +58,6 @@ function formatDateTime(rawDate) {
   return `${day}/${month}/${year} | ${hour}:${min}น.`;
 }
 
-function updateUIAfterFeedback(entryId, userRating, userComment) {
-            // ค้นหาการ์ดของรายการที่เพิ่งให้คะแนน (เช่นจาก entryId หรือ index ที่ส่งมากับปุ่ม)
-            const entryCard = document.getElementById(`history-item-${entryId}`);
-            const starContainer = entryCard.querySelector('.stars');
-            const feedbackButton = entryCard.querySelector('.give-feedback-btn');
-          
-            // อัปเดตดาวใน UI ตามคะแนนที่ให้
-            starContainer.innerHTML = renderStars(userRating);
-            // ซ่อนหรือปิดการใช้งานปุ่มให้คะแนน เพื่อไม่ให้ผู้ใช้งานส่งคะแนนซ้ำ
-            feedbackButton.style.display = 'none';
-            // (อาจเพิ่มข้อความหรือ pop-up แจ้งความสำเร็จ ซึ่งจากภาพใช้ SweetAlert2 แสดงผลแล้ว)
-}
-
 document.addEventListener('DOMContentLoaded', async () => {
   try {
     // await showPopupLoading();
@@ -136,7 +123,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     `;
     
     toggleBtn.disabled = true;
-    historySection.innerHTML = `<p>⏳ กำลังโหลดประวัติ...</p>`;
+    historySection.innerHTML = '<p>⏳ กำลังโหลดประวัติ...</p>';
     // แล้วเปิดให้กด toggleBtn ได้หลังจากโหลดเสร็จ
     toggleBtn.disabled = false;
 
@@ -149,32 +136,14 @@ document.addEventListener('DOMContentLoaded', async () => {
       });
       toggleBtn.classList.add('bound');
     }
-  
-    // (เมื่อได้รับข้อมูลประวัติการใช้บริการจาก Google Sheets แล้ว)
+
     const history = Array.isArray(data.serviceHistory) ? data.serviceHistory : [];
-    
+  
     // 🔃 เรียงจากวันที่ใหม่ไปเก่า
     history.sort((a, b) => new Date(b.date) - new Date(a.date));
-/*
-    history.forEach((entry, index) => {
-      const entryCard = document.getElementById(`history-item-${index}`);       // โหนด DOM ของการ์ดรายการ (ระบุด้วย index หรือ ID เฉพาะ)
-      const starContainer = entryCard.querySelector('.stars');                 // โหนด DOM ที่ใช้แสดงดาว
-      const feedbackButton = entryCard.querySelector('.give-feedback-btn');    // ปุ่ม "ให้คะแนน/ข้อเสนอแนะ"
-    
-      if (entry.rating && entry.rating > 0) {
-        // ถ้ามีคะแนนแล้ว ให้แสดงดาวที่เติมตามคะแนน
-        starContainer.innerHTML = renderStars(entry.rating);  // renderStars เป็นฟังก์ชันสมมติที่สร้าง HTML ของดาวเต็ม/ดาวว่างตามค่าคะแนน
-        feedbackButton.style.display = 'none';                // ซ่อนปุ่มให้คะแนน เพราะรายการนี้ให้คะแนนแล้ว
-      } else {
-        // ถ้ายังไม่มีคะแนน แสดงดาวว่างหรือ UI สำหรับการให้คะแนน
-        starContainer.innerHTML = renderStars(0);             // แสดงดาวเปล่า (เช่น ☆☆☆☆☆) หรือเว้นว่างไว้ก็ได้
-        feedbackButton.style.display = 'block';               // แสดงปุ่มให้คะแนนสำหรับรายการนี้
-      }
-    });
-*/
     
     if (history.length === 0) {
-      historySection.innerHTML = `<p>-</p>`;
+      historySection.innerHTML = '<p>-</p>';
     } else {
       // ⭐ Generate history list with rating/feedback feature
       if (window.innerWidth <= 480) {
@@ -186,11 +155,11 @@ document.addEventListener('DOMContentLoaded', async () => {
           historyCardsHtml += `<div class="history-card${row.rating && row.feedback ? ' rated' : ''}">`;
           if (row.rating && row.feedback) {
             // Already rated: show stars given (static display in top-right)
-            historyCardsHtml += `<div class="rating-display">`;
+            historyCardsHtml += '<div class="rating-display">';
             for (let s = 1; s <= 5; s++) {
               historyCardsHtml += `<span class="star static${s <= row.rating ? ' filled' : ''}">${s <= row.rating ? '★' : '☆'}</span>`;
             }
-            historyCardsHtml += `</div>`;
+            historyCardsHtml += '</div>';
           } else {
             // Not rated yet: show Rate/Feedback button
             historyCardsHtml += `
@@ -467,7 +436,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             for (let s = 1; s <= 5; s++) {
               staticStarsHtml += `<span class="star static${s <= ratingVal ? ' filled' : ''}">${s <= ratingVal ? '★' : '☆'}</span>`;
             }
-            staticStarsHtml += `</div>`;
+            staticStarsHtml += '</div>';
             card.insertAdjacentHTML('beforeend', staticStarsHtml);
             card.classList.add('rated');  // mark card as rated (for styling)
           } else {
@@ -494,13 +463,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             rating: ratingVal,
             feedback: feedbackText
           });
-
-          const json = await res.json();
-          
           // Show success feedback
           Swal.fire({
             icon: 'success',
-            title: '✅ ส่งความคิดเห็นสำเร็จ!',
+            title: 'ส่งความคิดเห็นสำเร็จ!',
             text: 'ขอบคุณสำหรับความคิดเห็นของคุณ',
             confirmButtonText: 'ตกลง'
           });

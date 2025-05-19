@@ -193,8 +193,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             historyCardsHtml += `</div>`;
           } else {
             // Not rated yet: show Rate/Feedback button
-            historyCardsHtml += 
-              `<button class="btn feedback-btn"
+            historyCardsHtml += `
+              <button class="btn feedback-btn"
                 data-date="${dateStr}"
                 data-raw="${formatDateToYMD(row.date)}"
                 data-service="${row.service || ''}">
@@ -224,7 +224,7 @@ document.addEventListener('DOMContentLoaded', async () => {
               </div>
             `;
           }
-          historyCardsHtml += </div>; // close .history-card
+          historyCardsHtml += `</div>`; // close .history-card
         });
         historySection.innerHTML = historyCardsHtml;
       } else {

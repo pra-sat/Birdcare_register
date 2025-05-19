@@ -238,7 +238,7 @@ document.addEventListener('DOMContentLoaded', async () => {
               starsTd += `<span class="star static${s <= row.rating ? ' filled' : ''}">${s <= row.rating ? '★' : '☆'}</span>`;
             }
             return `
-              <tr class="history-entry">`
+              <tr class="history-entry">
                 <td>${dateStr}</td>
                 <td>${row.brand || '-'} ${row.model || '-'}</td>
                 <td>${row.service}</td>
@@ -247,7 +247,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <td>${row.note}</td>
                 <td>${starsTd}</td>
               </tr>
-            `;`
+            `;
           } else {
             // Not rated: main row + a hidden feedback form row
             return 

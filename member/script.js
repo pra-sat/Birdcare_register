@@ -351,6 +351,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         try {
           // Show sending status (SweetAlert2 loading)
+          btn.disabled = true;
           Swal.fire({
             title: 'กำลังส่งความคิดเห็น...',
             allowOutsideClick: false,
@@ -375,6 +376,12 @@ document.addEventListener('DOMContentLoaded', async () => {
             serviceDate = feedbackBtn.getAttribute('data-date');
             serviceName = feedbackBtn.getAttribute('data-service');
           }
+          if (!feedbackBtn) {
+            Swal.fire({ icon: 'error', title: '❌ ไม่พบข้อมูลบริการ', confirmButtonText: 'ปิด' });
+            btn.disabled = false;
+            return;
+          }
+
           // Send feedback data to Google Apps Script (updates spreadsheet)
          const url = `${GAS_ENDPOINT}?action=feedback&userId=${currentUserId}&date=${encodeURIComponent(serviceDate)}&service=${encodeURIComponent(serviceName)}&rating=${ratingVal}&feedback=${encodeURIComponent(feedbackText)}`;
          const res = await fetch(url);
@@ -430,6 +437,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             text: 'กรุณาลองใหม่อีกครั้ง',
             confirmButtonText: 'ปิด'
           });
+          btn.disabled = false;
         }
       });
     });

@@ -163,7 +163,8 @@ document.addEventListener('DOMContentLoaded', async () => {
           } else {
             // Not rated yet: show Rate/Feedback button
             historyCardsHtml += `<button class="btn feedback-btn"
-                data-date="${dateStr}"
+                data-date="${formatDateTime(row.date)}"
+                data-raw="${formatDateToYMD(row.date)}"   <!-- ✅ เพิ่มอันนี้ -->
                 data-service="${row.service}">
                 ให้คะแนน / ข้อเสนอแนะ
               </button>
@@ -226,7 +227,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <td>${row.note}</td>
                 <td>  <button class="btn feedback-btn"
                       data-date="${formatDateTime(row.date)}"
-                      data-raw="${row.date}"
+                      data-raw="${formatDateToYMD(row.date)}"
                       data-service="${row.service}">
                       ให้คะแนน / ข้อเสนอแนะ
                   </button>

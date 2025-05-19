@@ -225,6 +225,11 @@ tbody tr:hover {
   background: rgba(255, 255, 255, 0.05);
   font-size: 15px;
   line-height: 1.6;
+  position: relative;
+}
+
+.history-card.rated {
+  padding-right: 120px;
 }
 
 .history-section-wrapper {
@@ -236,3 +241,62 @@ tbody tr:hover {
   min-width: 700px;
 }
 
+/* ⭐ Feedback slide-down panel (hidden by default) */
+.feedback-panel {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+.feedback-panel.open {
+  max-height: 300px; /* expands panel when open (smooth slide-down) */
+}
+
+/* ⭐ Star styles for rating (interactive and static) */
+.star {
+  display: inline-block;
+  font-size: 20px;
+  color: #ccc;         /* default star color (unfilled) */
+  cursor: pointer;
+  user-select: none;
+}
+.star.filled {
+  color: #ffd700;      /* filled star color (gold) */
+}
+.star.static {
+  cursor: default;     /* static stars (display only) have no pointer cursor */
+}
+/* small spacing between star icons */
+.star + .star {
+  margin-left: 4px;
+}
+
+/* ⭐ Container for static star display (positioned at top-right of card) */
+.rating-display {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 2;          /* ensure stars overlay above text */
+}
+
+/* ⭐ Star selector (in feedback panel) spacing */
+.star-selector {
+  margin-bottom: 8px;
+}
+
+/* ⭐ Feedback textarea styling */
+.feedback-text {
+  width: 100%;
+  height: 80px;
+  padding: 6px;
+  border: 1px solid #555;
+  border-radius: 4px;
+  background: #222;
+  color: #fff;
+  font-family: 'Sarabun', sans-serif;
+  margin-bottom: 8px;
+}
+
+/* ⭐ In the table view, remove bottom border for feedback rows for cleaner look */
+.feedback-row td {
+  border-bottom: none;
+}

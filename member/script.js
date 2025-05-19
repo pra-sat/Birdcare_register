@@ -162,7 +162,13 @@ document.addEventListener('DOMContentLoaded', async () => {
             historyCardsHtml += '</div>';
           } else {
             // Not rated yet: show Rate/Feedback button
-            historyCardsHtml += `<button class="btn feedback-btn" data-date="${row.date}" data-service="${row.service}">ให้คะแนน / ข้อเสนอแนะ</button>`;
+            historyCardsHtml += `<button class="btn feedback-btn"
+                data-date="${dateStr}"
+                data-raw="${row.date}"  <!-- ✅ เพิ่มบรรทัดนี้ -->
+                data-service="${row.service}">
+                ให้คะแนน / ข้อเสนอแนะ
+              </button>
+              `;
           }
           // Service details in card
           historyCardsHtml += `
@@ -219,7 +225,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <td>${row.price} ฿</td>
                 <td>${row.point}</td>
                 <td>${row.note}</td>
-                <td><button class="btn feedback-btn" data-date="${row.date}" data-service="${row.service}">ให้คะแนน / ข้อเสนอแนะ</button></td>
+                <td>  <button class="btn feedback-btn"
+                      data-date="${formatDateTime(row.date)}"
+                      data-raw="${row.date}"
+                      data-service="${row.service}">
+                      ให้คะแนน / ข้อเสนอแนะ
+                  </button>
+              </td>
               </tr>
               <tr class="feedback-row hidden">
                 <td colspan="7">

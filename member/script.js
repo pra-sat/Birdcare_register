@@ -465,9 +465,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             // Display static stars in top-right corner
             let staticStarsHtml = '<div class="rating-display">';
             for (let s = 1; s <= 5; s++) {
-              staticStarsHtml += <span class="star static${s <= ratingVal ? ' filled' : ''}">${s <= ratingVal ? '★' : '☆'}</span>;
+              staticStarsHtml += `<span class="star static${s <= ratingVal ? ' filled' : ''}">${s <= ratingVal ? '★' : '☆'}</span>`;
             }
-            staticStarsHtml += '</div>';
+            staticStarsHtml += `</div>`;
             card.insertAdjacentHTML('beforeend', staticStarsHtml);
             card.classList.add('rated');  // mark card as rated (for styling)
           } else {

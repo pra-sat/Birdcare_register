@@ -247,7 +247,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <td>${row.note}</td>
                 <td>${starsTd}</td>
               </tr>
-            `;
+            `;`
           } else {
             // Not rated: main row + a hidden feedback form row
             return 

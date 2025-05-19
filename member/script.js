@@ -132,11 +132,11 @@ document.addEventListener('DOMContentLoaded', async () => {
       <p>🚗 รถ : ${data.brand} ${data.model} (${data.year})</p>
       <p>📎 หมวดหมู่ : ${data.category}</p>
       <p>💳 แต้มสะสม : ${data.point} แต้ม</p>
-      <p>⏰ แต้มหมดอายุ : ${data.expirationDate && data.expirationDate.trim() ? data.expirationDate : '-'}</p>`
-    ;
+      <p>⏰ แต้มหมดอายุ : ${data.expirationDate && data.expirationDate.trim() ? data.expirationDate : '-'}</p>
+    `;
     
     toggleBtn.disabled = true;
-    historySection.innerHTML = '<p>⏳ กำลังโหลดประวัติ...</p>';
+    historySection.innerHTML = `<p>⏳ กำลังโหลดประวัติ...</p>`;
     // แล้วเปิดให้กด toggleBtn ได้หลังจากโหลดเสร็จ
     toggleBtn.disabled = false;
 
@@ -174,7 +174,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     
     if (history.length === 0) {
-      historySection.innerHTML = '<p>-</p>';
+      historySection.innerHTML = `<p>-</p>`;
     } else {
       // ⭐ Generate history list with rating/feedback feature
       if (window.innerWidth <= 480) {
@@ -280,7 +280,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             ;
           }
         }).join('');
-        historySection.innerHTML = 
+        historySection.innerHTML = `
           <div class="history-section-wrapper">
             <table>
               <thead>
@@ -299,7 +299,7 @@ document.addEventListener('DOMContentLoaded', async () => {
               </tbody>
             </table>
           </div>
-        ;
+        `;
       }
     }
 

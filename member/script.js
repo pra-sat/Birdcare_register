@@ -153,7 +153,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           const dateStr = formatDateTime(row.date);
           // Card container (add 'rated' class if already rated to adjust style)
           historyCardsHtml += `<div class="history-card${row.rating && row.feedback ? ' rated' : ''}">`;
-          if (row.rating && row.feedback) {
+          if (row.rating) {
             // Already rated: show stars given (static display in top-right)
             historyCardsHtml += '<div class="rating-display">';
             for (let s = 1; s <= 5; s++) {

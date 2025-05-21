@@ -200,7 +200,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         // 🖥️ Desktop View: use table
         const rowsHtml = history.map((row, index) => {
           const dateStr = formatDateTime(row.date);
-          if (row.rating && row.feedback) {
+          if (row.rating) {
             // Already rated: single row with static stars in last column
             let starsTd = '';
             for (let s = 1; s <= 5; s++) {

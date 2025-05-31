@@ -116,10 +116,12 @@ async function showQRSection() {
         size: 200
       });
       document.getElementById('qrUserInfo').innerText = `🔑 ${userInfo.name} - ${userInfo.brand} ${userInfo.model} (${userInfo.year})`;
+      document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('closeQRBtn').addEventListener('click', closeQRSection);
     }
 
     async function closeQRSection() {
-      document.getElementById('closeQRBtn').addEventListener('click', closeQRSection);
+      document.getElementById('qrSection').classList.add('hidden');
       clearInterval(qrInterval);
       await deleteQRToken();
     }

@@ -35,20 +35,20 @@
     <button class="btn close small" onclick="liff.closeWindow()">ปิดหน้าต่าง</button>
     <p class="notice">❕ หากต้องการแก้ไขข้อมูล กรุณาทักแชทหรือแจ้ง Admin</p>
   </div>
-
-  <script src="script.js"></script>
-
-    <!-- ✅ Section แสดง QR -->
-  <div id="qrSection" class="hidden">
-    <div class="card">
+  
+  <!-- ✅ Section แสดง QR -->
+  <div id="qrSection" class="qr-popup hidden">
+    <div class="qr-popup-inner">
       <p><b>🔐 QR ยืนยันตัวตน</b></p>
       <canvas id="qrCanvas"></canvas>
       <p id="qrUserInfo"></p>
       <p>หมดอายุใน <span id="qrCountdown">600</span> วินาที</p>
-      <button class="btn" onclick="closeQRSection()">❌ ปิด QR</button>
+      <button class="btn" id="closeQRBtn">❌ ปิด QR</button>
     </div>
   </div>
+
+  <script src="script.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
   
-<script src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
 </body>
 </html>

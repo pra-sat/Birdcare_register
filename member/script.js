@@ -86,20 +86,21 @@ window.qrToken = null;
         });
         if (!res.ok) throw new Error("create_token failed");
         document.getElementById('qrSection').classList.remove('hidden');
-        generateQRCode(token);
+        generateQRCode(token, data);
         startQRCountdown();
       } catch (err) {
         Swal.fire("❌ ไม่สามารถสร้าง QR ได้", err.message, "error");
       }
     }
     
-    function generateQRCode(text) {
+    function generateQRCode(text, userInfo) {
       const canvas = document.getElementById("qrCanvas");
       const qr = new QRious({
         element: canvas,
         value: text,
         size: 200
       });
+      document.getElementById('qrUserInfo').innerText = `🔑 ${userInfo.name} - ${userInfo.brand} ${userInfo.model} (${userInfo.year})`;
     }
 
     async function closeQRSection() {

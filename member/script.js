@@ -61,8 +61,8 @@ function formatDateTime(rawDate) {
 }
 
 // ⏳ ฟังก์ชันสร้าง token ไม่ซ้ำ
-function generateToken(length = 10) {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+function generateToken(length = 20) {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   return Array.from({ length }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
 }
 

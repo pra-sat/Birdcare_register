@@ -58,6 +58,12 @@ function formatDateTime(rawDate) {
   return `${day}/${month}/${year} | ${hour}:${min}น.`;
 }
 
+// ⏳ ฟังก์ชันสร้าง token ไม่ซ้ำ
+function generateToken(length = 10) {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  return Array.from({ length }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
   try {
     // await showPopupLoading();
@@ -74,6 +80,74 @@ document.addEventListener('DOMContentLoaded', async () => {
     const userId = profile.userId;
     console.log("✅ userId:", userId);
     currentUserId = userId;  // ⭐ store userId globally for later
+
+        // ✅ เพิ่มใน script.js — หลัง currentUserId ถูกกำหนดแล้ว
+    window.qrToken = null;
+    let qrInterval = null;
+    
+    async function showQRSection() {
+      const token = generateToken();
+      window.qrToken = token;
+      const createdAt = new Date().toISOString();
+      const payload = {
+        action: "create_token",
+        token,
+        userId: currentUserId,
+        createdAt
+      };
+      try {
+        const res = await fetch(GAS_ENDPOINT + '?action=create_token', {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify(payload)
+        });
+        if (!res.ok) throw new Error("create_token failed");
+        document.getElementById('qrSection').classList.remove('hidden');
+        generateQRCode(token);
+        startQRCountdown();
+      } catch (err) {
+        Swal.fire("❌ ไม่สามารถสร้าง QR ได้", err.message, "error");
+      }
+    }
+    
+    function generateQRCode(text) {
+      const canvas = document.getElementById("qrCanvas");
+      const qr = new QRious({
+        element: canvas,
+        value: text,
+        size: 200
+      });
+    }
+    
+    function startQRCountdown() {
+      let count = 600;
+      document.getElementById("qrCountdown").textContent = count;
+      qrInterval = setInterval(() => {
+        count--;
+        document.getElementById("qrCountdown").textContent = count;
+        if (count <= 0) {
+          clearInterval(qrInterval);
+          deleteQRToken();
+        }
+      }, 1000);
+    }
+    
+    async function closeQRSection() {
+      document.getElementById('qrSection').classList.add('hidden');
+      clearInterval(qrInterval);
+      await deleteQRToken();
+    }
+    
+    async function deleteQRToken() {
+      if (!window.qrToken) return;
+      await fetch(GAS_ENDPOINT + '?action=delete_token', {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action: "delete_token", token: window.qrToken })
+      });
+      window.qrToken = null;
+    }
+
     
     const res = await fetch(`${GAS_ENDPOINT}?action=member&userId=${userId}`);
     console.log("✅ response status:", res.status);

@@ -66,32 +66,47 @@ function generateToken(length = 10) {
 
 // ✅ เพิ่มใน script.js — หลัง currentUserId ถูกกำหนดแล้ว qr code
 window.qrToken = null;
-    let qrInterval = null;
+let qrInterval = null;
     
-    async function showQRSection() {
-      const token = generateToken();
-      window.qrToken = token;
-      const createdAt = new Date().toISOString();
-      const payload = {
-        action: "create_token",
-        token,
-        userId: currentUserId,
-        createdAt
-      };
-      try {
-        const res = await fetch(GAS_ENDPOINT + '?action=create_token', {
-          method: 'POST',
-          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-          body: JSON.stringify(payload)
-        });
-        if (!res.ok) throw new Error("create_token failed");
-        document.getElementById('qrSection').classList.remove('hidden');
-        generateQRCode(token, data);
-        startQRCountdown();
-      } catch (err) {
-        Swal.fire("❌ ไม่สามารถสร้าง QR ได้", err.message, "error");
-      }
-    }
+async function showQRSection() {
+  const btn = document.getElementById("qrBtn");
+  btn.disabled = true;
+  const originalText = btn.innerHTML;
+  btn.innerHTML = "⏳ กำลังสร้าง QR...";
+
+  try {
+    const token = generateToken();
+    window.qrToken = token;
+    const createdAt = new Date().toISOString();
+    const payload = {
+      action: "create_token",
+      token,
+      userId: currentUserId,
+      createdAt
+    };
+
+    const res = await fetch(GAS_ENDPOINT + '?action=create_token', {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(payload)
+    });
+
+    if (!res.ok) throw new Error("create_token failed");
+
+    const result = await res.json();
+    if (result.status !== 'success') throw new Error(result.message || "QR สร้างไม่สำเร็จ");
+
+    document.getElementById('qrSection').classList.remove('hidden');
+    generateQRCode(token, data);
+    startQRCountdown();
+  } catch (err) {
+    Swal.fire("❌ ไม่สามารถสร้าง QR ได้", err.message, "error");
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = originalText;
+  }
+}
+
     
     function generateQRCode(text, userInfo) {
       const canvas = document.getElementById("qrCanvas");
@@ -104,7 +119,7 @@ window.qrToken = null;
     }
 
     async function closeQRSection() {
-      document.getElementById('qrSection').classList.add('hidden');
+      document.getElementById('closeQRBtn').addEventListener('click', closeQRSection);
       clearInterval(qrInterval);
       await deleteQRToken();
     }

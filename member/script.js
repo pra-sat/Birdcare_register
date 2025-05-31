@@ -69,6 +69,11 @@ window.qrToken = null;
 let qrInterval = null;
     
 async function showQRSection() {
+  
+  if (!document.getElementById('qrSection').classList.contains('hidden')) {
+    return; // ถ้าแสดงอยู่แล้ว ไม่ต้องสร้างใหม่
+  }
+
   const btn = document.getElementById("qrBtn");
   btn.disabled = true;
   const originalText = btn.innerHTML;
@@ -120,11 +125,13 @@ async function showQRSection() {
       document.getElementById('closeQRBtn').addEventListener('click', closeQRSection);
     }
 
-    async function closeQRSection() {
+    function closeQRSection() {
       document.getElementById('qrSection').classList.add('hidden');
+      document.getElementById('qrUserInfo').innerText = '';
       clearInterval(qrInterval);
-      await deleteQRToken();
+      deleteQRToken();
     }
+
 
     function startQRCountdown() {
       let count = 600;

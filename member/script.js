@@ -64,25 +64,8 @@ function generateToken(length = 10) {
   return Array.from({ length }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
 }
 
-document.addEventListener('DOMContentLoaded', async () => {
-  try {
-    // await showPopupLoading();
-    showLoadingOverlay();
-    console.log("Start login line...");
-    await liff.init({ liffId: '2007421084-WXmXrzZY' });
-    if (!liff.isLoggedIn()) {
-      liff.login();
-     return;
-   }
-    
-    
-    const profile = await liff.getProfile();
-    const userId = profile.userId;
-    console.log("✅ userId:", userId);
-    currentUserId = userId;  // ⭐ store userId globally for later
-
-        // ✅ เพิ่มใน script.js — หลัง currentUserId ถูกกำหนดแล้ว
-    window.qrToken = null;
+// ✅ เพิ่มใน script.js — หลัง currentUserId ถูกกำหนดแล้ว qr code
+window.qrToken = null;
     let qrInterval = null;
     
     async function showQRSection() {
@@ -118,7 +101,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         size: 200
       });
     }
-    
+
+    async function closeQRSection() {
+      document.getElementById('qrSection').classList.add('hidden');
+      clearInterval(qrInterval);
+      await deleteQRToken();
+    }
+
     function startQRCountdown() {
       let count = 600;
       document.getElementById("qrCountdown").textContent = count;
@@ -132,11 +121,6 @@ document.addEventListener('DOMContentLoaded', async () => {
       }, 1000);
     }
     
-    async function closeQRSection() {
-      document.getElementById('qrSection').classList.add('hidden');
-      clearInterval(qrInterval);
-      await deleteQRToken();
-    }
     
     async function deleteQRToken() {
       if (!window.qrToken) return;
@@ -147,6 +131,23 @@ document.addEventListener('DOMContentLoaded', async () => {
       });
       window.qrToken = null;
     }
+
+document.addEventListener('DOMContentLoaded', async () => {
+  try {
+    // await showPopupLoading();
+    showLoadingOverlay();
+    console.log("Start login line...");
+    await liff.init({ liffId: '2007421084-WXmXrzZY' });
+    if (!liff.isLoggedIn()) {
+      liff.login();
+     return;
+   }
+    
+    
+    const profile = await liff.getProfile();
+    const userId = profile.userId;
+    console.log("✅ userId:", userId);
+    currentUserId = userId;  // ⭐ store userId globally for later
 
     
     const res = await fetch(`${GAS_ENDPOINT}?action=member&userId=${userId}`);

@@ -5,8 +5,10 @@ const memberInfoEl = document.getElementById('memberInfo');
 const historySection = document.getElementById('historySection');
 const toggleBtn = document.getElementById('toggleHistory');
 
+
 // ⭐ Global variable to store current userId for later use (e.g., submitting feedback)
 let currentUserId = null;
+let memberData = null; // เพิ่มไว้ด้านบนสุด
 
 // async function showPopupLoading() {
 //   return await Swal.fire({
@@ -102,7 +104,7 @@ async function showQRSection() {
     if (result.status !== 'success') throw new Error(result.message || "QR สร้างไม่สำเร็จ");
 
     document.getElementById('qrSection').classList.remove('hidden');
-    generateQRCode(token, data);
+    generateQRCode(token, memberData);
     startQRCountdown();
   } catch (err) {
     Swal.fire("❌ ไม่สามารถสร้าง QR ได้", err.message, "error");
@@ -194,6 +196,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
     
     const data = await res.json();
+    memberData = data; // ⭐ เก็บไว้ใช้ภายหลัง
+
     if (!data || !data.name) {
       hideLoadingOverlay(); // ✅ ก่อน Swal.fire
     

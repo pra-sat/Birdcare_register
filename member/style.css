@@ -303,23 +303,32 @@ tbody tr:hover {
 
 .qr-popup {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 999;
-  background: rgba(0, 0, 0, 0.9);
+  z-index: 9999;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: rgba(0, 0, 0, 0.9);
   display: flex;
   justify-content: center;
   align-items: center;
 }
-.qr-popup-inner {
-  background: #fff;
-  padding: 20px;
-  text-align: center;
-  border-radius: 12px;
+
+.qr-popup.hidden {
+  display: none;
 }
+
+.qr-popup-inner {
+  background-color: white;
+  padding: 20px 30px;
+  border-radius: 12px;
+  text-align: center;
+  max-width: 300px;
+  width: 90%;
+}
+
 .qr-popup canvas {
   margin: 20px auto;
   display: block;
+}
+
+#closeQRBtn {
+  margin-top: 20px;
 }

@@ -300,3 +300,26 @@ tbody tr:hover {
 .feedback-row td {
   border-bottom: none;
 }
+
+.qr-popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 999;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.qr-popup-inner {
+  background: #fff;
+  padding: 20px;
+  text-align: center;
+  border-radius: 12px;
+}
+.qr-popup canvas {
+  margin: 20px auto;
+  display: block;
+}

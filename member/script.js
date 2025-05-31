@@ -113,17 +113,17 @@ async function showQRSection() {
 }
 
     
-    function generateQRCode(text, userInfo) {
-      const canvas = document.getElementById("qrCanvas");
-      const qr = new QRious({
-        element: canvas,
-        value: text,
-        size: 200
-      });
-      document.getElementById('qrUserInfo').innerText = `🔑 ${userInfo.name} - ${userInfo.brand} ${userInfo.model} (${userInfo.year})`;
-      document.addEventListener('DOMContentLoaded', () => {
-      document.getElementById('closeQRBtn').addEventListener('click', closeQRSection);
-    }
+function generateQRCode(text, userInfo) {
+  const canvas = document.getElementById("qrCanvas");
+  const qr = new QRious({
+    element: canvas,
+    value: text,
+    size: 200
+  });
+
+  document.getElementById('qrUserInfo').innerText = `🔑 ${userInfo.name} - ${userInfo.brand} ${userInfo.model} (${userInfo.year})`;
+  document.getElementById('closeQRBtn').addEventListener('click', closeQRSection);
+}
 
     function closeQRSection() {
       document.getElementById('qrSection').classList.add('hidden');

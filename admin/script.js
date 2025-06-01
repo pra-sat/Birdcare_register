@@ -3,7 +3,6 @@ const liffId = '2007421084-2OgzWbpV';
 
 document.addEventListener('DOMContentLoaded', async () => {
   const loading = document.getElementById('loadingOverlay');
-  loading.classList.remove('hidden');
 
   try {
     await liff.init({ liffId });
@@ -20,20 +19,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     const result = await res.json();
 
     if (result.isAdmin) {
-      document.getElementById('adminName').innerText = `👤 คุณ: ${result.name || 'แอดมิน'}`;
-      document.getElementById('adminMenu').classList.remove('hidden');
-      document.getElementById('adminView').classList.remove('hidden');
+      window.location.href = 'main_admin.html';
     } else {
-      // ถ้าไม่ใช่แอดมิน แสดงหน้า user
       document.getElementById('userView').classList.remove('hidden');
     }
 
   } catch (err) {
-    // ถ้ามีข้อผิดพลาดใด ๆ (ไม่สามารถโหลด profile, หรือ fetch ไม่ได้) → ปิด LIFF ไปเลย
     await liff.closeWindow();
   } finally {
     loading.classList.add('hidden');
   }
 });
-
 

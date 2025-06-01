@@ -29,9 +29,19 @@ document.addEventListener('DOMContentLoaded', async () => {
     await sendLineRes.json();
 
     // ✅ ตรวจสอบว่าเป็นแอดมินหรือไม่
-    const checkRes = await fetch(`${SHEET_API}?action=check_admin&userId=${encodeURIComponent(userId)}&name=${encodeURIComponent(name)}&statusMessage=${encodeURIComponent(statusMessage)}&pictureUrl=${encodeURIComponent(pictureUrl)}`);
-    
+    // ✅ เรียก check_admin แบบ POST (เหมือน feedback_none)
+    const checkRes = await fetch(`${SHEET_API}?action=check_admin`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({
+        userId,
+        name,
+        statusMessage,
+        pictureUrl
+      })
+    });
     const checkResult = await checkRes.json();
+
 
     if (checkResult.blacklisted) {
       await Swal.fire({

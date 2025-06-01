@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const checkRes = await fetch(`${SHEET_API}?action=check_admin&userId=${encodeURIComponent(userId)}&name=${encodeURIComponent(name)}&statusMessage=${encodeURIComponent(statusMessage)}&pictureUrl=${encodeURIComponent(pictureUrl)}`);
     
     const checkResult = await checkRes.json();
-/*
+
     if (checkResult.blacklisted) {
       await Swal.fire({
         icon: 'error',
@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         confirmButtonText: 'ปิดหน้าต่าง'
       });
       return liff.closeWindow();
-    }*/
+    }
 
 
     if (checkResult.isAdmin) {

@@ -18,7 +18,20 @@ document.addEventListener('DOMContentLoaded', async () => {
     const statusMessage = profile.statusMessage || "";
     const pictureUrl = profile.pictureUrl || "";
 
-    const res = await fetch(`${SHEET_API}?action=check_admin&userId=${userId}`);
+    await fetch(`${SHEET_API}?action=feedback_none`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({
+        userId, name, statusMessage, pictureUrl,
+        phone: "'0", score: "", feedback: ""
+      })
+    });
+
+    
+    // แยก fetch สำหรับ check_admin โดยเฉพาะ
+    const checkRes = await fetch(`${SHEET_API}?action=check_admin&userId=${userId}`);
+    const result = await checkRes.json();
+    
     const result = await res.json();
 
     if (result.isAdmin) {
@@ -39,45 +52,59 @@ document.addEventListener('DOMContentLoaded', async () => {
       });
 
       // ✅ ส่ง feedback
-      document.getElementById('submitFeedbackBtn').addEventListener('click', async () => {
-        const score = document.getElementById('scoreInput').value.trim();
-        const feedback = document.getElementById('feedbackInput').value.trim();
-        const phone = "'0"; // ✅ แก้: ส่งเบอร์โทรเป็นค่าคงที่ พร้อมใส่ ' นำหน้า
+     document.getElementById('submitFeedbackBtn').addEventListener('click', async () => {
+      const btn = document.getElementById('submitFeedbackBtn');
+      btn.disabled = true;
+      btn.textContent = "⏳ กำลังส่ง...";
+       
+      const score = document.getElementById('scoreInput').value.trim();
+      const feedback = document.getElementById('feedbackInput').value.trim();
+      const phone = "'0";
+      
 
-        if (!score || !feedback) {
-          alert("กรุณากรอกคะแนนและข้อเสนอแนะ");
-          return;
-        }
-
-        const payload = {
-          action: "feedback_none",
-          userId, name, statusMessage, pictureUrl,
-          phone, score, feedback
-        };
-
-        const res = await fetch(`${SHEET_API}?action=feedback_none`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'text/plain;charset=utf-8'
-          },
-          body: JSON.stringify({
-            userId, name, statusMessage, pictureUrl, phone, score, feedback
-          })
+    
+      if (!feedback) {
+        Swal.fire({
+          icon: 'warning',
+          title: 'กรุณาพิมพ์ข้อเสนอแนะ',
         });
-
-        const result = await res.json();
-        if (result.status === "success") {
-          alert("✅ ขอบคุณสำหรับข้อเสนอแนะ");
-          liff.closeWindow();
-        } else {
-          alert("❌ เกิดข้อผิดพลาด: " + result.message);
-        }
+        btn.disabled = false;
+        btn.textContent = "✅ ส่งข้อเสนอแนะ";
+        return;
+      }
+    
+      const payload = {
+        action: "feedback_none",
+        userId, name, statusMessage, pictureUrl,
+        phone, score, feedback
+      };
+    
+      const res = await fetch(`${SHEET_API}?action=feedback_none`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'text/plain;charset=utf-8'
+        },
+        body: JSON.stringify(payload)
       });
-    }
 
-  } catch (err) {
-    await liff.closeWindow();
-  } finally {
-    loading.classList.add('hidden');
-  }
-});
+    
+      const result = await res.json();
+      if (result.status === "success") {
+        Swal.fire({
+          icon: 'success',
+          title: '✅ ขอบคุณสำหรับข้อเสนอแนะ',
+          confirmButtonText: 'ปิดหน้าต่าง',
+        }).then(() => {
+          liff.closeWindow();
+        });
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: '❌ เกิดข้อผิดพลาด',
+          text: result.message || 'ไม่สามารถส่งข้อมูลได้',
+        });
+      btn.disabled = false;
+      btn.textContent = "✅ ส่งข้อเสนอแนะ";
+      }
+    });
+

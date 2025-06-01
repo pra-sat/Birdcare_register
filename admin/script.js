@@ -1,4 +1,4 @@
-const SHEET_API = 'https://script.google.com/macros/s/...'; // ของคุณ
+const SHEET_API = 'https://script.google.com/macros/s/AKfycbxdxUvmwLS3_nETwGLk4J8ipPq2LYNSWyhJ2ZwVsEJQgONG11NSSX3jVaeqWCU1TXvE5g/exec';
 const liffId = '2007421084-2OgzWbpV';
 
 document.addEventListener('DOMContentLoaded', async () => {

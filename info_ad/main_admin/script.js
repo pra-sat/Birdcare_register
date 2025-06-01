@@ -22,6 +22,31 @@ document.addEventListener('DOMContentLoaded', async () => {
     const statusMessage = profile.statusMessage || "";
     const pictureUrl = profile.pictureUrl || "";
 
+    await silentlyUpdateLineProfile(profile);
+
+    async function silentlyUpdateLineProfile(profile) {
+      try {
+        const payload = {
+          action: 'update_line_profile',
+          userId: profile.userId,
+          nameLine: profile.displayName,
+          statusMessage: profile.statusMessage || "",
+          pictureUrl: profile.pictureUrl || ""
+        };
+    
+        const res = await fetch(GAS_ENDPOINT + '?action=update_line_profile', {
+          method: 'POST',
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify(payload)
+        });
+    
+        const data = await res.json();
+        console.log("✅ LINE Profile อัปเดตอัตโนมัติ:", data);
+      } catch (err) {
+        console.warn("⚠️ อัปเดตโปรไฟล์ LINE ล้มเหลว:", err);
+      }
+    }
+
     const res = await fetch(`${SHEET_API}?action=check_admin&userId=${userId}&name=${encodeURIComponent(name)}&statusMessage=${encodeURIComponent(statusMessage)}&pictureUrl=${encodeURIComponent(pictureUrl)}`);
     const result = await res.json();
 

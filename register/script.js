@@ -210,7 +210,10 @@ form.addEventListener('submit', async event => {
         model: model.trim(), 
         year: year.trim(), 
         category, 
-        channel 
+        channel,
+        "name-line": profile.displayName,
+        statusMessage: profile.statusMessage || "",
+        pictureUrl: profile.pictureUrl || ""
     };
 
     const confirm = await Swal.fire({

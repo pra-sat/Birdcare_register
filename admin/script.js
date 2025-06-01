@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   loading.classList.remove('hidden'); // แสดงโหลด
 
   try {
-    await liff.init({ liffId: 'YOUR_LIFF_ID' });
+    await liff.init({ liffId: '2007421084-2OgzWbpV' });
 
     if (!liff.isLoggedIn()) {
       liff.login();

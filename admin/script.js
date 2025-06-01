@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   loading.classList.remove('hidden');
 
   try {
-    await liff.init({ liffId: 'liffId' });
+    await liff.init({ liffId });
 
     if (!liff.isLoggedIn()) {
       liff.login();

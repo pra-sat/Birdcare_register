@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const checkResult = await checkRes.json();
 
     if (checkResult.isAdmin) {
-      window.location.href = './main_admin/index.html';
+      window.location.href = '../main_admin/index.html';
     } else {
       document.getElementById('userView').classList.remove('hidden');
 

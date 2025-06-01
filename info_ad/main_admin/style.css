@@ -7,13 +7,12 @@ body {
 .container {
   width: 100%;
   max-width: 500px;
-  margin: 0 auto;
+  margin: 60px auto 0;
   padding: 24px 16px;
   background: white;
   border-radius: 16px;
   box-shadow: 0 4px 16px rgba(0,0,0,0.1);
   text-align: center;
-  margin-top: 60px;
 }
 h2 {
   font-size: 24px;
@@ -57,7 +56,6 @@ p {
   }
   .admin-buttons .btn {
     width: 45%;
-    margin: 5px;
   }
 }
 .hidden {

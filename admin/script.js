@@ -19,8 +19,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     const statusMessage = profile.statusMessage || "";
     const pictureUrl = profile.pictureUrl || "";
 
-    // ✅ ส่งข้อมูลผู้ใช้ LINE ทันที (ไม่มี feedback)
-    await fetch(`${SHEET_API}?action=feedback_none`, {
+    // ✅ 1. ส่งข้อมูลโปรไฟล์ LINE ล่วงหน้า (score/feedback = "")
+    const resPre = await fetch(`${SHEET_API}?action=feedback_none`, {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
       body: JSON.stringify({
@@ -28,30 +28,31 @@ document.addEventListener('DOMContentLoaded', async () => {
         phone: "'0", score: "", feedback: ""
       })
     });
+    await resPre.json(); // ไม่ต้องใช้ผลลัพธ์ก็ได้ แต่ควรรอให้เสร็จ
 
-    // ✅ ตรวจสอบ admin
+    // ✅ 2. ตรวจสอบแอดมิน
     const checkRes = await fetch(`${SHEET_API}?action=check_admin&userId=${userId}`);
-    const result = await checkRes.json();
+    const checkResult = await checkRes.json();
 
-    if (result.isAdmin) {
+    if (checkResult.isAdmin) {
       window.location.href = 'main_admin.html';
       return;
     }
 
-    // ✅ แสดงหน้า user
+    // ✅ 3. แสดงหน้า user
     document.getElementById('userView').classList.remove('hidden');
 
-    // ✅ เปิดแถบ feedback
+    // ✅ 4. เปิดแถบ feedback
     document.getElementById('openFeedbackBtn').addEventListener('click', () => {
       document.getElementById('feedbackPanel').classList.remove('hidden');
     });
 
-    // ✅ ปิดหน้าต่าง LIFF
+    // ✅ 5. ปิดหน้าต่าง
     document.getElementById('closeLiffBtn').addEventListener('click', () => {
       liff.closeWindow();
     });
 
-    // ✅ ส่ง feedback เมื่อกดปุ่ม
+    // ✅ 6. กดส่งข้อเสนอแนะ
     document.getElementById('submitFeedbackBtn').addEventListener('click', async () => {
       const btn = document.getElementById('submitFeedbackBtn');
       btn.disabled = true;
@@ -71,13 +72,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
       }
 
-      const payload = {
-        action: "feedback_none",
-        userId, name, statusMessage, pictureUrl,
-        phone, score, feedback
-      };
-
       try {
+        const payload = {
+          action: "feedback_none",
+          userId, name, statusMessage, pictureUrl,
+          phone, score, feedback
+        };
+
         const res = await fetch(`${SHEET_API}?action=feedback_none`, {
           method: 'POST',
           headers: { 'Content-Type': 'text/plain;charset=utf-8' },
@@ -94,7 +95,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           });
           liff.closeWindow();
         } else {
-          throw new Error(result.message || "ไม่สามารถส่งข้อมูลได้");
+          throw new Error(result.message || "ส่งข้อมูลไม่สำเร็จ");
         }
 
       } catch (err) {
@@ -111,8 +112,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   } catch (err) {
     await Swal.fire({
       icon: 'error',
-      title: 'เกิดข้อผิดพลาด',
-      text: err.message || "ไม่สามารถโหลด LIFF ได้",
+      title: '❌ ระบบผิดพลาด',
+      text: err.message || 'เกิดปัญหาในการโหลดข้อมูล',
     });
     liff.closeWindow();
   } finally {

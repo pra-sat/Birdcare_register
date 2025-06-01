@@ -21,7 +21,20 @@
     <p>📍 <strong>Bird Car Care</strong> ล้างรถ อัดฉีด ดูดฝุ่น เคลือบแก้ว</p>
     <p>📞 โทร: <a href="tel:098XXXXXXX">098-XXXXXXX</a></p>
     <p>⏰ เปิดบริการ: 08:00 - 18:00</p>
-    <a href="https://forms.gle/CV2VSAhvyB8tYUPc7" class="btn">✍️ ส่งข้อเสนอแนะ</a>
+    <!-- ✅ แก้ไข: จากเดิมมีแค่ปุ่มลิงก์ Google Form เปลี่ยนเป็นปุ่มแสดงฟอร์มภายใน -->
+    <a id="openFeedbackBtn" class="btn">✍️ ส่งข้อเสนอแนะ</a>
+    
+    <!-- ✅ เพิ่ม: Slide-down Feedback Panel -->
+    <div id="feedbackPanel" class="hidden">
+      <h3>✍️ ฟอร์มข้อเสนอแนะ</h3>
+      <input id="phoneInput" type="text" placeholder="เบอร์โทร" />
+      <input id="scoreInput" type="number" placeholder="คะแนนบริการ (1-5)" />
+      <textarea id="feedbackInput" placeholder="ข้อเสนอแนะของคุณ..."></textarea>
+      <br>
+      <button class="btn" id="submitFeedbackBtn">✅ ส่งข้อเสนอแนะ</button>
+      <button class="btn" id="closeLiffBtn">❌ ปิดหน้าต่าง</button>
+    </div>
+
   </div>
 </body>
 </html>

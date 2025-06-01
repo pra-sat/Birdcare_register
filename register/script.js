@@ -2,6 +2,7 @@
 
 
 let userId = '';
+let profile = null;
 const liffId = '2007421084-0VKG7anQ';
 const GAS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxdxUvmwLS3_nETwGLk4J8ipPq2LYNSWyhJ2ZwVsEJQgONG11NSSX3jVaeqWCU1TXvE5g/exec';
 const confirmText = 'ตกลง';
@@ -28,7 +29,7 @@ async function initLIFF() {
         //     return;
         // }
 
-        const profile = await liff.getProfile();
+        profile = await liff.getProfile();
         console.log('Profile retrieved:', profile);
 
        if (!profile.userId) {

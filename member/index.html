@@ -23,7 +23,7 @@
 
     <!-- แถบกดดูประวัติ -->
     <button class="btn history-toggle" id="toggleHistory">▼ ดูประวัติการใช้บริการ</button>
-    <button class="btn" id="qrBtn" onclick="showQRSection()">🔓 แสดง QR ยืนยันตัวตน</button>
+    <button class="btn" id="qrBtn" onclick="showQRSection()">แสดง QR Code</button>
 
     <!-- พื้นที่แสดงประวัติ -->
     <div id="historySection" class="card hidden">
@@ -39,11 +39,11 @@
   <!-- ✅ Section แสดง QR -->
   <div id="qrSection" class="qr-popup hidden">
     <div class="qr-popup-inner">
-      <p><b>🔐 QR ยืนยันตัวตน</b></p>
+      <p><b>QR ยืนยันตัวตน</b></p>
       <canvas id="qrCanvas"></canvas>
       <p id="qrUserInfo"></p>
       <p>หมดอายุใน <span id="qrCountdown">600</span> วินาที</p>
-      <button class="btn" id="closeQRBtn">❌ ปิด QR</button>
+      <button class="btn" id="closeQRBtn">❌</button>
     </div>
   </div>
 

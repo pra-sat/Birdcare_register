@@ -37,7 +37,8 @@ h2 {
   padding: 10px 16px;
   border: none;
   border-radius: 8px;
-  background-color: #0078d4;
+  /*background-color: #0078d4;*/
+  background-color: #ffffff;
   color: #fff;
   font-size: 14px;
   cursor: pointer;

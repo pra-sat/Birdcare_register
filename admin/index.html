@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <title>แผงควบคุมแอดมิน</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <script src="script.js" defer></script>
+</head>
+<body>
+  
+  <div id="loadingOverlay" class="loading-overlay hidden">
+  <div class="loading-box">
+    <div class="spinner"></div>
+    <p>⏳ กำลังโหลดข้อมูล โปรดรอสักครู่...</p>
+  </div>
+</div>
+
+  <div class="container">
+    <h2>🛠 แผงควบคุมผู้ดูแลระบบ</h2>
+    <p id="adminName">กำลังตรวจสอบสิทธิ์...</p>
+    <div class="admin-menu hidden" id="adminMenu">
+      <a class="btn" href="scan.html">🔍 สแกน QR เพื่อเพิ่มบริการ</a>
+      <a class="btn" href="stats.html">📊 ดูรายงาน/สถิติ</a>
+      <a class="btn" href="settings.html">⚙️ จัดการโปรโมชัน/ของรางวัล</a>
+      <a class="btn" href="feedback.html">💬 ดูข้อเสนอแนะลูกค้า</a>
+    </div>
+    <p class="notice" id="adminNotice"></p>
+  </div>
+</body>
+</html>

@@ -90,6 +90,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         try {
           const res = await fetch(`${SHEET_API}?action=feedback_none`, {
+            redirect: "follow",
             method: 'POST',
             headers: { 'Content-Type': 'text/plain;charset=utf-8' },
             body: JSON.stringify(payload)

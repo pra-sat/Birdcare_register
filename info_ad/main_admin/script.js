@@ -26,5 +26,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   } catch (err) {
     alert("เกิดข้อผิดพลาดในการโหลดข้อมูลผู้ใช้");
     console.error(err);
+    liff.closeWindow();
   }
 });

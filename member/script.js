@@ -218,12 +218,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     
 
     memberInfoEl.innerHTML = `
-      <p><b>👤 ชื่อ : ${data.name}</b></p>
-      <p>📱 เบอร์โทร : ${formatPhone(data.phone)}</p>
-      <p>🚗 รถ : ${data.brand} ${data.model} (${data.year})</p>
-      <p>📎 หมวดหมู่ : ${data.category}</p>
-      <p>💳 แต้มสะสม : ${data.point} แต้ม</p>
-      <p>⏰ แต้มหมดอายุ : ${data.expirationDate && data.expirationDate.trim() ? data.expirationDate : '-'}</p>
+      <p><b> ชื่อ : ${data.name}</b></p>
+      <p> เบอร์โทร : ${formatPhone(data.phone)}</p>
+      <p> รถ : ${data.brand} ${data.model} (${data.year})</p>
+      <p> หมวดหมู่ : ${data.category}</p>
+      <p> แต้มสะสม : ${data.point} แต้ม</p>
+      <p> แต้มหมดอายุ : ${data.expirationDate && data.expirationDate.trim() ? data.expirationDate : '-'}</p>
     `;
     
     toggleBtn.disabled = true;
@@ -278,12 +278,12 @@ document.addEventListener('DOMContentLoaded', async () => {
           }
           // Service details in card
           historyCardsHtml += `
-            <p><b>📅 วันที่:</b> ${dateStr}</p>
-            <p><b>🚘 ยี่ห้อ/รุ่น:</b> ${row.brand || '-'} ${row.model || '-'}</p>
-            <p><b>🛠 บริการ:</b> ${row.service}</p>
-            <p><b>💰 ราคา:</b> ${row.price} ฿</p>
-            <p><b>🏅 แต้ม:</b> ${row.point}</p>
-            <p><b>📝 หมายเหตุ:</b> ${row.note}</p>
+            <p><b> วันที่:</b> ${dateStr}</p>
+            <p><b> ยี่ห้อ/รุ่น:</b> ${row.brand || '-'} ${row.model || '-'}</p>
+            <p><b> บริการ:</b> ${row.service}</p>
+            <p><b> ราคา:</b> ${row.price} ฿</p>
+            <p><b> แต้ม:</b> ${row.point}</p>
+            <p><b> หมายเหตุ:</b> ${row.note}</p>
           `;
           // Feedback form panel (hidden by default) for not-yet-rated service
           if (!row.rating || !row.feedback) {

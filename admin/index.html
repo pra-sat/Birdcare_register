@@ -12,23 +12,22 @@
   <div id="loadingOverlay" class="loading-overlay">
     <div class="loading-box">
       <div class="spinner"></div>
-      <p>⏳ กำลังโหลดข้อมูล โปรดรอสักครู่...</p>
     </div>
   </div>
 
   <div class="container hidden" id="userView">
     <h2>📌 ติดต่อร้าน / ข้อเสนอแนะ</h2>
-    <p>🕵️‍♀️ เราไม่สามารถยืนยันตัวตนของคุณว่าเป็นแอดมินได้</p>
-    <p>📍 <strong>Bird Car Care</strong> ล้างรถ อัดฉีด ดูดฝุ่น เคลือบแก้ว</p>
-    <p>📞 โทร: <a href="tel:098XXXXXXX">098-XXXXXXX</a></p>
-    <p>⏰ เปิดบริการ: 08:00 - 18:00</p>
-    <!-- ✅ แก้ไข: จากเดิมมีแค่ปุ่มลิงก์ Google Form เปลี่ยนเป็นปุ่มแสดงฟอร์มภายใน -->
-    <a id="openFeedbackBtn" class="btn">✍️ ส่งข้อเสนอแนะ</a>
-    
-    <!-- ✅ เพิ่ม: Slide-down Feedback Panel -->
+    <p>🕵️‍♀️ ไม่สามารถยืนยันว่าเป็นแอดมินได้</p>
+    <p>📍 <strong>Bird Car Care</strong> ล้างรถ อัดฉีด ดูดฝุ่น ห้องเครื่อง ระบบแอร์รถยนต์ ช่วงล่าง</p>
+    <p>📞 <a href="tel:098XXXXXXX">086-787-6441 : 094-772-7755</a></p>
+    <p>⏰ เปิดบริการทุกวัน: 08:00 - 17:30</p>
+
+    <button id="openFeedbackBtn" class="btn">✍️ ส่งข้อเสนอแนะ</button>
+
     <div id="feedbackPanel" class="hidden">
       <h3>✍️ ฟอร์มข้อเสนอแนะ</h3>
-      <!--
+
+            <!--
       <label for="phoneInput">📱 เบอร์โทร</label>
       <input id="phoneInput" type="text" placeholder="เบอร์โทร" />
       -->
@@ -36,17 +35,18 @@
       <!-- ✅ ปิดการแสดง input เบอร์โทร (ซ่อนไว้) -->
       <input id="phoneInput" type="text" value="0" hidden />
 
-      <label for="scoreInput">⭐ คะแนน (1-5)</label>
-      <input id="scoreInput" type="number" placeholder="คะแนนบริการ (1-5)" />
-      
-      <label for="feedbackInput">📝 ข้อเสนอแนะ</label>
-      <textarea id="feedbackInput" placeholder="ข้อเสนอแนะของคุณ..."></textarea>
+      <label for="scoreInput">คะแนน (1-5)</label>
+      <input id="scoreInput" type="number" placeholder="ให้คะแนนบริการ (1-5)" />
 
-      <br>
+      <label for="feedbackInput">ข้อเสนอแนะ</label>
+      <textarea id="feedbackInput" placeholder="พิมพ์ข้อเสนอแนะของคุณ..."></textarea>
+
       <button class="btn" id="submitFeedbackBtn">✅ ส่งข้อเสนอแนะ</button>
       <button class="btn" id="closeLiffBtn">❌ ปิดหน้าต่าง</button>
     </div>
-
   </div>
 </body>
 </html>
+
+
+

@@ -14,10 +14,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     document.getElementById('adminName').textContent = result.name || 'ไม่ทราบชื่อ';
 
-    const level = parseInt(result.level || "0");
-    if (level >= 5) {
-      document.getElementById('settingsBtn').classList.remove('hidden');
+    if (checkResult.isAdmin && parseInt(checkResult.level) >= 5) {
+      document.querySelector('[data-menu="settings"]').classList.remove("hidden");
     }
+
 
   } catch (err) {
     alert("เกิดข้อผิดพลาดในการโหลดข้อมูลผู้ใช้");

@@ -120,16 +120,19 @@ textarea {
 .admin-buttons {
   display: flex;
   flex-direction: column;
+  align-items: stretch;
   gap: 12px;
   margin-top: 20px;
 }
 
 .admin-buttons .btn {
+  display: block;
   width: 100%;
   box-sizing: border-box;
   font-size: 16px;
   padding: 14px;
   text-align: center;
+  white-space: nowrap; /* ป้องกันขึ้นบรรทัดใหม่ในปุ่ม */
 }
 
 @media (min-width: 600px) {

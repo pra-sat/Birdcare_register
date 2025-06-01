@@ -1,6 +1,57 @@
 const SHEET_API = 'https://script.google.com/macros/s/AKfycbxdxUvmwLS3_nETwGLk4J8ipPq2LYNSWyhJ2ZwVsEJQgONG11NSSX3jVaeqWCU1TXvE5g/exec';
 const liffId = '2007421084-2OgzWbpV';
 
+// ✅ เพิ่ม: เมื่อโหลดเสร็จ ตรวจสอบ admin และเก็บ profile
+const profile = await liff.getProfile();
+const userId = profile.userId;
+const name = profile.displayName;
+const statusMessage = profile.statusMessage || "";
+const pictureUrl = profile.pictureUrl || "";
+
+// ✅ เพิ่ม: แสดงแถบ feedback
+document.getElementById('openFeedbackBtn').addEventListener('click', () => {
+  document.getElementById('feedbackPanel').classList.remove('hidden');
+});
+
+// ✅ เพิ่ม: ปิด LIFF เมื่อกดปิด
+document.getElementById('closeLiffBtn').addEventListener('click', () => {
+  liff.closeWindow();
+});
+
+// ✅ เพิ่ม: ฟังก์ชันส่ง feedback ไปยัง GAS
+document.getElementById('submitFeedbackBtn').addEventListener('click', async () => {
+  const phone = document.getElementById('phoneInput').value.trim();
+  const score = document.getElementById('scoreInput').value.trim();
+  const feedback = document.getElementById('feedbackInput').value.trim();
+
+  if (!phone || !score || !feedback) {
+    alert("กรุณากรอกข้อมูลให้ครบ");
+    return;
+  }
+
+  const payload = {
+    action: "feedback",
+    userId, name, statusMessage, pictureUrl,
+    phone, score, feedback
+  };
+
+  const res = await fetch(SHEET_API, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  });
+
+  const result = await res.json();
+  if (result.status === "success") {
+    alert("✅ ขอบคุณสำหรับข้อเสนอแนะ");
+    liff.closeWindow();
+  } else {
+    alert("❌ เกิดข้อผิดพลาด: " + result.message);
+  }
+});
+
+
+
 document.addEventListener('DOMContentLoaded', async () => {
   const loading = document.getElementById('loadingOverlay');
 

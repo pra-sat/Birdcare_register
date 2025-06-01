@@ -8,24 +8,35 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const profile = await liff.getProfile();
     const userId = profile.userId;
+    const name = profile.displayName;
+    const statusMessage = profile.statusMessage || "";
+    const pictureUrl = profile.pictureUrl || "";
 
-    const res = await fetch(`${SHEET_API}?action=check_admin&userId=${userId}`);
+    const res = await fetch(`${SHEET_API}?action=check_admin&userId=${userId}&name=${encodeURIComponent(name)}&statusMessage=${encodeURIComponent(statusMessage)}&pictureUrl=${encodeURIComponent(pictureUrl)}`);
     const result = await res.json();
 
-    document.getElementById('adminName').textContent = result.name || 'ไม่ทราบชื่อ';
-
-    if (result.isAdmin) {
-      const level = parseInt(result.level || "1");
-
-      if (level >= 1) document.querySelector('[data-menu="feedback"]')?.classList.remove("hidden");
-      if (level >= 2) document.querySelector('[data-menu="scan"]')?.classList.remove("hidden");
-      if (level >= 3) document.querySelector('[data-menu="stats"]')?.classList.remove("hidden");
-      if (level >= 5) document.querySelector('[data-menu="settings"]')?.classList.remove("hidden");
+    if (result.blacklisted) {
+      alert("🚫 คุณถูกจำกัดสิทธิ์การเข้าถึง");
+      return liff.closeWindow();
     }
+
+    if (!result.isAdmin) {
+      alert("❌ คุณไม่ใช่ผู้ดูแลระบบ");
+      return liff.closeWindow();
+    }
+
+    // ✅ กรณีเป็น admin จริง
+    document.getElementById('adminName').textContent = result.name || 'ไม่ทราบชื่อ';
+    const level = parseInt(result.level || "1");
+
+    if (level >= 1) document.querySelector('[data-menu="feedback"]')?.classList.remove("hidden");
+    if (level >= 2) document.querySelector('[data-menu="scan"]')?.classList.remove("hidden");
+    if (level >= 3) document.querySelector('[data-menu="stats"]')?.classList.remove("hidden");
+    if (level >= 5) document.querySelector('[data-menu="settings"]')?.classList.remove("hidden");
 
   } catch (err) {
     alert("เกิดข้อผิดพลาดในการโหลดข้อมูลผู้ใช้");
     console.error(err);
-    liff.closeWindow();
+    liff.closeWindow(); // ป้องกันค้าง
   }
 });

@@ -1,4 +1,4 @@
-const SHEET_API = 'https://script.google.com/macros/s/AKfycbxdxUvmwLS3_nETwGLk4J8ipPq2LYNSWyhJ2ZwVsEJQgONG11NSSX3jVaeqWCU1TXvE5g/exec';
+const GAS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxdxUvmwLS3_nETwGLk4J8ipPq2LYNSWyhJ2ZwVsEJQgONG11NSSX3jVaeqWCU1TXvE5g/exec';
 const liffId = '2007421084-2OgzWbpV';
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
     }
 
-    const res = await fetch(`${SHEET_API}?action=check_admin&userId=${userId}&name=${encodeURIComponent(name)}&statusMessage=${encodeURIComponent(statusMessage)}&pictureUrl=${encodeURIComponent(pictureUrl)}`);
+    const res = await fetch(`${GAS_ENDPOINT}?action=check_admin&userId=${userId}&name=${encodeURIComponent(name)}&statusMessage=${encodeURIComponent(statusMessage)}&pictureUrl=${encodeURIComponent(pictureUrl)}`);
     const result = await res.json();
 
     Swal.close(); // ✅ ปิด popup เมื่อโหลดเสร็จ

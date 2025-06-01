@@ -80,8 +80,11 @@ document.addEventListener('DOMContentLoaded', async () => {
               icon: 'success',
               title: '✅ ขอบคุณสำหรับข้อเสนอแนะ',
               confirmButtonText: 'ปิดหน้าต่าง',
-            }).then(() => liff.closeWindow());
-          } else {
+            }).then(() => {
+            document.getElementById('scoreInput').value = "";
+            document.getElementById('feedbackInput').value = "";
+            liff.closeWindow();
+          }); else {
             throw new Error(result.message || "ไม่สามารถส่งข้อมูลได้");
           }
         } catch (err) {
@@ -89,10 +92,14 @@ document.addEventListener('DOMContentLoaded', async () => {
           btn.disabled = false;
           btn.textContent = "✅ ส่งข้อเสนอแนะ";
         }
+        document.getElementById('scoreInput').value = "";
+        document.getElementById('feedbackInput').value = "";
       });
     }
   } catch (err) {
     console.error('❌ LIFF Init Error:', err);
+    document.getElementById('scoreInput').value = "";
+    document.getElementById('feedbackInput').value = "";
     await liff.closeWindow();
   } finally {
     loading.classList.add('hidden');

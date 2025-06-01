@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         const res = await fetch(SHEET_API, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // ✅ เปลี่ยนตรงนี้
           body: JSON.stringify(payload)
         });
 

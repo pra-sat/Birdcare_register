@@ -1,11 +1,12 @@
 const SHEET_API = 'https://script.google.com/macros/s/AKfycbxdxUvmwLS3_nETwGLk4J8ipPq2LYNSWyhJ2ZwVsEJQgONG11NSSX3jVaeqWCU1TXvE5g/exec';
+const liffId = '2007421084-2OgzWbpV';
 
 document.addEventListener('DOMContentLoaded', async () => {
   const loading = document.getElementById('loadingOverlay');
-  loading.classList.remove('hidden'); // แสดงโหลด
+  loading.classList.remove('hidden');
 
   try {
-    await liff.init({ liffId: '2007421084-2OgzWbpV' });
+    await liff.init({ liffId: 'YOUR_LIFF_ID' });
 
     if (!liff.isLoggedIn()) {
       liff.login();
@@ -21,16 +22,18 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (result.isAdmin) {
       document.getElementById('adminName').innerText = `👤 คุณ: ${result.name || 'แอดมิน'}`;
       document.getElementById('adminMenu').classList.remove('hidden');
+      document.querySelector('.container').classList.remove('hidden');
     } else {
-      document.getElementById('adminName').innerText = "❌ คุณไม่ใช่ผู้ดูแลระบบ";
-      document.getElementById('adminNotice').innerText = "กรุณาติดต่อเจ้าของระบบเพื่อขอสิทธิ์";
+      // ถ้าไม่ใช่แอดมิน แสดงหน้า user
+      document.getElementById('userView').classList.remove('hidden');
     }
 
   } catch (err) {
-    document.getElementById('adminName').innerText = "⚠️ ไม่สามารถโหลดข้อมูลได้";
-    document.getElementById('adminNotice').innerText = "โปรดลองใหม่ หรือแจ้งผู้ดูแลระบบ";
+    // ถ้ามีข้อผิดพลาดใด ๆ (ไม่สามารถโหลด profile, หรือ fetch ไม่ได้) → ปิด LIFF ไปเลย
+    await liff.closeWindow();
   } finally {
-    loading.classList.add('hidden'); // ซ่อนโหลด
+    loading.classList.add('hidden');
   }
 });
+
 

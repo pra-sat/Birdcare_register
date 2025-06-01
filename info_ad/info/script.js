@@ -39,17 +39,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     const checkResult = await checkRes.json();
 
 
-    if (checkResult.blacklisted) {
-      await Swal.fire({
-        icon: 'error',
-        title: '⛔️ ถูกบล็อกการเข้าใช้งาน',
-        text: 'คุณไม่ได้รับสิทธิ์ในการเข้าหน้านี้',
-        confirmButtonText: 'ปิดหน้าต่าง'
-      });
-      return liff.closeWindow();
-    }
-
-
     if (checkResult.isAdmin) {
       window.location.href = '../main_admin/index.html';
     } else {

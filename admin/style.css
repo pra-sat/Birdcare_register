@@ -113,8 +113,25 @@ textarea {
     padding: 20px 12px;
     margin-top: 30px;
   }
+  .admin-buttons .btn {
+    font-size: 14px;
+    padding: 10px 12px;
+  }
   h2 { font-size: 20px; }
   .btn { font-size: 14px; padding: 10px 16px; }
+}
+
+@media (min-width: 600px) {
+  .admin-buttons {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .admin-buttons .btn {
+    width: 45%;
+    margin: 5px;
+  }
 }
 
 .admin-buttons {
@@ -133,17 +150,5 @@ textarea {
   padding: 14px;
   text-align: center;
   white-space: nowrap; /* ป้องกันขึ้นบรรทัดใหม่ในปุ่ม */
-}
-
-@media (min-width: 600px) {
-  .admin-buttons {
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-
-  .admin-buttons .btn {
-    width: 45%;
-    margin: 5px;
-  }
+  min-width: 140px; /* ป้องกันแคบเกินไป */
 }

@@ -19,11 +19,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     const result = await res.json();
 
     if (result.isAdmin) {
+      // ✅ ถ้าเป็นแอดมิน → ไปหน้า main_admin.html
       window.location.href = 'main_admin.html';
     } else {
+      // ❌ ไม่ใช่แอดมิน → แสดงหน้า user
       document.getElementById('userView').classList.remove('hidden');
     }
-
   } catch (err) {
     await liff.closeWindow();
   } finally {

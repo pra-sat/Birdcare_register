@@ -37,6 +37,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     } else {
       document.getElementById('userView').classList.remove('hidden');
 
+      const scoreInput = document.getElementById('scoreInput');
+      const feedbackInput = document.getElementById('feedbackInput');
+      const btn = document.getElementById('submitFeedbackBtn');
+
       document.getElementById('openFeedbackBtn').addEventListener('click', () => {
         document.getElementById('feedbackPanel').classList.remove('hidden');
       });
@@ -46,12 +50,11 @@ document.addEventListener('DOMContentLoaded', async () => {
       });
 
       document.getElementById('submitFeedbackBtn').addEventListener('click', async () => {
-        const btn = document.getElementById('submitFeedbackBtn');
         btn.disabled = true;
         btn.textContent = "⏳ กำลังส่ง...";
 
-        const score = document.getElementById('scoreInput').value.trim();
-        const feedback = document.getElementById('feedbackInput').value.trim();
+        const score = scoreInput.value.trim();
+        const feedback = feedbackInput.value.trim();
         const phone = "'0";
 
         if (!feedback) {
@@ -81,10 +84,11 @@ document.addEventListener('DOMContentLoaded', async () => {
               title: '✅ ขอบคุณสำหรับข้อเสนอแนะ',
               confirmButtonText: 'ปิดหน้าต่าง',
             }).then(() => {
-            document.getElementById('scoreInput').value = "";
-            document.getElementById('feedbackInput').value = "";
-            liff.closeWindow();
-          }); else {
+              scoreInput.value = "";
+              feedbackInput.value = "";
+              liff.closeWindow();
+            });
+          } else {
             throw new Error(result.message || "ไม่สามารถส่งข้อมูลได้");
           }
         } catch (err) {
@@ -92,14 +96,10 @@ document.addEventListener('DOMContentLoaded', async () => {
           btn.disabled = false;
           btn.textContent = "✅ ส่งข้อเสนอแนะ";
         }
-        document.getElementById('scoreInput').value = "";
-        document.getElementById('feedbackInput').value = "";
       });
     }
   } catch (err) {
     console.error('❌ LIFF Init Error:', err);
-    document.getElementById('scoreInput').value = "";
-    document.getElementById('feedbackInput').value = "";
     await liff.closeWindow();
   } finally {
     loading.classList.add('hidden');

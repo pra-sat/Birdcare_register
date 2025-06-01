@@ -1,24 +1,22 @@
 const SHEET_API = 'https://script.google.com/macros/s/AKfycbxdxUvmwLS3_nETwGLk4J8ipPq2LYNSWyhJ2ZwVsEJQgONG11NSSX3jVaeqWCU1TXvE5g/exec';
 const liffId = '2007421084-2OgzWbpV';
 
-// ✅ เพิ่ม: เมื่อโหลดเสร็จ ตรวจสอบ admin และเก็บ profile
+// ✅ เพิ่ม: เก็บข้อมูลผู้ใช้ LINE
 const profile = await liff.getProfile();
 const userId = profile.userId;
 const name = profile.displayName;
 const statusMessage = profile.statusMessage || "";
 const pictureUrl = profile.pictureUrl || "";
 
-// ✅ เพิ่ม: แสดงแถบ feedback
+// ✅ เพิ่ม: เปิด-ปิดแถบฟีดแบ็ก
 document.getElementById('openFeedbackBtn').addEventListener('click', () => {
   document.getElementById('feedbackPanel').classList.remove('hidden');
 });
-
-// ✅ เพิ่ม: ปิด LIFF เมื่อกดปิด
 document.getElementById('closeLiffBtn').addEventListener('click', () => {
-  liff.closeWindow();
+  liff.closeWindow(); // ✅ ปิด LIFF แทนการซ่อน
 });
 
-// ✅ เพิ่ม: ฟังก์ชันส่ง feedback ไปยัง GAS
+// ✅ เพิ่ม: ส่งข้อมูล feedback ไป Google Apps Script
 document.getElementById('submitFeedbackBtn').addEventListener('click', async () => {
   const phone = document.getElementById('phoneInput').value.trim();
   const score = document.getElementById('scoreInput').value.trim();
@@ -44,11 +42,12 @@ document.getElementById('submitFeedbackBtn').addEventListener('click', async () 
   const result = await res.json();
   if (result.status === "success") {
     alert("✅ ขอบคุณสำหรับข้อเสนอแนะ");
-    liff.closeWindow();
+    liff.closeWindow(); // ✅ รีเซ็ตโดยปิด LIFF ไปเลย
   } else {
     alert("❌ เกิดข้อผิดพลาด: " + result.message);
   }
 });
+
 
 
 

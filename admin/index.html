@@ -2,14 +2,13 @@
 <html lang="th">
 <head>
   <meta charset="UTF-8">
-  <title>แผงควบคุมแอดมิน</title>
+  <title>เข้าสู่ระบบ</title>
   <link rel="stylesheet" href="style.css">
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <script src="script.js" defer></script>
 </head>
 <body>
-  
-  <div id="loadingOverlay" class="loading-overlay hidden">
+  <div id="loadingOverlay" class="loading-overlay">
     <div class="loading-box">
       <div class="spinner"></div>
       <p>⏳ กำลังโหลดข้อมูล โปรดรอสักครู่...</p>
@@ -19,20 +18,10 @@
   <div class="container hidden" id="userView">
     <h2>📌 ติดต่อร้าน / ข้อเสนอแนะ</h2>
     <p>🕵️‍♀️ เราไม่สามารถยืนยันตัวตนของคุณว่าเป็นแอดมินได้</p>
-    <p>📞 กรุณาติดต่อผู้ดูแล หรือคลิกปุ่มด้านล่างเพื่อแสดงความคิดเห็น</p>
+    <p>📍 <strong>Bird Car Care</strong> ล้างรถ อัดฉีด ดูดฝุ่น เคลือบแก้ว</p>
+    <p>📞 โทร: <a href="tel:098XXXXXXX">098-XXXXXXX</a></p>
+    <p>⏰ เปิดบริการ: 08:00 - 18:00</p>
     <a href="https://forms.gle/CV2VSAhvyB8tYUPc7" class="btn">✍️ ส่งข้อเสนอแนะ</a>
-  </div>
-
-  <div class="container hidden" id="adminView">
-    <h2>🛠 แผงควบคุมผู้ดูแลระบบ</h2>
-    <p id="adminName">กำลังตรวจสอบสิทธิ์...</p>
-    <div class="admin-menu hidden" id="adminMenu">
-      <a class="btn" href="scan.html">🔍 สแกน QR เพื่อเพิ่มบริการ</a>
-      <a class="btn" href="stats.html">📊 ดูรายงาน/สถิติ</a>
-      <a class="btn" href="settings.html">⚙️ จัดการโปรโมชัน/ของรางวัล</a>
-      <a class="btn" href="feedback.html">💬 ดูข้อเสนอแนะลูกค้า</a>
-    </div>
-    <p class="notice" id="adminNotice"></p>
   </div>
 </body>
 </html>

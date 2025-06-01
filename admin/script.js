@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (result.isAdmin) {
       document.getElementById('adminName').innerText = `👤 คุณ: ${result.name || 'แอดมิน'}`;
       document.getElementById('adminMenu').classList.remove('hidden');
-      document.querySelector('.container').classList.remove('hidden');
+      document.getElementById('adminView').classList.remove('hidden');
     } else {
       // ถ้าไม่ใช่แอดมิน แสดงหน้า user
       document.getElementById('userView').classList.remove('hidden');

@@ -2,20 +2,51 @@
 <html lang="th">
 <head>
   <meta charset="UTF-8">
-  <title>แผงควบคุมแอดมิน</title>
+  <title>system admin</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="style.css">
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 </head>
 <body>
   <div class="container">
     <h2>🛠 แผงควบคุมผู้ดูแลระบบ</h2>
-    <p class="admin-name">👤 คุณ: <span id="adminName">แอดมิน</span></p>
-  
+    <p class="admin-name">👤 คุณ: <span id="adminName">รอโหลดชื่อ...</span></p>
+
     <div class="admin-buttons">
       <a class="btn" href="scan.html">🔍 สแกน QR เพื่อเพิ่มบริการ</a>
       <a class="btn" href="stats.html">📊 รายงาน/สถิติ</a>
-      <a class="btn" href="settings.html">⚙️ จัดการโปรโมชัน/ของรางวัล</a>
+      <a class="btn hidden" id="settingsBtn" href="settings.html">⚙️ จัดการโปรโมชัน/ของรางวัล</a>
       <a class="btn" href="feedback.html">💬 ข้อเสนอแนะจากลูกค้า</a>
     </div>
   </div>
+
+  <script>
+    const SHEET_API = 'https://script.google.com/macros/s/YOUR_DEPLOYED_ID/exec';
+    const liffId = 'YOUR_LIFF_ID';
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        await liff.init({ liffId });
+        if (!liff.isLoggedIn()) return liff.login();
+
+        const profile = await liff.getProfile();
+        const userId = profile.userId;
+
+        const res = await fetch(`${SHEET_API}?action=check_admin&userId=${userId}`);
+        const result = await res.json();
+
+        document.getElementById('adminName').textContent = result.name || 'ไม่ทราบชื่อ';
+
+        const level = parseInt(result.level || "0");
+        if (level >= 5) {
+          document.getElementById('settingsBtn').classList.remove('hidden');
+        }
+
+      } catch (err) {
+        alert("เกิดข้อผิดพลาดในการโหลดข้อมูลผู้ใช้");
+        console.error(err);
+      }
+    });
+  </script>
 </body>
 </html>

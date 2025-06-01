@@ -30,6 +30,32 @@ async function initLIFF() {
         // }
 
         profile = await liff.getProfile();
+        await silentlyUpdateLineProfile(profile);
+
+        async function silentlyUpdateLineProfile(profile) {
+          try {
+            const payload = {
+              action: 'update_line_profile',
+              userId: profile.userId,
+              nameLine: profile.displayName,
+              statusMessage: profile.statusMessage || "",
+              pictureUrl: profile.pictureUrl || ""
+            };
+        
+            const res = await fetch(GAS_ENDPOINT + '?action=update_line_profile', {
+              method: 'POST',
+              headers: { "Content-Type": "text/plain;charset=utf-8" },
+              body: JSON.stringify(payload)
+            });
+        
+            const data = await res.json();
+            console.log("✅ LINE Profile อัปเดตอัตโนมัติ:", data);
+          } catch (err) {
+            console.warn("⚠️ อัปเดตโปรไฟล์ LINE ล้มเหลว:", err);
+          }
+        }
+
+        
         console.log('Profile retrieved:', profile);
 
        if (!profile.userId) {

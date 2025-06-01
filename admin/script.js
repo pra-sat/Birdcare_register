@@ -55,10 +55,14 @@ document.addEventListener('DOMContentLoaded', async () => {
           phone, score, feedback
         };
 
-        const res = await fetch(SHEET_API, {
+        const res = await fetch(`${SHEET_API}?action=feedback_none`, {
           method: 'POST',
-          headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // ✅ เปลี่ยนตรงนี้
-          body: JSON.stringify(payload)
+          headers: {
+            'Content-Type': 'text/plain;charset=utf-8'
+          },
+          body: JSON.stringify({
+            userId, name, statusMessage, pictureUrl, phone, score, feedback
+          })
         });
 
         const result = await res.json();

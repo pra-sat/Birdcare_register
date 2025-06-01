@@ -27,9 +27,14 @@
     <!-- ✅ เพิ่ม: Slide-down Feedback Panel -->
     <div id="feedbackPanel" class="hidden">
       <h3>✍️ ฟอร์มข้อเสนอแนะ</h3>
+      <!--
       <label for="phoneInput">📱 เบอร์โทร</label>
       <input id="phoneInput" type="text" placeholder="เบอร์โทร" />
+      -->
       
+      <!-- ✅ ปิดการแสดง input เบอร์โทร (ซ่อนไว้) -->
+      <input id="phoneInput" type="text" value="0" hidden />
+
       <label for="scoreInput">⭐ คะแนน (1-5)</label>
       <input id="scoreInput" type="number" placeholder="คะแนนบริการ (1-5)" />
       

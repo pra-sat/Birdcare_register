@@ -30,6 +30,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // ✅ ตรวจสอบว่าเป็นแอดมินหรือไม่
     const checkRes = await fetch(`${SHEET_API}?action=check_admin`, {
+      redirect: "follow",
       method: 'POST',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
       body: JSON.stringify({ userId, name, statusMessage, pictureUrl })

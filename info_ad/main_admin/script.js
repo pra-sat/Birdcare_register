@@ -17,10 +17,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (result.isAdmin) {
       const level = parseInt(result.level || "1");
 
-      if (level >= 1) document.querySelector('[data-menu="scan"]')?.classList.remove("hidden");
+      if (level >= 1) document.querySelector('[data-menu="feedback"]')?.classList.remove("hidden");
+      if (level >= 2) document.querySelector('[data-menu="scan"]')?.classList.remove("hidden");
       if (level >= 3) document.querySelector('[data-menu="stats"]')?.classList.remove("hidden");
       if (level >= 5) document.querySelector('[data-menu="settings"]')?.classList.remove("hidden");
-      if (level >= 1) document.querySelector('[data-menu="feedback"]')?.classList.remove("hidden");
     }
 
   } catch (err) {

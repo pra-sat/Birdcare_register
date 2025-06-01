@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           });
 
           const result = await res.json();
-          if (result.status === "success") {
+          if (["success", "feedback_saved", "entry_updated"].includes(result.status)) {
             Swal.fire({
               icon: 'success',
               title: '✅ ขอบคุณสำหรับข้อเสนอแนะ',

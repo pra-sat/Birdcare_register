@@ -4,7 +4,7 @@ const liffId = '2007421084-2OgzWbpV';
 document.addEventListener('DOMContentLoaded', async () => {
   try {
     Swal.fire({
-      title: '🔄 กำลังโหลดข้อมูลผู้ดูแลระบบ...',
+      title: 'กำลังโหลดข้อมูล...',
       allowOutsideClick: false,
       allowEscapeKey: false,
       showConfirmButton: false,
@@ -49,6 +49,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         liff.closeWindow();
       });
       return;
+    }
+
+    if (result.isAdmin) {
+      document.body.style.display = 'block'; // ✅ แสดงเฉพาะเมื่อยืนยันแล้ว
     }
 
     document.getElementById('adminName').textContent = result.name || 'ไม่ทราบชื่อ';

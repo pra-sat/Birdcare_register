@@ -123,7 +123,7 @@ function generateQRCode(text, userInfo) {
     size: 200
   });
 
-  document.getElementById('qrUserInfo').innerText = `🔑 ${userInfo.name} - ${userInfo.brand} ${userInfo.model} (${userInfo.year})`;
+  document.getElementById('qrUserInfo').innerText = `${userInfo.name} - ${userInfo.brand} ${userInfo.model} (${userInfo.year})`;
   document.getElementById('closeQRBtn').addEventListener('click', closeQRSection);
 }
 

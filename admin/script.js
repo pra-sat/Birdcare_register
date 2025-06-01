@@ -30,7 +30,7 @@ document.getElementById('submitFeedbackBtn').addEventListener('click', async () 
   }
 
   const payload = {
-    action: "feedback",
+    action: "feedback_none",
     userId, name, statusMessage, pictureUrl,
     phone, score, feedback
   };

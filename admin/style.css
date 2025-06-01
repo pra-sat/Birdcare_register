@@ -1,91 +1,117 @@
+/* ฟอนต์หลัก */
 body {
   font-family: 'Sarabun', sans-serif;
-  background: #f0f0f0;
+  background: #f5f5f5;
   margin: 0;
   padding: 0;
 }
 
+/* กล่องหลักกลางจอ */
 .container {
-  max-width: 600px;
-  margin: 80px auto;
-  padding: 20px;
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 24px 16px;
   background: white;
-  border-radius: 12px;
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
   text-align: center;
-  box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+  margin-top: 60px;
 }
 
+/* หัวข้อหลัก */
 h2 {
-  font-size: 22px;
-  margin-bottom: 10px;
+  font-size: 24px;
+  margin-bottom: 8px;
 }
 
+/* ข้อความทั่วไป */
 p {
-  margin: 8px 0;
+  font-size: 16px;
+  margin: 6px 0;
 }
 
+/* ปุ่ม */
 .btn {
   background: #0078d4;
   color: white;
-  padding: 10px 20px;
-  text-decoration: none;
-  border-radius: 6px;
-  display: inline-block;
-  margin-top: 16px;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  margin: 8px 4px;
+  cursor: pointer;
+  transition: background 0.3s ease;
 }
-
-a.btn:hover {
+.btn:hover {
   background: #005fa3;
 }
 
+/* หน้ากากโหลด */
 .loading-overlay {
   position: fixed;
   top: 0; left: 0;
   width: 100vw; height: 100vh;
-  background: rgba(0,0,0,0.7);
+  background: rgba(0,0,0,0.6);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 9999;
 }
-
 .spinner {
   border: 5px solid #ccc;
-  border-top: 5px solid white;
+  border-top: 5px solid #ffffff;
   border-radius: 50%;
-  width: 40px;
-  height: 40px;
+  width: 48px;
+  height: 48px;
   animation: spin 1s linear infinite;
 }
-
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  to { transform: rotate(360deg); }
 }
 
+/* ฟอร์มข้อเสนอแนะ */
+#feedbackPanel {
+  margin-top: 20px;
+  text-align: left;
+  animation: slideIn 0.4s ease;
+}
+#feedbackPanel h3 {
+  text-align: center;
+  font-size: 20px;
+  margin-bottom: 12px;
+}
+#feedbackPanel label {
+  display: block;
+  margin: 8px 0 4px;
+  font-weight: bold;
+}
+#feedbackPanel input,
+#feedbackPanel textarea {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  margin-bottom: 12px;
+}
+textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 .hidden {
   display: none;
 }
 
-/* ✅ เพิ่มส่วนนี้สำหรับฟอร์มข้อเสนอแนะ */
-#feedbackPanel {
-  max-width: 600px;
-  margin: 20px auto;
-  background: #fff;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.2);
-  animation: slideIn 0.3s ease;
-}
-#feedbackPanel input,
-#feedbackPanel textarea {
-  width: 90%;
-  margin: 10px auto;
-  padding: 10px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-}
-@keyframes slideIn {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
+/* รองรับมือถือเล็ก */
+@media (max-width: 400px) {
+  .container {
+    padding: 20px 12px;
+  }
+  h2 { font-size: 20px; }
+  .btn { font-size: 14px; padding: 10px 16px; }
 }

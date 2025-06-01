@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     await sendLineRes.json();
 
     // ✅ ตรวจสอบว่าเป็นแอดมินหรือไม่
-    const checkRes = await fetch(`${SHEET_API}?action=check_admin&userId=${encodeURIComponent(userId)}&name=${encodeURIComponent(name)}&statusMessage=${encodeURIComponent(statusMessage)}&pictureUrl=${encodeURIComponent(pictureUrl)}`);
+    const checkRes = await fetch(`${SHEET_API}?action=check_admin&userId=${userId}`);
 
     const checkResult = await checkRes.json();
 

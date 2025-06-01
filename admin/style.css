@@ -132,3 +132,15 @@ textarea {
   text-align: center;
 }
 
+@media (min-width: 600px) {
+  .admin-buttons {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .admin-buttons .btn {
+    width: 45%;
+    margin: 5px;
+  }
+}

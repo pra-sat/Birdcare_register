@@ -14,10 +14,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     document.getElementById('adminName').textContent = result.name || 'ไม่ทราบชื่อ';
 
-    if (checkResult.isAdmin && parseInt(checkResult.level) >= 5) {
+    if (result.isAdmin && parseInt(result.level) >= 5) {
       document.querySelector('[data-menu="settings"]').classList.remove("hidden");
     }
-
 
   } catch (err) {
     alert("เกิดข้อผิดพลาดในการโหลดข้อมูลผู้ใช้");

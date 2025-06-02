@@ -1,5 +1,6 @@
 const GAS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxdxUvmwLS3_nETwGLk4J8ipPq2LYNSWyhJ2ZwVsEJQgONG11NSSX3jVaeqWCU1TXvE5g/exec';
 const liffId = '2007421084-2OgzWbpV';
+let userId = "N/A";
 
 function logout() {
   liff.logout();
@@ -15,13 +16,14 @@ async function sendAdminLog(name, action, detail) {
     } else {
       token = userId || "N/A";
     }
-    
-    const res = await fetch(GAS_ENDPOINT + '?action=log_admin', {
+
+    await fetch(GAS_ENDPOINT + '?action=log_admin', {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
       body: JSON.stringify({
         action: 'log_admin',
         name,
+        userId, // ✅ ใช้ค่าจาก global ที่กำหนดไว้
         actionTitle: action,
         detail,
         device: userAgent,
@@ -53,7 +55,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (!liff.isLoggedIn()) return liff.login();
 
     const profile = await liff.getProfile();
-    const userId = profile.userId;
+    userId = profile.userId;
     const name = profile.displayName;
     const statusMessage = profile.statusMessage || "";
     const pictureUrl = profile.pictureUrl || "";

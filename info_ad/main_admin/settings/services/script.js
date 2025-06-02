@@ -138,10 +138,17 @@ async function submitAddService() {
       createdBy: currentAdmin.name
     };
 
-    await fetch(GAS_ENDPOINT + '?action=add_service', {
+    await fetch(GAS_ENDPOINT + '?action=service', {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify(payload)
+      body: JSON.stringify({
+        action: 'add_service',
+        name,
+        price,
+        point,
+        detail,
+        createdBy: currentAdmin.name
+      })
     });
 
     await logAdminAction('เพิ่มบริการ', `ชื่อ: ${name}, ราคา: ${price}, แต้ม: ${point}`);

@@ -25,13 +25,13 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // ✅ ส่งข้อมูล LINE ก่อน
     
-    //const controller1 = new AbortController();
-    //const timeoutId1 = setTimeout(() => controller1.abort(), 5000); // timeout 5 วินาที
+    const controller1 = new AbortController();
+    const timeoutId1 = setTimeout(() => controller1.abort(), 7000); // timeout 7 วินาที
     
     const sendLineRes = await fetch(`${SHEET_API}?action=feedback_none`, {
       redirect: "follow",
       method: 'POST',
-      //signal: controller1.signal,
+      signal: controller1.signal,
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
       body: JSON.stringify({
         userId, name, statusMessage, pictureUrl,
@@ -39,23 +39,23 @@ document.addEventListener('DOMContentLoaded', async () => {
       })
     });
     await sendLineRes.json();
-    //clearTimeout(timeoutId1);
+    clearTimeout(timeoutId1);
 
     // ✅ ตรวจสอบว่าเป็นแอดมินหรือไม่
         
-    //const controller2 = new AbortController();
-   // const timeoutId2 = setTimeout(() => controller2.abort(), 5000); // timeout 5 วินาที
+    const controller2 = new AbortController();
+    const timeoutId2 = setTimeout(() => controller2.abort(), 1500); // timeout 15 วินาที
     
     const checkRes = await fetch(`${SHEET_API}?action=check_admin`, {
       redirect: "follow",
       method: 'POST',
-      //signal: controller2.signal,
+      signal: controller2.signal,
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
       body: JSON.stringify({ userId, name, statusMessage, pictureUrl })
     });
     
     const checkResult = await checkRes.json();
-    //clearTimeout(timeoutId2);
+    clearTimeout(timeoutId2);
 
     if (checkResult.isAdmin) {
       window.location.href = '../main_admin/index.html';

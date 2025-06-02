@@ -11,79 +11,55 @@
 </head>
 <body class="hidden">
   <div class="container">
-
-    <!-- แถบข้อมูลผู้ดูแลแบบเล็ก -->
-    <div class="admin-bar">
-      👤 <span id="adminName">-</span> | 🛡️ ระดับ: <span id="adminLevel">-</span>
+    <div class="admin-info">
+      <p>👤 <span id="adminName">-</span> | 🛡️ <span id="adminLevel">-</span> | 📛 <span id="adminRole">-</span></p>
     </div>
 
-    <!-- ปุ่มควบคุม -->
     <div class="button-group">
-      <button class="btn" onclick="openAddServicePopup()">➕ เพิ่มบริการ</button>
-      <button class="btn" onclick="toggleServiceList()">📋 ดูรายการบริการทั้งหมด</button>
-      <a class="btn outline" href="../settings/index.html">🔙 กลับหน้าแรก</a>
+      <button class="btn" onclick="openAddPopup()">➕ เพิ่มบริการ</button>
+      <button class="btn" onclick="toggleServiceList()">📋 ดูรายการทั้งหมด</button>
+    </div>
+
+    <div id="serviceList" class="hidden service-list"></div>
+
+    <div class="button-group bottom">
+      <a class="btn outline" href="../index.html">🔙 กลับหน้าหลัก</a>
       <button class="btn danger" onclick="logout()">🚪 ออกจากระบบ</button>
     </div>
+  </div>
 
-    <!-- รายการบริการทั้งหมด -->
-    <div id="serviceListContainer" class="hidden">
-      <h3>🧼 รายการบริการ</h3>
-      <div id="serviceList"></div>
-    </div>
-
-    <!-- Popup: เพิ่มบริการ -->
-    <div id="addServicePopup" class="popup hidden">
-      <div class="popup-content">
-        <h3>➕ เพิ่มบริการใหม่</h3>
-        <label>ชื่อบริการ</label>
-        <input type="text" id="newServiceName">
-
-        <label>ราคา</label>
-        <input type="number" id="newServicePrice">
-
-        <label>แต้ม</label>
-        <input type="number" id="newServicePoint">
-
-        <label>รายละเอียด</label>
-        <textarea id="newServiceDetail"></textarea>
-
-        <div class="button-group">
-          <button class="btn" onclick="saveNewService()">💾 บันทึก</button>
-          <button class="btn outline" onclick="closeAddServicePopup()">❌ ปิด</button>
-        </div>
+  <!-- เพิ่มบริการ -->
+  <div id="addPopup" class="popup hidden">
+    <div class="popup-content">
+      <h2>➕ เพิ่มบริการใหม่</h2>
+      <label>ชื่อบริการ <input type="text" id="addName"></label>
+      <label>ราคา <input type="number" id="addPrice"></label>
+      <label>แต้ม <input type="number" id="addPoint"></label>
+      <label>รายละเอียด <textarea id="addDetail"></textarea></label>
+      <div class="popup-actions">
+        <button onclick="submitAddService()">✅ บันทึก</button>
+        <button class="danger" onclick="closeAddPopup()">❌ ปิด</button>
       </div>
     </div>
+  </div>
 
-    <!-- Popup: รายละเอียดบริการ -->
-    <div id="serviceDetailPopup" class="popup hidden">
-      <div class="popup-content">
-        <h3>📄 รายละเอียดบริการ</h3>
-        <label>ชื่อบริการ</label>
-        <input type="text" id="editServiceName" disabled>
-
-        <label>ราคา</label>
-        <input type="number" id="editServicePrice" disabled>
-
-        <label>แต้ม</label>
-        <input type="number" id="editServicePoint" disabled>
-
-        <label>รายละเอียด</label>
-        <textarea id="editServiceDetail" disabled></textarea>
-
-        <label>สถานะ</label>
-        <label class="switch">
-          <input type="checkbox" id="serviceToggle" onchange="toggleServiceStatus()">
-          <span class="slider round"></span>
-        </label>
-
-        <div class="button-group">
-          <button id="editButton" class="btn" onclick="enableEditService()">✏️ แก้ไข</button>
-          <button id="saveEditButton" class="btn hidden" onclick="saveEditedService()">💾 บันทึก</button>
-          <button id="closeDetailButton" class="btn outline" onclick="closeServiceDetailPopup()">❌ ปิด</button>
-        </div>
+  <!-- แสดง/แก้ไขรายละเอียดบริการ -->
+  <div id="viewPopup" class="popup hidden">
+    <div class="popup-content">
+      <h2 id="popupTitle">📄 รายละเอียดบริการ</h2>
+      <label>ชื่อบริการ <input type="text" id="viewName" disabled></label>
+      <label>ราคา <input type="number" id="viewPrice" disabled></label>
+      <label>แต้ม <input type="number" id="viewPoint" disabled></label>
+      <label>รายละเอียด <textarea id="viewDetail" disabled></textarea></label>
+      <label>
+        เปิดใช้งาน <input type="checkbox" id="viewStatus" onchange="toggleServiceStatus()">
+      </label>
+      <div class="popup-actions">
+        <button id="editBtn" onclick="toggleEditMode()">✏️ แก้ไข</button>
+        <button id="saveBtn" class="hidden" onclick="saveEditedService()">💾 บันทึก</button>
+        <button class="danger" onclick="closeViewPopup()">❌ ปิด</button>
       </div>
     </div>
-
   </div>
 </body>
 </html>

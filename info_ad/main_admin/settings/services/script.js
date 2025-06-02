@@ -117,17 +117,6 @@ async function fetchServices() {
 
 // บันทึกบริการใหม่
 async function submitAddService() {
-
-  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Service_List");
-  const data = sheet.getDataRange().getValues();
-  if (data.some(row => row[1] === payload.name)) {
-    return ContentService.createTextOutput(JSON.stringify({
-      status: "error",
-      message: "บริการนี้มีอยู่แล้ว"
-    })).setMimeType(ContentService.MimeType.JSON);
-  }
-
-  
   const name = document.getElementById('addName').value.trim();
   const price = document.getElementById('addPrice').value.trim();
   const point = document.getElementById('addPoint').value.trim();

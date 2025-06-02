@@ -1,10 +1,9 @@
-<!-- services/index.html -->
 <!DOCTYPE html>
 <html lang="th">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>บริการทั้งหมด</title>
+  <title>จัดการบริการ</title>
   <link rel="stylesheet" href="style.css">
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -12,24 +11,79 @@
 </head>
 <body class="hidden">
   <div class="container">
-    <h2 class="title">🧼 รายการบริการทั้งหมด</h2>
 
-    <div class="profile-box">
-      <p>👤 คุณ: <span id="adminName">-</span></p>
-      <p>🛡️ ระดับ: <span id="adminLevel">-</span></p>
-      <p>📛 บทบาท: <span id="adminRole">-</span></p>
+    <!-- แถบข้อมูลผู้ดูแลแบบเล็ก -->
+    <div class="admin-bar">
+      👤 <span id="adminName">-</span> | 🛡️ ระดับ: <span id="adminLevel">-</span>
     </div>
 
+    <!-- ปุ่มควบคุม -->
     <div class="button-group">
-      <button class="btn" onclick="openAddForm()">➕ เพิ่มบริการ</button>
-      <a class="btn outline" href="../settings/index.html">🔙 กลับหน้าตั้งค่า</a>
+      <button class="btn" onclick="openAddServicePopup()">➕ เพิ่มบริการ</button>
+      <button class="btn" onclick="toggleServiceList()">📋 ดูรายการบริการทั้งหมด</button>
+      <a class="btn outline" href="../settings/index.html">🔙 กลับหน้าแรก</a>
+      <button class="btn danger" onclick="logout()">🚪 ออกจากระบบ</button>
     </div>
 
-    <div id="serviceList" class="section">
-      <!-- บริการจะถูกโหลดมาแสดงที่นี่ด้วย JS -->
+    <!-- รายการบริการทั้งหมด -->
+    <div id="serviceListContainer" class="hidden">
+      <h3>🧼 รายการบริการ</h3>
+      <div id="serviceList"></div>
     </div>
+
+    <!-- Popup: เพิ่มบริการ -->
+    <div id="addServicePopup" class="popup hidden">
+      <div class="popup-content">
+        <h3>➕ เพิ่มบริการใหม่</h3>
+        <label>ชื่อบริการ</label>
+        <input type="text" id="newServiceName">
+
+        <label>ราคา</label>
+        <input type="number" id="newServicePrice">
+
+        <label>แต้ม</label>
+        <input type="number" id="newServicePoint">
+
+        <label>รายละเอียด</label>
+        <textarea id="newServiceDetail"></textarea>
+
+        <div class="button-group">
+          <button class="btn" onclick="saveNewService()">💾 บันทึก</button>
+          <button class="btn outline" onclick="closeAddServicePopup()">❌ ปิด</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Popup: รายละเอียดบริการ -->
+    <div id="serviceDetailPopup" class="popup hidden">
+      <div class="popup-content">
+        <h3>📄 รายละเอียดบริการ</h3>
+        <label>ชื่อบริการ</label>
+        <input type="text" id="editServiceName" disabled>
+
+        <label>ราคา</label>
+        <input type="number" id="editServicePrice" disabled>
+
+        <label>แต้ม</label>
+        <input type="number" id="editServicePoint" disabled>
+
+        <label>รายละเอียด</label>
+        <textarea id="editServiceDetail" disabled></textarea>
+
+        <label>สถานะ</label>
+        <label class="switch">
+          <input type="checkbox" id="serviceToggle" onchange="toggleServiceStatus()">
+          <span class="slider round"></span>
+        </label>
+
+        <div class="button-group">
+          <button id="editButton" class="btn" onclick="enableEditService()">✏️ แก้ไข</button>
+          <button id="saveEditButton" class="btn hidden" onclick="saveEditedService()">💾 บันทึก</button>
+          <button id="closeDetailButton" class="btn outline" onclick="closeServiceDetailPopup()">❌ ปิด</button>
+        </div>
+      </div>
+    </div>
+
   </div>
-
-  <!-- Modal เพิ่มบริการ (จะเพิ่มด้วย JS ภายหลัง) -->
 </body>
 </html>

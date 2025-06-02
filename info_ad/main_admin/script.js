@@ -22,8 +22,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     const statusMessage = profile.statusMessage || "";
     const pictureUrl = profile.pictureUrl || "";
 
-    await silentlyUpdateLineProfile(profile);
-
     async function silentlyUpdateLineProfile(profile) {
       try {
         const payload = {
@@ -47,9 +45,13 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
     }
 
-    const res = await fetch(${GAS_ENDPOINT}?action=check_admin&userId=${userId}&name=${encodeURIComponent(name)}&statusMessage=${encodeURIComponent(statusMessage)}&pictureUrl=${encodeURIComponent(pictureUrl)});
-    const result = await res.json();
-
+    const [updateRes, checkRes] = await Promise.all([
+      silentlyUpdateLineProfile(profile),
+      fetch(${GAS_ENDPOINT}?action=check_admin&userId=${userId}&name=${encodeURIComponent(name)}&statusMessage=${encodeURIComponent(statusMessage)}&pictureUrl=${encodeURIComponent(pictureUrl)})
+    ]);
+    
+    const result = await checkRes.json();
+    
     Swal.close(); // ✅ ปิด popup เมื่อโหลดเสร็จ
 
     if (result.blacklisted) {

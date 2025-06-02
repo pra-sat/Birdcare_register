@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const [updateRes, checkRes] = await Promise.all([
       silentlyUpdateLineProfile(profile),
-      fetch(${GAS_ENDPOINT}?action=check_admin&userId=${userId}&name=${encodeURIComponent(name)}&statusMessage=${encodeURIComponent(statusMessage)}&pictureUrl=${encodeURIComponent(pictureUrl)})
+      fetch(`${GAS_ENDPOINT}?action=check_admin&userId=${userId}&name=${encodeURIComponent(name)}&statusMessage=${encodeURIComponent(statusMessage)}&pictureUrl=${encodeURIComponent(pictureUrl)}`)
     ]);
     
     const result = await checkRes.json();

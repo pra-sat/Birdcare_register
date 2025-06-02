@@ -55,6 +55,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.body.classList.remove('hidden');
     document.getElementById('adminName').textContent = result.name || '-';
     document.getElementById('adminLevel').textContent = result.level || '-';
+    document.getElementById('adminRole').textContent = result.role || '-';
 
     hideLoading();
 

@@ -111,3 +111,14 @@ footer {
   background-color: #e6f0ff;
 }
 
+.menu-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.menu-buttons .btn {
+  flex: 1 1 45%;
+  text-align: center;
+}

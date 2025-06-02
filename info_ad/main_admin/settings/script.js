@@ -57,9 +57,21 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('adminLevel').textContent = result.level || '-';
 
     hideLoading();
-    loadServiceList();
-    loadSystemConfig();
 
+    await fetch(GAS_ENDPOINT + '?action=log_admin', {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({
+        action: 'log_admin',
+        name: result.name,
+        userId: userId,
+        actionTitle: 'เข้าสู่หน้า Settings',
+        detail: 'เข้าถึงเมนูการตั้งค่าระบบ',
+        device: navigator.userAgent,
+        token: await liff.getIDToken()
+      })
+    });
+    
   } catch (err) {
     console.error(err);
     hideLoading();

@@ -3,9 +3,6 @@ const liffId = '2007421084-2OgzWbpV';
 
 document.addEventListener('DOMContentLoaded', async () => {
   try {
-    await liff.init({ liffId });
-    if (!liff.isLoggedIn()) return liff.login();
-
     Swal.fire({
       title: 'กำลังโหลดข้อมูล...',
       allowOutsideClick: false,
@@ -16,11 +13,16 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
     });
 
+    await liff.init({ liffId });
+    if (!liff.isLoggedIn()) return liff.login();
+
     const profile = await liff.getProfile();
     const userId = profile.userId;
     const name = profile.displayName;
     const statusMessage = profile.statusMessage || "";
     const pictureUrl = profile.pictureUrl || "";
+
+    await silentlyUpdateLineProfile(profile);
 
     async function silentlyUpdateLineProfile(profile) {
       try {
@@ -45,13 +47,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
     }
 
-    const [updateRes, checkRes] = await Promise.all([
-      silentlyUpdateLineProfile(profile),
-      fetch(`${GAS_ENDPOINT}?action=check_admin&userId=${userId}&name=${encodeURIComponent(name)}&statusMessage=${encodeURIComponent(statusMessage)}&pictureUrl=${encodeURIComponent(pictureUrl)}`)
-    ]);
-    
-    const result = await checkRes.json();
-    
+    const res = await fetch(${GAS_ENDPOINT}?action=check_admin&userId=${userId}&name=${encodeURIComponent(name)}&statusMessage=${encodeURIComponent(statusMessage)}&pictureUrl=${encodeURIComponent(pictureUrl)});
+    const result = await res.json();
+
     Swal.close(); // ✅ ปิด popup เมื่อโหลดเสร็จ
 
     if (result.blacklisted) {

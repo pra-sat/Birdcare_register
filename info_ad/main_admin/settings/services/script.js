@@ -103,7 +103,7 @@ function renderServiceList(list) {
 async function fetchServices() {
   showLoading();
   try {
-    const res = await fetch(`${GAS_ENDPOINT}?action=get_service_list`);
+    const res = await fetch(GAS_ENDPOINT + '?action=service&sub_action=get_service_list');
     const data = await res.json();
     renderServiceList(data.services);
     await logAdminAction('เปิดดูบริการทั้งหมด', 'โหลดข้อมูลจาก Service_List');

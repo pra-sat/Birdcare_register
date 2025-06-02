@@ -32,6 +32,18 @@ function showError(message) {
   });
 }
 
+function openAddPopup() {
+  document.getElementById('addPopup').classList.remove('hidden');
+}
+
+function closeAddPopup() {
+  document.getElementById('addPopup').classList.add('hidden');
+}
+
+function toggleServiceList() {
+  document.getElementById('serviceList').classList.toggle('hidden');
+}
+
 async function logAdminAction(action, detail) {
   try {
     await fetch(GAS_ENDPOINT + '?action=log_admin', {
@@ -90,6 +102,47 @@ async function fetchServices() {
     showError('โหลดรายการบริการไม่สำเร็จ');
   }
 }
+
+async function submitAddService() {
+  const name = document.getElementById('addName').value.trim();
+  const price = document.getElementById('addPrice').value.trim();
+  const point = document.getElementById('addPoint').value.trim();
+  const detail = document.getElementById('addDetail').value.trim();
+
+  if (!name || !price || !point) {
+    showError('กรุณากรอกข้อมูลให้ครบ');
+    return;
+  }
+
+  showLoading();
+  try {
+    const payload = {
+      action: 'add_service',
+      name,
+      price,
+      point,
+      detail,
+      createdBy: currentAdmin.name
+    };
+
+    await fetch(GAS_ENDPOINT + '?action=add_service', {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(payload)
+    });
+
+    await logAdminAction('เพิ่มบริการ', `ชื่อ: ${name}, ราคา: ${price}, แต้ม: ${point}`);
+
+    closeAddPopup();
+    fetchServices();
+  } catch (err) {
+    console.error(err);
+    showError('ไม่สามารถเพิ่มบริการได้');
+  } finally {
+    hideLoading();
+  }
+}
+
 
 function showAddServicePopup() {
   Swal.fire({

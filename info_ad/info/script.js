@@ -1,7 +1,6 @@
 const SHEET_API = 'https://script.google.com/macros/s/AKfycbxdxUvmwLS3_nETwGLk4J8ipPq2LYNSWyhJ2ZwVsEJQgONG11NSSX3jVaeqWCU1TXvE5g/exec';
 const liffId = '2007421084-2OgzWbpV';
 
-
 document.addEventListener('DOMContentLoaded', async () => {
   
   const loading = document.getElementById('loadingOverlay');
@@ -20,12 +19,19 @@ document.addEventListener('DOMContentLoaded', async () => {
     const pictureUrl = profile.pictureUrl || "";
 
     document.getElementById('userView').classList.remove('hidden');
+    loading.classList.add('hidden');
     document.getElementById('loadingOverlay').classList.add('hidden');
     
 
     // ✅ ส่งข้อมูล LINE ก่อน
+    
+    const controller1 = new AbortController();
+    const timeoutId1 = setTimeout(() => controller1.abort(), 5000); // timeout 5 วินาที
+    
     const sendLineRes = await fetch(`${SHEET_API}?action=feedback_none`, {
+      redirect: "follow",
       method: 'POST',
+      signal: controller1.signal,
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
       body: JSON.stringify({
         userId, name, statusMessage, pictureUrl,
@@ -33,17 +39,23 @@ document.addEventListener('DOMContentLoaded', async () => {
       })
     });
     await sendLineRes.json();
+    clearTimeout(timeoutId1);
 
     // ✅ ตรวจสอบว่าเป็นแอดมินหรือไม่
+        
+    const controller2 = new AbortController();
+    const timeoutId2 = setTimeout(() => controller2.abort(), 5000); // timeout 5 วินาที
+    
     const checkRes = await fetch(`${SHEET_API}?action=check_admin`, {
       redirect: "follow",
       method: 'POST',
+      signal: controller2.signal,
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
       body: JSON.stringify({ userId, name, statusMessage, pictureUrl })
     });
     
     const checkResult = await checkRes.json();
-
+    clearTimeout(timeoutId2);
 
     if (checkResult.isAdmin) {
       window.location.href = '../main_admin/index.html';

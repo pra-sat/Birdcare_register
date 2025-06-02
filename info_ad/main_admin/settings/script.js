@@ -80,4 +80,3 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 });
 
-// เพิ่มเติมด้านล่าง: ฟังก์ชัน loadServiceList(), loadSystemConfig(), saveConfig() etc. ในขั้นต่อไป

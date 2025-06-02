@@ -100,3 +100,14 @@ footer {
   color: #aaa;
   font-size: 0.8em;
 }
+
+.btn.outline {
+  background-color: white;
+  color: #007aff;
+  border: 2px solid #007aff;
+}
+
+.btn.outline:hover {
+  background-color: #e6f0ff;
+}
+

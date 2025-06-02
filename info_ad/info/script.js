@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // ✅ ตรวจสอบว่าเป็นแอดมินหรือไม่
         
     const controller2 = new AbortController();
-    const timeoutId2 = setTimeout(() => controller2.abort(), 1500); // timeout 15 วินาที
+    const timeoutId2 = setTimeout(() => controller2.abort(), 15000); // timeout 15 วินาที
     
     const checkRes = await fetch(`${SHEET_API}?action=check_admin`, {
       redirect: "follow",

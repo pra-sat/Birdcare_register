@@ -1,6 +1,11 @@
 const GAS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxdxUvmwLS3_nETwGLk4J8ipPq2LYNSWyhJ2ZwVsEJQgONG11NSSX3jVaeqWCU1TXvE5g/exec';
 const liffId = '2007421084-2OgzWbpV';
 
+function logout() {
+  liff.logout();
+  liff.closeWindow();
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
   try {
     Swal.fire({
@@ -83,12 +88,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     document.getElementById('adminName').textContent = result.name || 'ไม่ทราบชื่อ';
+    document.getElementById('adminPic').src = pictureUrl;
     const level = parseInt(result.level || "1");
 
     if (level >= 1) document.querySelector('[data-menu="feedback"]')?.classList.remove("hidden");
     if (level >= 2) document.querySelector('[data-menu="scan"]')?.classList.remove("hidden");
     if (level >= 3) document.querySelector('[data-menu="stats"]')?.classList.remove("hidden");
     if (level >= 5) document.querySelector('[data-menu="settings"]')?.classList.remove("hidden");
+
+    document.getElementById('adminLevel').textContent = level;
+    document.getElementById('adminRole').textContent = result.role || '-';
 
   } catch (err) {
     Swal.close();

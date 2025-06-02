@@ -13,29 +13,29 @@ async function sendAdminLog(name, action, detail) {
     let token = "N/A";
     if (liff.getIDToken && typeof liff.getIDToken === 'function') {
       token = await liff.getIDToken();
-    } else {
-      token = userId || "N/A";
     }
 
-    await fetch(GAS_ENDPOINT + '?action=log_admin', {
+    const res = await fetch(GAS_ENDPOINT + '?action=log_admin', {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
       body: JSON.stringify({
         action: 'log_admin',
         name,
-        userId, // ✅ ใช้ค่าจาก global ที่กำหนดไว้
+        userId, // ✅ ค่านี้จะถูกใช้จาก global
         actionTitle: action,
         detail,
         device: userAgent,
         token: token
       })
     });
-    const result = await res.json();
+
+    const result = await res.json(); // ✅ fix variable name
     console.log("📘 บันทึก Admin Log:", result);
   } catch (err) {
     console.warn("❌ บันทึก Log ไม่สำเร็จ:", err);
   }
 }
+
 
 
 
@@ -132,6 +132,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('adminLevel').textContent = level;
     document.getElementById('adminRole').textContent = result.role || '-';
     
+    console.log("🆔 userId ก่อนส่ง Log:", userId);
     await sendAdminLog(result.name, 'เข้าสู่ระบบ', 'มีการเข้าใช้งานหน้า admin');
 
   } catch (err) {

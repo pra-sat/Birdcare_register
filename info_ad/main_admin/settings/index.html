@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ตั้งค่าระบบ</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <script src="script.js" defer></script>
+</head>
+<body style="display: none">
+  <div class="container">
+    <h2>⚙️ ตั้งค่าระบบ</h2>
+    <div class="admin-info">
+      <p>ระบบโดย: <span id="adminName">-</span> (<span id="adminLevel">-</span>)</p>
+    </div>
+
+    <div class="menu-list">
+      <a href="services/index.html" class="btn">🚜 รายการบริการ</a>
+      <a href="promotions/index.html" class="btn">🎉 โปรโมชั่น</a>
+      <a href="users/index.html" class="btn">👥 ผู้ดูแล</a>
+      <a href="config/index.html" class="btn">🔧 ตั้งค่าพื้นฐ์</a>
+      <a href="backup/index.html" class="btn">📁 สำรองข้อมูล</a>
+    </div>
+
+    <button onclick="goBack()" class="btn danger">🔙 ย้อนกลับ</button>
+  </div>
+</body>
+</html>

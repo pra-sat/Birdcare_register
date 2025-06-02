@@ -38,13 +38,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         phone: "'0", score: "", feedback: ""
       })
     });
-    await sendLineRes.json();
     clearTimeout(timeoutId1);
+    await sendLineRes.json();
+
 
     // ✅ ตรวจสอบว่าเป็นแอดมินหรือไม่
         
     const controller2 = new AbortController();
-    const timeoutId2 = setTimeout(() => controller2.abort(), 15000); // timeout 15 วินาที
+    const timeoutId2 = setTimeout(() => controller2.abort(), 10000); // timeout 10 วินาที
     
     const checkRes = await fetch(`${SHEET_API}?action=check_admin`, {
       redirect: "follow",
@@ -54,8 +55,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       body: JSON.stringify({ userId, name, statusMessage, pictureUrl })
     });
     
+    clearTimeout(timeoutId2);    
     const checkResult = await checkRes.json();
-    clearTimeout(timeoutId2);
+
 
     if (checkResult.isAdmin) {
       window.location.href = '../main_admin/index.html';

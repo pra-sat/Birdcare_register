@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
     //clearTimeout(timeoutId1);
     await sendLineRes.json();
-
+    console.log("✅ ส่งข้อมูล LINE:", sendLineRes);
 
     // ✅ ตรวจสอบว่าเป็นแอดมินหรือไม่
         
@@ -58,7 +58,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     //clearTimeout(timeoutId2);    
     const checkResult = await checkRes.json();
 
-
+    console.log("✅ ตรวจสอบว่าเป็นแอดมินหรือไม่:", checkResult);'
+      
     if (checkResult.isAdmin) {
       window.location.href = '../main_admin/index.html';
     } else {

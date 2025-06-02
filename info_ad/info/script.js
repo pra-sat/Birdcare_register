@@ -25,37 +25,37 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // ✅ ส่งข้อมูล LINE ก่อน
     
-    //const controller1 = new AbortController();
-    //const timeoutId1 = setTimeout(() => controller1.abort(), 10000); // timeout 10 วินาที
+    const controller1 = new AbortController();
+    const timeoutId1 = setTimeout(() => controller1.abort(), 10000); // timeout 10 วินาที
     
     const sendLineRes = await fetch(`${SHEET_API}?action=feedback_none`, {
       redirect: "follow",
       method: 'POST',
-      //signal: controller1.signal,
+      signal: controller1.signal,
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
       body: JSON.stringify({
         userId, name, statusMessage, pictureUrl,
         phone: "'0", score: "", feedback: ""
       })
     });
-    //clearTimeout(timeoutId1);
+    clearTimeout(timeoutId1);
     await sendLineRes.json();
     console.log("✅ ส่งข้อมูล LINE:", sendLineRes);
 
     // ✅ ตรวจสอบว่าเป็นแอดมินหรือไม่
         
-    //const controller2 = new AbortController();
-    //const timeoutId2 = setTimeout(() => controller2.abort(), 10000); // timeout 10 วินาที
+    const controller2 = new AbortController();
+    const timeoutId2 = setTimeout(() => controller2.abort(), 10000); // timeout 10 วินาที
     
     const checkRes = await fetch(`${SHEET_API}?action=check_admin`, {
       redirect: "follow",
       method: 'POST',
-      //signal: controller2.signal,
+      signal: controller2.signal,
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
       body: JSON.stringify({ userId, name, statusMessage, pictureUrl })
     });
     
-    //clearTimeout(timeoutId2);    
+    clearTimeout(timeoutId2);    
     const checkResult = await checkRes.json();
 
     console.log("✅ ตรวจสอบว่าเป็นแอดมินหรือไม่:", checkResult);

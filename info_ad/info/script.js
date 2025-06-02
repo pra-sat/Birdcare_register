@@ -1,21 +1,27 @@
 const SHEET_API = 'https://script.google.com/macros/s/AKfycbxdxUvmwLS3_nETwGLk4J8ipPq2LYNSWyhJ2ZwVsEJQgONG11NSSX3jVaeqWCU1TXvE5g/exec';
 const liffId = '2007421084-2OgzWbpV';
 
+
 document.addEventListener('DOMContentLoaded', async () => {
+  
   const loading = document.getElementById('loadingOverlay');
+  
   try {
     await liff.init({ liffId });
-
     if (!liff.isLoggedIn()) {
       liff.login();
       return;
     }
-
+    
     const profile = await liff.getProfile();
     const userId = profile.userId;
     const name = profile.displayName;
     const statusMessage = profile.statusMessage || "";
     const pictureUrl = profile.pictureUrl || "";
+
+    document.getElementById('userView').classList.remove('hidden');
+    document.getElementById('loadingOverlay').classList.add('hidden');
+    
 
     // ✅ ส่งข้อมูล LINE ก่อน
     const sendLineRes = await fetch(`${SHEET_API}?action=feedback_none`, {
@@ -42,8 +48,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (checkResult.isAdmin) {
       window.location.href = '../main_admin/index.html';
     } else {
-      document.getElementById('userView').classList.remove('hidden');
-
+    
       const scoreInput = document.getElementById('scoreInput');
       const feedbackInput = document.getElementById('feedbackInput');
       const btn = document.getElementById('submitFeedbackBtn');

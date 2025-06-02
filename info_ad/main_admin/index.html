@@ -12,13 +12,21 @@
 <body style="display:none;">
   <div class="container">
     <h2>🛠 แผงควบคุมผู้ดูแลระบบ</h2>
-    <p class="admin-name">👤 คุณ: <span id="adminName">รอโหลดชื่อ...</span></p>
-    <div class="admin-buttons">
-      <a class="btn hidden" href="scan.html" data-menu="scan">🔍 สแกน QR เพื่อเพิ่มบริการ</a>
-      <a class="btn hidden" href="feedback.html" data-menu="feedback">💬 ข้อเสนอแนะจากลูกค้า</a>
-      <a class="btn hidden" href="stats.html" data-menu="stats">📊 รายงาน/สถิติ</a>
-      <a class="btn hidden" href="settings/index.html" data-menu="settings">⚙️ ตั้งค่า</a>
+    <div class="profile">
+      <img id="adminPic" class="avatar" />
+      <p>👤 คุณ: <span id="adminName">-</span></p>
+      <p>🛡️ ระดับ: <span id="adminLevel">-</span></p>
+      <p>📛 บทบาท: <span id="adminRole">-</span></p>
     </div>
+    
+    <div class="admin-buttons">
+      <a class="btn hidden" data-menu="feedback" href="feedback/index.html">💬 ข้อเสนอแนะ</a>
+      <a class="btn hidden" data-menu="scan" href="scan/index.html">🔍 สแกน QR</a>
+      <a class="btn hidden" data-menu="stats" href="stats/index.html">📊 รายงาน</a>
+      <a class="btn hidden" data-menu="settings" href="settings/index.html">⚙️ ตั้งค่า</a>
+    </div>
+  
+    <button class="btn danger" onclick="logout()">🚪 ออกจากระบบ</button>
   </div>
 </body>
 </html>

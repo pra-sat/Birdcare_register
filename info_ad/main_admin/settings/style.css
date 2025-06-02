@@ -108,7 +108,7 @@ footer {
 .btn.outline {
   background-color: white;
   color: #007aff;
-  border: 2px solid #007aff;
+  /*border: 2px solid #007aff;*/
 }
 
 .btn.outline:hover {

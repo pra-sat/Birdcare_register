@@ -8,6 +8,14 @@ function logout() {
 
 async function sendAdminLog(name, action, detail) {
   try {
+    const userAgent = navigator.userAgent;
+    let token = "N/A";
+    if (liff.getIDToken && typeof liff.getIDToken === 'function') {
+      token = await liff.getIDToken();
+    } else {
+      token = userId || "N/A";
+    }
+    
     const res = await fetch(GAS_ENDPOINT + '?action=log_admin', {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
@@ -15,7 +23,9 @@ async function sendAdminLog(name, action, detail) {
         action: 'log_admin',
         name,
         actionTitle: action,
-        detail
+        detail,
+        device: userAgent,
+        token: token
       })
     });
     const result = await res.json();
@@ -24,6 +34,7 @@ async function sendAdminLog(name, action, detail) {
     console.warn("❌ บันทึก Log ไม่สำเร็จ:", err);
   }
 }
+
 
 
 document.addEventListener('DOMContentLoaded', async () => {

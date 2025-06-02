@@ -21,22 +21,20 @@ async function sendAdminLog(name, action, detail) {
       body: JSON.stringify({
         action: 'log_admin',
         name,
-        userId, // ✅ ค่านี้จะถูกใช้จาก global
+        userId, // ✅ global ที่อัปเดตแล้ว
         actionTitle: action,
         detail,
         device: userAgent,
         token: token
       })
     });
-
-    const result = await res.json(); // ✅ fix variable name
+    const result = await res.json();
     console.log("📘 บันทึก Admin Log:", result);
+
   } catch (err) {
     console.warn("❌ บันทึก Log ไม่สำเร็จ:", err);
   }
 }
-
-
 
 
 document.addEventListener('DOMContentLoaded', async () => {

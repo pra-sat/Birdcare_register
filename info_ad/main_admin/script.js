@@ -3,6 +3,9 @@ const liffId = '2007421084-2OgzWbpV';
 
 document.addEventListener('DOMContentLoaded', async () => {
   try {
+    await liff.init({ liffId });
+    if (!liff.isLoggedIn()) return liff.login();
+
     Swal.fire({
       title: 'กำลังโหลดข้อมูล...',
       allowOutsideClick: false,
@@ -12,9 +15,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         Swal.showLoading();
       }
     });
-
-    await liff.init({ liffId });
-    if (!liff.isLoggedIn()) return liff.login();
 
     const profile = await liff.getProfile();
     const userId = profile.userId;

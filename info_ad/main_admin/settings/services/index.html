@@ -1,0 +1,35 @@
+<!-- services/index.html -->
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>บริการทั้งหมด</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="script.js" defer></script>
+</head>
+<body class="hidden">
+  <div class="container">
+    <h2 class="title">🧼 รายการบริการทั้งหมด</h2>
+
+    <div class="profile-box">
+      <p>👤 คุณ: <span id="adminName">-</span></p>
+      <p>🛡️ ระดับ: <span id="adminLevel">-</span></p>
+      <p>📛 บทบาท: <span id="adminRole">-</span></p>
+    </div>
+
+    <div class="button-group">
+      <button class="btn" onclick="openAddForm()">➕ เพิ่มบริการ</button>
+      <a class="btn outline" href="../settings/index.html">🔙 กลับหน้าตั้งค่า</a>
+    </div>
+
+    <div id="serviceList" class="section">
+      <!-- บริการจะถูกโหลดมาแสดงที่นี่ด้วย JS -->
+    </div>
+  </div>
+
+  <!-- Modal เพิ่มบริการ (จะเพิ่มด้วย JS ภายหลัง) -->
+</body>
+</html>

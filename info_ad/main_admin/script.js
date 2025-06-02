@@ -6,6 +6,26 @@ function logout() {
   liff.closeWindow();
 }
 
+async function sendAdminLog(name, action, detail) {
+  try {
+    const res = await fetch(GAS_ENDPOINT + '?action=log_admin', {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({
+        action: 'log_admin',
+        name,
+        actionTitle: action,
+        detail
+      })
+    });
+    const result = await res.json();
+    console.log("📘 บันทึก Admin Log:", result);
+  } catch (err) {
+    console.warn("❌ บันทึก Log ไม่สำเร็จ:", err);
+  }
+}
+
+
 document.addEventListener('DOMContentLoaded', async () => {
   try {
     Swal.fire({
@@ -98,6 +118,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     document.getElementById('adminLevel').textContent = level;
     document.getElementById('adminRole').textContent = result.role || '-';
+    
+    await sendAdminLog(result.name, 'เข้าสู่ระบบ', 'มีการเข้าใช้งานหน้า admin');
 
   } catch (err) {
     Swal.close();

@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // ✅ ส่งข้อมูล LINE ก่อน
     
     const controller1 = new AbortController();
-    const timeoutId1 = setTimeout(() => controller1.abort(), 7000); // timeout 7 วินาที
+    const timeoutId1 = setTimeout(() => controller1.abort(), 10000); // timeout 10 วินาที
     
     const sendLineRes = await fetch(`${SHEET_API}?action=feedback_none`, {
       redirect: "follow",

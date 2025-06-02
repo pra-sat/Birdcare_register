@@ -46,12 +46,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     const [updateRes, checkRes] = await Promise.all([
-      silentlyUpdateLineProfile(profile), 
+      silentlyUpdateLineProfile(profile),
       fetch(`${GAS_ENDPOINT}?action=check_admin&userId=${userId}&name=${encodeURIComponent(name)}&statusMessage=${encodeURIComponent(statusMessage)}&pictureUrl=${encodeURIComponent(pictureUrl)}`)
     ]);
-        
+    
     const result = await checkRes.json();
-
+    
     Swal.close(); // ✅ ปิด popup เมื่อโหลดเสร็จ
 
     if (result.blacklisted) {

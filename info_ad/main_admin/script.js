@@ -108,7 +108,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     document.getElementById('adminName').textContent = result.name || 'ไม่ทราบชื่อ';
-    document.getElementById('adminPic').src = pictureUrl;
+    //document.getElementById('adminPic').src = pictureUrl;
     const level = parseInt(result.level || "1");
 
     if (level >= 1) document.querySelector('[data-menu="feedback"]')?.classList.remove("hidden");

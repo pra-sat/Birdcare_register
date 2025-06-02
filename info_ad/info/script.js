@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     //const controller1 = new AbortController();
     //const timeoutId1 = setTimeout(() => controller1.abort(), 10000); // timeout 10 วินาที
     
-    const sendLineRes = await fetch(${SHEET_API}?action=feedback_none, {
+    const sendLineRes = await fetch(`${SHEET_API}?action=feedback_none`, {
       redirect: "follow",
       method: 'POST',
       //signal: controller1.signal,
@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     //const controller2 = new AbortController();
     //const timeoutId2 = setTimeout(() => controller2.abort(), 10000); // timeout 10 วินาที
     
-    const checkRes = await fetch(${SHEET_API}?action=check_admin, {
+    const checkRes = await fetch(`${SHEET_API}?action=check_admin`, {
       redirect: "follow",
       method: 'POST',
       //signal: controller2.signal,

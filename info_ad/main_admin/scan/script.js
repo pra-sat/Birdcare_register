@@ -171,7 +171,7 @@ async function submitService() {
   const note = document.getElementById('noteInput').value;
 
   const body = {
-    action: 'service',
+    action: 'record_service',   // ✅ สำคัญ
     contents: JSON.stringify({
       userId: foundUser.UserID,
       nameLine: foundUser.nameLine || '',

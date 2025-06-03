@@ -11,34 +11,6 @@ let currentCameraIndex = 0;
 let html5QrCode;
 let cameraList = [];
 
-// ✅ โหลด LIFF และดึงโปรไฟล์
-window.addEventListener('DOMContentLoaded', async () => {
-  await liff.init({ liffId });
-  if (!liff.isLoggedIn()) {
-    liff.login();
-    return;
-  }
-
-  const profile = await liff.getProfile().catch(err => {
-    Swal.fire("❌ ไม่สามารถโหลดโปรไฟล์ LINE", err.message || '', 'error');
-    return;
-  });
-  if (!profile) return;
-
-  adminUserId = profile.userId;
-
-
-  const res = await fetch(`${GAS_ENDPOINT}?action=check_admin&userId=${adminUserId}`);
-  const result = await res.json();
-
-  document.getElementById('adminName').textContent = result.name || '-';
-  document.getElementById('adminRole').textContent = `ระดับ ${result.level || '-'}`;
-
-  logAction('enter_scan', 'เข้าสู่หน้า Scan');
-  loadServices();
-  startCamera();
-});
-
 function logAction(title, detail) {
   fetch(GAS_ENDPOINT, {
     method: 'POST',
@@ -95,6 +67,34 @@ function toggleCamera() {
     );
   });
 }
+
+// ✅ โหลด LIFF และดึงโปรไฟล์
+window.addEventListener('DOMContentLoaded', async () => {
+  await liff.init({ liffId });
+  if (!liff.isLoggedIn()) {
+    liff.login();
+    return;
+  }
+
+  const profile = await liff.getProfile().catch(err => {
+    Swal.fire("❌ ไม่สามารถโหลดโปรไฟล์ LINE", err.message || '', 'error');
+    return;
+  });
+  if (!profile) return;
+
+  adminUserId = profile.userId;
+
+
+  const res = await fetch(`${GAS_ENDPOINT}?action=check_admin&userId=${adminUserId}`);
+  const result = await res.json();
+
+  document.getElementById('adminName').textContent = result.name || '-';
+  document.getElementById('adminRole').textContent = `ระดับ ${result.level || '-'}`;
+
+  logAction('enter_scan', 'เข้าสู่หน้า Scan');
+  loadServices();
+  startCamera();
+});
 
 async function manualSearch() {
   const phone = document.getElementById('manualPhone').value;

@@ -369,6 +369,43 @@ async function saveEditedService() {
   }
 }
 
+async function deleteService() {
+  const serviceId = document.getElementById('viewPopup').dataset.serviceId;
+
+  const confirm = await Swal.fire({
+    icon: 'warning',
+    title: 'ต้องการลบบริการ?',
+    text: 'การลบนี้ไม่สามารถย้อนกลับได้',
+    showCancelButton: true,
+    confirmButtonText: 'ลบเลย',
+    cancelButtonText: 'ยกเลิก'
+  });
+
+  if (!confirm.isConfirmed) return;
+
+  showLoading();
+  try {
+    await fetch(GAS_ENDPOINT + '?action=service', {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({
+        action: 'delete_service',
+        serviceId
+      })
+    });
+
+    await logAdminAction('ลบบริการ', `ID: ${serviceId}`);
+    closeViewPopup();
+    fetchServices();
+  } catch (err) {
+    console.error(err);
+    showError('ลบบริการไม่สำเร็จ');
+  } finally {
+    hideLoading();
+  }
+}
+
+
 document.addEventListener('DOMContentLoaded', async () => {
   showLoading();
   try {

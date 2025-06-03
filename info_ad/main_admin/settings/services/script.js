@@ -312,11 +312,14 @@ function showServiceDetailPopup(service) {
   document.getElementById('viewPopup').classList.remove('hidden');
 }
 
-function toggleEditMode(enable = true) {
-  const inputs = ['viewName', 'viewPrice', 'viewPoint', 'viewDetail'];
-  inputs.forEach(id => document.getElementById(id).disabled = !enable);
-  document.getElementById('editBtn').classList.toggle('hidden', enable);
-  document.getElementById('saveBtn').classList.toggle('hidden', !enable);
+function toggleEditMode() {
+  document.getElementById('viewName').disabled = false;
+  document.getElementById('viewPrice').disabled = false;
+  document.getElementById('viewPoint').disabled = false;
+  document.getElementById('viewDetail').disabled = false;
+
+  document.getElementById('editBtn').classList.add('hidden');
+  document.getElementById('saveBtn').classList.remove('hidden');
 }
 
 function toggleServiceStatus() {
@@ -330,17 +333,40 @@ async function saveEditedService() {
   const price = document.getElementById('viewPrice').value.trim();
   const point = document.getElementById('viewPoint').value.trim();
   const detail = document.getElementById('viewDetail').value.trim();
+  const status = document.getElementById('viewStatus').checked ? 'on' : 'off';
+  const serviceId = document.getElementById('viewPopup').dataset.serviceId;
 
   if (!name || !price || !point) {
     showError('กรุณากรอกข้อมูลให้ครบ');
     return;
   }
 
-  // TODO: ส่งข้อมูลใหม่ไปยัง GAS เพื่ออัปเดต service จริง
-  await logAdminAction('แก้ไขบริการ', `Service: ${currentService.name} -> ${name}, ราคา: ${price}, แต้ม: ${point}`);
-  toggleEditMode(false);
-  closeViewPopup();
-  fetchServices();
+  showLoading();
+  try {
+    await fetch(GAS_ENDPOINT + '?action=service', {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({
+        action: 'update_service',
+        serviceId,
+        name,
+        price,
+        point,
+        detail,
+        status,
+        updatedBy: currentAdmin.name
+      })
+    });
+
+    await logAdminAction('แก้ไขบริการ', `ชื่อ: ${name}, ราคา: ${price}, แต้ม: ${point}, สถานะ: ${status}`);
+    closeViewPopup();
+    fetchServices();
+  } catch (err) {
+    console.error(err);
+    showError('ไม่สามารถแก้ไขบริการได้');
+  } finally {
+    hideLoading();
+  }
 }
 
 document.addEventListener('DOMContentLoaded', async () => {

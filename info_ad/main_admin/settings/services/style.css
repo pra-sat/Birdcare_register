@@ -192,4 +192,24 @@ textarea {
   gap: 10px;
 }
 
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.btn-delete {
+  background: transparent;
+  border: none;
+  font-size: 1.1em;
+  color: #ff3b30;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.btn-delete:hover {
+  color: #b00020;
+}
+
+
 

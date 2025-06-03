@@ -4,6 +4,7 @@ const liffId = '2007421084-2OgzWbpV';
 const pointPerBaht = 0.1;
 
 let adminUserId = '';
+let adminName = '-';
 let token = '';
 let foundUser = null;
 let serviceList = [];
@@ -19,7 +20,7 @@ function logAction(title, detail) {
     body: JSON.stringify({
       action: 'log_admin',
       contents: JSON.stringify({
-        name: document.getElementById('adminName').textContent,
+        name: adminName, // ✅ ใช้ค่าจากตัวแปรตรง ไม่พึ่ง DOM
         userId: adminUserId,
         actionTitle: title,
         detail,
@@ -29,6 +30,7 @@ function logAction(title, detail) {
     }),
   });
 }
+
 
 // ✅ โหลด LIFF และดึงโปรไฟล์
 window.addEventListener('DOMContentLoaded', async () => {
@@ -50,6 +52,9 @@ window.addEventListener('DOMContentLoaded', async () => {
   }
   const res = await fetch(`${GAS_ENDPOINT}?action=check_admin&userId=${adminUserId}`);
   const result = await res.json();
+
+  adminUserId = profile.userId;
+  adminName = result.name || '-';
 
   document.getElementById('adminName').textContent = result.name || '-';
   document.getElementById('adminRole').textContent = `ระดับ ${result.level || '-'}`;

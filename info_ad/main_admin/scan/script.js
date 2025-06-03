@@ -151,15 +151,13 @@ function loadServices() {
         opt.textContent = `${item.name} (${item.price}฿)`;
         select.appendChild(opt);
       });
+      document.getElementById('serviceSelect').addEventListener('change', () => {
+        const selected = JSON.parse(document.getElementById('serviceSelect').value);
+        document.getElementById('priceInput').value = selected.price;
+        updatePoint();
+      });
     });
 }
-
-document.getElementById('serviceSelect').addEventListener('change', () => {
-  const selected = JSON.parse(document.getElementById('serviceSelect').value);
-  document.getElementById('priceInput').value = selected.price;
-  updatePoint();
-});
-
 
 
 async function submitService() {

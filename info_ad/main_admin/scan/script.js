@@ -100,13 +100,24 @@ async function manualSearch() {
   const phone = document.getElementById('manualPhone').value;
   if (!phone) return;
 
+  Swal.fire({
+    title: '🔍 กำลังค้นหา...',
+    allowOutsideClick: false,
+    showConfirmButton: false,
+    didOpen: () => Swal.showLoading()
+  });
+
   const res = await fetch(`${GAS_ENDPOINT}?action=search_phone&phone=${phone}`);
   const result = await res.json();
+
+  Swal.close();
+
   if (!result.success) return Swal.fire('ไม่พบข้อมูลลูกค้า', '', 'error');
   document.getElementById('manualPhone').value = '';
   foundUser = result.data;
   showCustomerPopup();
 }
+
 
 async function onScanSuccess(token) {
   const res = await fetch(`${GAS_ENDPOINT}?action=verify_token&token=${token}`);

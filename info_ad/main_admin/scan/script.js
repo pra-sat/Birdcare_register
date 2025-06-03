@@ -96,24 +96,6 @@ function toggleCamera() {
   });
 }
 
-function logAction(title, detail) {
-  fetch(GAS_ENDPOINT, {
-    method: 'POST',
-    body: JSON.stringify({
-      action: 'log_admin',
-      contents: JSON.stringify({
-        name: document.getElementById('adminName').textContent,
-        userId: adminUserId,
-        actionTitle: title,
-        detail: detail,
-        device: navigator.userAgent,
-        token: ''
-      }),
-    }),
-  });
-}
-
-
 async function manualSearch() {
   const phone = document.getElementById('manualPhone').value;
   if (!phone) return;

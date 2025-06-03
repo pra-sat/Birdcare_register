@@ -5,14 +5,13 @@ const liffId = '2007421084-2OgzWbpV';
 
 let userId = "N/A";
 let currentAdmin = {}; // เก็บข้อมูล admin หลัง login
+let currentService = null; // บริการที่ถูกเลือกปัจจุบัน
 
-// ฟังก์ชัน: ออกจากระบบ
 function logout() {
   liff.logout();
   liff.closeWindow();
 }
 
-// แสดง popup โหลดข้อมูล
 function showLoading() {
   Swal.fire({
     title: 'กำลังโหลดข้อมูล...',
@@ -22,12 +21,10 @@ function showLoading() {
   });
 }
 
-// ปิด popup โหลดข้อมูล
 function hideLoading() {
   Swal.close();
 }
 
-// แสดง error ด้วย sweetalert
 function showError(message) {
   Swal.fire({
     icon: 'error',
@@ -37,22 +34,25 @@ function showError(message) {
   });
 }
 
-// เปิด popup เพิ่มบริการ
 function openAddPopup() {
   document.getElementById('addPopup').classList.remove('hidden');
 }
 
-// ปิด popup เพิ่มบริการ
 function closeAddPopup() {
   document.getElementById('addPopup').classList.add('hidden');
 }
 
-// แสดง/ซ่อน รายการบริการ
+function closeViewPopup() {
+  document.getElementById('viewPopup').classList.add('hidden');
+  document.getElementById('saveBtn').classList.add('hidden');
+  document.getElementById('editBtn').classList.remove('hidden');
+  toggleEditMode(false);
+}
+
 function toggleServiceList() {
   document.getElementById('serviceList').classList.toggle('hidden');
 }
 
-// log การกระทำของ admin ไปที่ Admin_Log
 async function logAdminAction(action, detail) {
   try {
     await fetch(GAS_ENDPOINT + '?action=log_admin', {
@@ -73,7 +73,6 @@ async function logAdminAction(action, detail) {
   }
 }
 
-// สร้าง card สำหรับแต่ละบริการ
 function createServiceCard(service) {
   const card = document.createElement('div');
   card.className = 'service-card';
@@ -91,7 +90,6 @@ function createServiceCard(service) {
   return card;
 }
 
-// แสดงรายการบริการทั้งหมด
 function renderServiceList(list) {
   const listEl = document.getElementById('serviceList');
   listEl.innerHTML = '';
@@ -99,7 +97,6 @@ function renderServiceList(list) {
   listEl.classList.remove('hidden');
 }
 
-// โหลดข้อมูลบริการทั้งหมดจาก GAS
 async function fetchServices() {
   showLoading();
   try {
@@ -115,7 +112,6 @@ async function fetchServices() {
   }
 }
 
-// บันทึกบริการใหม่
 async function submitAddService() {
   const name = document.getElementById('addName').value.trim();
   const price = document.getElementById('addPrice').value.trim();
@@ -141,18 +137,10 @@ async function submitAddService() {
     await fetch(GAS_ENDPOINT + '?action=service', {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify({
-        action: 'add_service',
-        name,
-        price,
-        point,
-        detail,
-        createdBy: currentAdmin.name
-      })
+      body: JSON.stringify(payload)
     });
 
     await logAdminAction('เพิ่มบริการ', `ชื่อ: ${name}, ราคา: ${price}, แต้ม: ${point}`);
-
     closeAddPopup();
     fetchServices();
   } catch (err) {
@@ -163,25 +151,47 @@ async function submitAddService() {
   }
 }
 
-// แสดง popup รายละเอียดบริการ (ยังไม่รองรับแก้ไข)
 function showServiceDetailPopup(service) {
-  Swal.fire({
-    title: `รายละเอียดบริการ: ${service.name}`,
-    html: `
-      <p><strong>ราคา:</strong> ${service.price} บาท</p>
-      <p><strong>แต้ม:</strong> ${service.point}</p>
-      <p><strong>รายละเอียด:</strong><br>${service.detail}</p>
-      <label class="toggle-switch">
-        <input type="checkbox" ${service.status === 'on' ? 'checked' : ''} id="statusToggle">
-        <span class="slider"></span>
-      </label>
-    `,
-    showCancelButton: true,
-    cancelButtonText: 'ปิด'
-  });
+  currentService = service;
+  document.getElementById('popupTitle').textContent = `📄 รายละเอียดบริการ`;
+  document.getElementById('viewName').value = service.name;
+  document.getElementById('viewPrice').value = service.price;
+  document.getElementById('viewPoint').value = service.point;
+  document.getElementById('viewDetail').value = service.detail;
+  document.getElementById('viewStatus').checked = (service.status === 'on');
+  document.getElementById('viewPopup').classList.remove('hidden');
 }
 
-// เริ่มต้น: ตรวจสอบสิทธิ์ admin และผูกปุ่มต่าง ๆ
+function toggleEditMode(enable = true) {
+  const inputs = ['viewName', 'viewPrice', 'viewPoint', 'viewDetail'];
+  inputs.forEach(id => document.getElementById(id).disabled = !enable);
+  document.getElementById('editBtn').classList.toggle('hidden', enable);
+  document.getElementById('saveBtn').classList.toggle('hidden', !enable);
+}
+
+function toggleServiceStatus() {
+  const newStatus = document.getElementById('viewStatus').checked ? 'on' : 'off';
+  logAdminAction('เปลี่ยนสถานะบริการ', `Service: ${currentService.name}, เป็น: ${newStatus}`);
+  // TODO: ส่งไปยัง GAS หากต้องการบันทึกจริง
+}
+
+async function saveEditedService() {
+  const name = document.getElementById('viewName').value.trim();
+  const price = document.getElementById('viewPrice').value.trim();
+  const point = document.getElementById('viewPoint').value.trim();
+  const detail = document.getElementById('viewDetail').value.trim();
+
+  if (!name || !price || !point) {
+    showError('กรุณากรอกข้อมูลให้ครบ');
+    return;
+  }
+
+  // TODO: ส่งข้อมูลใหม่ไปยัง GAS เพื่ออัปเดต service จริง
+  await logAdminAction('แก้ไขบริการ', `Service: ${currentService.name} -> ${name}, ราคา: ${price}, แต้ม: ${point}`);
+  toggleEditMode(false);
+  closeViewPopup();
+  fetchServices();
+}
 
 document.addEventListener('DOMContentLoaded', async () => {
   showLoading();
@@ -213,7 +223,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     hideLoading();
   }
 
-  // ✅ ตรวจสอบปุ่มมีอยู่จริงก่อนผูก event
   const addBtn = document.getElementById('addServiceBtn');
   const listBtn = document.getElementById('showAllBtn');
   const backBtn = document.getElementById('backBtn');
@@ -224,4 +233,3 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (backBtn) backBtn.addEventListener('click', () => location.href = '../index.html');
   if (logoutBtn) logoutBtn.addEventListener('click', logout);
 });
-

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>สแกน QR ลูกค้า</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+  <div id="adminInfo" class="admin-info">
+    👤 <span id="adminName">...</span> | 🛡️ <span id="adminRole">-</span>
+  </div>
+
+  <h2>📷 สแกน QR Code ลูกค้า</h2>
+  <video id="camera" autoplay playsinline></video>
+  <button id="openCameraBtn" onclick="startCamera()">เปิดกล้อง</button>
+
+  <hr />
+
+  <div>
+    <label>หรือกรอกเบอร์โทรลูกค้า:</label><br />
+    <input type="tel" id="manualPhone" placeholder="กรอกเบอร์โทร..." />
+    <button onclick="manualSearch()">ตรวจสอบ</button>
+  </div>
+
+  <div id="resultSection" class="hidden">
+    <h3>ข้อมูลลูกค้า</h3>
+    <p>ชื่อ: <span id="custName"></span></p>
+    <p>เบอร์: <span id="custPhone"></span></p>
+    <p>รถ: <span id="custCar"></span></p>
+
+    <label>บริการ:</label>
+    <select id="serviceSelect" onchange="updatePoint()"></select>
+
+    <label>ราคา:</label>
+    <input type="number" id="priceInput" readonly />
+
+    <p>แต้มที่จะได้: <span id="pointPreview">0</span></p>
+
+    <label>หมายเหตุ:</label>
+    <input type="text" id="noteInput" />
+
+    <button id="submitBtn" onclick="submitService()">บันทึกบริการ</button>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

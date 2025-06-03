@@ -196,7 +196,8 @@ function showCustomerPopup() {
           admin: document.getElementById('adminName').textContent
         })
       };
-
+    document.querySelector('.swal2-confirm')?.setAttribute('disabled', 'true');
+      
       Swal.fire({
         title: '⏳ กำลังบันทึก...',
         allowOutsideClick: false,

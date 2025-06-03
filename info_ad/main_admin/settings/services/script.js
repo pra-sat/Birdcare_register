@@ -52,117 +52,6 @@ function closeViewPopup() {
 function toggleServiceList() {
   document.getElementById('serviceList').classList.toggle('hidden');
 }
-// เพิ่มช่องค้นหาและปุ่มอันดับยอดนิยม
-function setupServiceExtras() {
-  const container = document.querySelector('.container');
-  const searchBar = document.createElement('input');
-  searchBar.type = 'text';
-  searchBar.placeholder = '🔍 ค้นหาบริการ...';
-  searchBar.classList.add('input-search');
-  container.insertBefore(searchBar, document.getElementById('serviceList'));
-
-  searchBar.addEventListener('input', async (e) => {
-    const keyword = e.target.value.trim();
-    if (keyword.length < 1) return fetchServices();
-    const res = await fetch(GAS_ENDPOINT + '?action=service', {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify({ action: 'search_service', keyword })
-    });
-    const result = await res.json();
-    renderServiceList(result.results);
-  });
-
-  const rankBtn = document.createElement('button');
-  rankBtn.className = 'btn outline';
-  rankBtn.innerText = '🏆 อันดับบริการยอดนิยม';
-  rankBtn.onclick = showTopRankedServices;
-  document.querySelector('.button-group').appendChild(rankBtn);
-}
-
-async function handleStatusToggleChange(serviceId, newStatus) {
-  showLoading();
-  try {
-    await fetch(GAS_ENDPOINT + '?action=service', {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify({
-        action: 'update_service_status',
-        serviceId,
-        status: newStatus,
-        adminName: currentAdmin.name,
-        userId,
-        device: navigator.userAgent,
-        token: await liff.getIDToken()
-      })
-    });
-
-    await logAdminAction('เปลี่ยนสถานะบริการ', `ID: ${serviceId}, เป็น: ${newStatus}`);
-  } catch (err) {
-    showError('อัปเดตสถานะไม่สำเร็จ');
-  } finally {
-    hideLoading();
-  }
-}
-
-async function showTopRankedServices() {
-  showLoading();
-  try {
-    const res = await fetch(GAS_ENDPOINT + '?action=service', {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify({ action: 'rank_service' })
-    });
-    const { ranking } = await res.json();
-    const top5 = ranking.slice(0, 5)
-      .map((item, idx) => `#${idx + 1}. ${item.serviceId} (จำนวน ${item.usageCount} ครั้ง)`) 
-      .join('\n');
-    Swal.fire('🏆 อันดับบริการยอดนิยม', top5 || 'ไม่มีข้อมูล', 'info');
-  } catch (err) {
-    showError('ไม่สามารถโหลดอันดับได้');
-  } finally {
-    hideLoading();
-  }
-}
-
-// เพิ่มยืนยันการลบก่อนลบบริการจริง
-function confirmDeleteService(serviceId) {
-  Swal.fire({
-    title: 'ยืนยันการลบบริการ?',
-    text: 'คุณแน่ใจหรือไม่ว่าต้องการลบบริการนี้? ไม่สามารถกู้คืนได้!',
-    icon: 'warning',
-    showCancelButton: true,
-    confirmButtonColor: '#d33',
-    cancelButtonColor: '#3085d6',
-    confirmButtonText: 'ลบ',
-    cancelButtonText: 'ยกเลิก'
-  }).then(async (result) => {
-    if (result.isConfirmed) {
-      try {
-        showLoading();
-        await fetch(GAS_ENDPOINT + '?action=service', {
-          method: 'POST',
-          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-          body: JSON.stringify({
-            action: 'delete_service',
-            serviceId,
-            adminName: currentAdmin.name,
-            userId,
-            device: navigator.userAgent,
-            token: await liff.getIDToken()
-          })
-        });
-        await logAdminAction('ลบบริการ', `ID: ${serviceId}`);
-        fetchServices();
-      } catch (err) {
-        showError('ลบไม่สำเร็จ');
-      } finally {
-        hideLoading();
-      }
-    }
-  });
-}
-
 
 async function logAdminAction(action, detail) {
   try {
@@ -187,12 +76,10 @@ async function logAdminAction(action, detail) {
 function createServiceCard(service) {
   const card = document.createElement('div');
   card.className = 'service-card';
-
+  card.draggable = true;
+  card.dataset.id = service.serviceId;
   card.innerHTML = `
-    <div class="card-header">
-      <h3>${service.name}</h3>
-      <button class="btn btn-delete" data-id="${service.serviceId}" title="ลบบริการนี้">🗑️</button>
-    </div>
+    <h3>${service.name}</h3>
     <p>ราคา: ${service.price} บาท</p>
     <p>แต้ม: ${service.point}</p>
     <p>รายละเอียด: ${service.detail}</p>
@@ -201,58 +88,27 @@ function createServiceCard(service) {
       <span class="slider"></span>
     </label>
   `;
-
-  // คลิกการ์ด = เปิด popup (ยกเว้นปุ่มลบ)
-  card.addEventListener('click', (e) => {
-    if (!e.target.classList.contains('btn-delete') && e.target.type !== 'checkbox') {
-      showServiceDetailPopup(service);
-    }
-  });
-
-  // ปุ่มลบ
-  const deleteBtn = card.querySelector('.btn-delete');
-  deleteBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    confirmDeleteService(service.serviceId);
-  });
-
-  // ✅ ฟัง toggle-switch
-  const toggle = card.querySelector('input[type="checkbox"]');
-  toggle.addEventListener('change', async (e) => {
-    e.stopPropagation();
-    const newStatus = e.target.checked ? 'on' : 'off';
-    await handleStatusToggleChange(service.serviceId, newStatus);
-  });
-
+  card.addEventListener('click', () => showServiceDetailPopup(service));
+  card.addEventListener('dragstart', dragStart);
+  card.addEventListener('dragover', dragOver);
+  card.addEventListener('drop', drop);
   return card;
 }
 
-
-function renderServiceList(list, filter = 'all') {
+function renderServiceList(list) {
   const listEl = document.getElementById('serviceList');
   listEl.innerHTML = '';
-
-  const filtered = filter === 'on' ? list.filter(s => s.status === 'on') : list;
-
-  filtered.forEach(service => {
-    const card = createServiceCard(service);
-    if (service.status === 'off') {
-      card.classList.add('disabled');
-    }
-    listEl.appendChild(card);
-  });
-
+  list.forEach(service => listEl.appendChild(createServiceCard(service)));
   listEl.classList.remove('hidden');
 }
 
-
-async function fetchServices(filter = 'all') {
+async function fetchServices() {
   showLoading();
   try {
     const res = await fetch(GAS_ENDPOINT + '?action=service&sub_action=get_service_list');
     const data = await res.json();
-    renderServiceList(data.services, filter);
-    await logAdminAction('เปิดดูบริการ', `โหลดบริการทั้งหมด (${filter})`);
+    renderServiceList(data.services);
+    await logAdminAction('เปิดดูบริการทั้งหมด', 'โหลดข้อมูลจาก Service_List');
   } catch (err) {
     console.error(err);
     showError('โหลดรายการบริการไม่สำเร็จ');
@@ -260,7 +116,6 @@ async function fetchServices(filter = 'all') {
     hideLoading();
   }
 }
-
 
 async function submitAddService() {
   const name = document.getElementById('addName').value.trim();
@@ -310,6 +165,7 @@ function showServiceDetailPopup(service) {
   document.getElementById('viewDetail').value = service.detail;
   document.getElementById('viewStatus').checked = (service.status === 'on');
   document.getElementById('viewPopup').classList.remove('hidden');
+  document.getElementById('viewPopup').dataset.serviceId = service.serviceId;
 }
 
 function toggleEditMode() {
@@ -320,12 +176,6 @@ function toggleEditMode() {
 
   document.getElementById('editBtn').classList.add('hidden');
   document.getElementById('saveBtn').classList.remove('hidden');
-}
-
-function toggleServiceStatus() {
-  const newStatus = document.getElementById('viewStatus').checked ? 'on' : 'off';
-  logAdminAction('เปลี่ยนสถานะบริการ', `Service: ${currentService.name}, เป็น: ${newStatus}`);
-  // TODO: ส่งไปยัง GAS หากต้องการบันทึกจริง
 }
 
 async function saveEditedService() {
@@ -405,6 +255,49 @@ async function deleteService() {
   }
 }
 
+// ✅ Drag-and-drop support
+let dragSrcEl = null;
+
+function dragStart(e) {
+  dragSrcEl = this;
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/html', this.outerHTML);
+  this.classList.add('dragElem');
+}
+
+function dragOver(e) {
+  e.preventDefault();
+  this.classList.add('over');
+}
+
+function drop(e) {
+  e.preventDefault();
+  if (dragSrcEl !== this) {
+    const list = document.getElementById('serviceList');
+    list.insertBefore(dragSrcEl, this);
+    updateServiceOrder();
+  }
+  this.classList.remove('over');
+  dragSrcEl.classList.remove('dragElem');
+}
+
+async function updateServiceOrder() {
+  const ids = [...document.querySelectorAll('#serviceList .service-card')].map(el => el.dataset.id);
+  try {
+    await fetch(GAS_ENDPOINT + '?action=service', {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({
+        action: 'update_order',
+        order: ids
+      })
+    });
+    await logAdminAction('เรียงลำดับบริการใหม่', ids.join(", "));
+  } catch (err) {
+    console.warn('อัปเดตลำดับล้มเหลว:', err);
+  }
+}
+
 
 document.addEventListener('DOMContentLoaded', async () => {
   showLoading();
@@ -435,9 +328,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   } finally {
     hideLoading();
   }
-  
-  const filterBtn = document.getElementById('filterActiveBtn');
-  if (filterBtn) filterBtn.addEventListener('click', () => fetchServices('on'));
 
   const addBtn = document.getElementById('addServiceBtn');
   const listBtn = document.getElementById('showAllBtn');
@@ -448,7 +338,4 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (listBtn) listBtn.addEventListener('click', fetchServices);
   if (backBtn) backBtn.addEventListener('click', () => location.href = '../index.html');
   if (logoutBtn) logoutBtn.addEventListener('click', logout);
-
-  setupServiceExtras();
-  
 });

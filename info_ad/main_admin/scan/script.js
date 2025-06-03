@@ -83,7 +83,7 @@ async function manualSearch() {
 async function onScanSuccess(token) {
   console.log("✅ อ่าน QR ได้: ", token);
 
-  const res = await fetch(`${GAS}?action=verify_token&token=${token}`);
+  const res = await fetch(`${GAS_ENDPOINT}?action=verify_token&token=${token}`);
   const result = await res.json();
 
   if (!result.success) {
@@ -126,6 +126,14 @@ function loadServices() {
     });
 }
 
+document.getElementById('serviceSelect').addEventListener('change', () => {
+  const selected = JSON.parse(document.getElementById('serviceSelect').value);
+  document.getElementById('priceInput').value = selected.price;
+  updatePoint();
+});
+
+
+
 async function submitService() {
   const btn = document.getElementById('submitBtn');
   btn.disabled = true;
@@ -151,5 +159,7 @@ async function submitService() {
   };
 
   await fetch(GAS_ENDPOINT, { method: 'POST', body: JSON.stringify(body) });
-  Swal.fire('✅ บันทึกสำเร็จ', '', 'success').then(() => liff.closeWindow());
+  Swal.fire('✅ บันทึกสำเร็จ', '', 'success').then(() => {
+    liff.closeWindow();
+  });
 }

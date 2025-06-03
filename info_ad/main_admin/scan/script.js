@@ -44,10 +44,6 @@ function logAction(title, detail) {
   });
 }
 
-let currentCameraIndex = 0;
-let html5QrCode;
-let cameraList = [];
-
 function startCamera() {
   html5QrCode = new Html5Qrcode("reader");
 
@@ -95,8 +91,6 @@ function toggleCamera() {
     );
   });
 }
-
-
 
 async function manualSearch() {
   const phone = document.getElementById('manualPhone').value;
@@ -197,3 +191,9 @@ async function submitService() {
     liff.closeWindow();
   });
 }
+
+// Make functions globally available for HTML onclick
+window.startCamera = startCamera;
+window.toggleCamera = toggleCamera;
+window.manualSearch = manualSearch;
+window.submitService = submitService;

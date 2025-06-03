@@ -96,6 +96,24 @@ function toggleCamera() {
   });
 }
 
+function logAction(title, detail) {
+  fetch(GAS_ENDPOINT, {
+    method: 'POST',
+    body: JSON.stringify({
+      action: 'log_admin',
+      contents: JSON.stringify({
+        name: document.getElementById('adminName').textContent,
+        userId: adminUserId,
+        actionTitle: title,
+        detail: detail,
+        device: navigator.userAgent,
+        token: ''
+      }),
+    }),
+  });
+}
+
+
 async function manualSearch() {
   const phone = document.getElementById('manualPhone').value;
   if (!phone) return;
@@ -103,6 +121,7 @@ async function manualSearch() {
   const res = await fetch(`${GAS_ENDPOINT}?action=search_phone&phone=${phone}`);
   const result = await res.json();
   if (!result.success) return Swal.fire('ไม่พบข้อมูลลูกค้า', '', 'error');
+  document.getElementById('manualPhone').value = '';
   foundUser = result.data;
   showCustomerPopup();
 }
@@ -181,8 +200,12 @@ function showCustomerPopup() {
         contents: JSON.stringify({
           userId: foundUser.UserID,
           nameLine: foundUser.nameLine || '',
+          statusMessage: foundUser.statusMessage || '',
+          pictureUrl: foundUser.pictureUrl || '',
           brand: foundUser.Brand,
           model: foundUser.Model,
+          year: foundUser.Year,
+          category: foundUser.Category || '',
           serviceName: name,
           price: price,
           point: Math.floor(price * pointPerBaht),

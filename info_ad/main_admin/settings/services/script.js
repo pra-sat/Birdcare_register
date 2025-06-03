@@ -246,13 +246,13 @@ function renderServiceList(list, filter = 'all') {
 }
 
 
-async function fetchServices() {
+async function fetchServices(filter = 'all') {
   showLoading();
   try {
     const res = await fetch(GAS_ENDPOINT + '?action=service&sub_action=get_service_list');
     const data = await res.json();
-    renderServiceList(data.services);
-    await logAdminAction('เปิดดูบริการทั้งหมด', 'โหลดข้อมูลจาก Service_List');
+    renderServiceList(data.services, filter);
+    await logAdminAction('เปิดดูบริการ', `โหลดบริการทั้งหมด (${filter})`);
   } catch (err) {
     console.error(err);
     showError('โหลดรายการบริการไม่สำเร็จ');
@@ -260,6 +260,7 @@ async function fetchServices() {
     hideLoading();
   }
 }
+
 
 async function submitAddService() {
   const name = document.getElementById('addName').value.trim();
@@ -371,6 +372,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   } finally {
     hideLoading();
   }
+  
+  const filterBtn = document.getElementById('filterActiveBtn');
+  if (filterBtn) filterBtn.addEventListener('click', () => fetchServices('on'));
 
   const addBtn = document.getElementById('addServiceBtn');
   const listBtn = document.getElementById('showAllBtn');

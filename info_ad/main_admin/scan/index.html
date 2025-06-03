@@ -6,6 +6,7 @@
   <title>สแกน QR ลูกค้า</title>
   <link rel="stylesheet" href="style.css" />
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://unpkg.com/html5-qrcode"></script>
 </head>
 <body>
   <div id="adminInfo" class="admin-info">
@@ -13,7 +14,7 @@
   </div>
 
   <h2>📷 สแกน QR Code ลูกค้า</h2>
-  <video id="camera" autoplay playsinline></video>
+  <div id="reader" style="width: 300px;"></div>
   <button id="openCameraBtn" onclick="startCamera()">เปิดกล้อง</button>
 
   <hr />

@@ -5,6 +5,10 @@ const pointPerBaht = 0.1;
 let adminUserId = '';
 let foundUser = null;
 
+let currentCameraIndex = 0;
+let html5QrCode;
+let cameraList = [];
+
 document.addEventListener('DOMContentLoaded', async () => {
   await liff.init({ liffId });
   if (!liff.isLoggedIn()) return liff.login();
@@ -20,6 +24,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   logAction('enter_scan', 'เข้าสู่หน้า Scan');
   loadServices();
+  startCamera();
 });
 
 function logAction(title, detail) {
@@ -39,29 +44,58 @@ function logAction(title, detail) {
   });
 }
 
+let currentCameraIndex = 0;
+let html5QrCode;
+let cameraList = [];
+
 function startCamera() {
-  const html5QrCode = new Html5Qrcode("reader");
+  html5QrCode = new Html5Qrcode("reader");
 
   Html5Qrcode.getCameras().then(cameras => {
     if (cameras && cameras.length) {
-      const camId = cameras[0].id;
+      cameraList = cameras;
+
+      // ✅ เริ่มที่กล้องหลังถ้ามี
+      const backCam = cameras.find(cam => /back|environment/i.test(cam.label));
+      const camId = backCam ? backCam.id : cameras[0].id;
+      currentCameraIndex = cameras.findIndex(cam => cam.id === camId);
 
       html5QrCode.start(
         camId,
         { fps: 10, qrbox: 250 },
         (decodedText, decodedResult) => {
           onScanSuccess(decodedText);
-          html5QrCode.stop(); // หยุดกล้องทันทีเมื่ออ่านได้
+          html5QrCode.stop();
         },
-        (errorMessage) => {
-          // console.warn("ไม่พบโค้ด: ", errorMessage);
-        }
+        (errorMessage) => { /* ไม่ต้องแสดง error */ }
       );
+    } else {
+      Swal.fire("ไม่พบกล้อง", "อุปกรณ์ของคุณไม่มีกล้องหรือไม่อนุญาต", "error");
     }
   }).catch(err => {
     Swal.fire("ไม่สามารถเข้าถึงกล้องได้", err.message, "error");
   });
 }
+
+function toggleCamera() {
+  if (!cameraList.length || !html5QrCode) return;
+
+  html5QrCode.stop().then(() => {
+    currentCameraIndex = (currentCameraIndex + 1) % cameraList.length;
+    const camId = cameraList[currentCameraIndex].id;
+
+    html5QrCode.start(
+      camId,
+      { fps: 10, qrbox: 250 },
+      (decodedText, decodedResult) => {
+        onScanSuccess(decodedText);
+        html5QrCode.stop();
+      },
+      (errorMessage) => { /* ไม่ต้องแสดง error */ }
+    );
+  });
+}
+
 
 
 async function manualSearch() {

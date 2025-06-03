@@ -186,9 +186,18 @@ async function submitService() {
     }),
   };
 
-  await fetch(GAS_ENDPOINT, { method: 'POST', body: JSON.stringify(body) });
-  Swal.fire('✅ บันทึกสำเร็จ', '', 'success').then(() => {
-    liff.closeWindow();
+  await fetch(GAS_ENDPOINT, {
+    method: 'POST',
+    body: JSON.stringify(body),
+  })
+  .then(() => {
+    Swal.fire('✅ บันทึกสำเร็จ', '', 'success').then(() => {
+      liff.closeWindow();
+    });
+  })
+  .catch((err) => {
+    console.error("เกิดข้อผิดพลาด:", err);
+    Swal.fire("❌ เกิดข้อผิดพลาด", err.message || "", "error");
   });
 }
 

@@ -1,43 +1,31 @@
-<!-- ✅ index.html (อัปเกรดใหม่ทั้งหมดตามที่ขอ) -->
-<!DOCTYPE html>
+<!DOCTYPE html>Add commentMore actions
 <html lang="th">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>สแกน QR ลูกค้า</title>
-  <link rel="stylesheet" href="style.css" />
-
-  <!-- ✅ SweetAlert2 & QR Code -->
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <script src="https://unpkg.com/html5-qrcode"></script>
-
-  <!-- ✅ LIFF SDK -->
+  <meta charset="UTF-8">
+  <title>_</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
-  
-  <!-- ✅ script.js ด้านล่างสุด -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>Add commentMore actions
+  <script src="script.js" defer></script>
 </head>
-<body>
-  <div class="admin-info">
-    👤 <span id="adminName">...</span> | 🛡️ <span id="adminRole">-</span>
+<body style="display:none;">
+  <div class="container">
+    <h2>🛠 แผงควบคุมผู้ดูแลระบบ</h2>
+    <div class="profile">
+      <!-- <img id="adminPic" class="avatar" /> -->
+      <p>👤 คุณ: <span id="adminName">-</span></p>
+      <p>🛡️ ระดับ: <span id="adminLevel">-</span></p>
+      <p>📛 บทบาท: <span id="adminRole">-</span></p>
+    </div>
+    
+    <div class="admin-buttons">
+      <a class="btn hidden" data-menu="feedback" href="feedback/index.html">💬 ข้อเสนอแนะ</a>
+      <a class="btn hidden" data-menu="scan" href="scan/index.html">🔍 สแกน QR</a>
+      <a class="btn hidden" data-menu="stats" href="stats/index.html">📊 รายงาน</a>
+      <a class="btn hidden" data-menu="settings" href="settings/index.html">⚙️ ตั้งค่า</a>
+    </div>
+    <button class="btn danger" onclick="logout()">🚪 ออกจากระบบ</button>
   </div>
-
-  <h2>📷 สแกน QR Code ลูกค้า</h2>
-  <div id="reader" style="width: 300px;"></div>
-  <p style="color:gray;">กรุณาเล็งกล้องไปยัง QR Code ลูกค้า</p>
-  <button onclick="startCamera()">เปิดกล้อง</button>
-  <button onclick="toggleCamera()">🔁 สลับกล้อง</button>
-
-  <hr />
-
-  <div>
-    <label>หรือกรอกเบอร์โทรลูกค้า:</label><br />
-    <input type="tel" id="manualPhone" placeholder="กรอกเบอร์โทร..." />
-    <button onclick="manualSearch()">ตรวจสอบ</button>
-  </div>
-
-  <!-- ✅ ฟอร์ม popup จะถูก inject โดย JS เมื่อพบข้อมูล -->
-
-  <!-- ✅ script.js -->
-  <script src="script.js"></script>
 </body>
 </html>

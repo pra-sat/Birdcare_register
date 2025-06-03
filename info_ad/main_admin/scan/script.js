@@ -12,6 +12,24 @@ let currentCameraIndex = 0;
 let html5QrCode;
 let cameraList = [];
 
+function logAction(title, detail) {
+  fetch(GAS_ENDPOINT + '?action=log_admin', {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify({
+      action: 'log_admin',
+      contents: JSON.stringify({
+        name: document.getElementById('adminName').textContent,
+        userId: adminUserId,
+        actionTitle: title,
+        detail,
+        device: navigator.userAgent,
+        token: token,
+      }),
+    }),
+  });
+}
+
 // ✅ โหลด LIFF และดึงโปรไฟล์
 window.addEventListener('DOMContentLoaded', async () => {
   await liff.init({ liffId });
@@ -40,24 +58,6 @@ window.addEventListener('DOMContentLoaded', async () => {
   loadServices();
   startCamera();
 });
-
-function logAction(title, detail) {
-  fetch(GAS_ENDPOINT + '?action=log_admin', {
-    method: 'POST',
-    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-    body: JSON.stringify({
-      action: 'log_admin',
-      contents: JSON.stringify({
-        name: document.getElementById('adminName').textContent,
-        userId: adminUserId,
-        actionTitle: title,
-        detail,
-        device: navigator.userAgent,
-        token: token,
-      }),
-    }),
-  });
-}
 
 function startCamera() {
   html5QrCode = new Html5Qrcode('reader');

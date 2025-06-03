@@ -153,7 +153,7 @@ function showCustomerPopup() {
         pointPreview.textContent = Math.floor(p * pointPerBaht);
       });
     },
-    preConfirm: async () => {
+    preConfirm: async () => {ออ
       const name = document.getElementById('serviceName').value.trim();
       const price = parseFloat(document.getElementById('priceInput').value) || 0;
       const note = document.getElementById('noteInput').value.trim();
@@ -203,9 +203,15 @@ function showCustomerPopup() {
         didOpen: () => Swal.showLoading()
       });
 
-      await fetch(GAS_ENDPOINT, { method: 'POST', body: JSON.stringify(record) });
+      const res = await fetch(GAS_ENDPOINT, { method: 'POST', body: JSON.stringify(record) });
+      const result = await res.json();
+      
       Swal.close();
-      Swal.fire('✅ บันทึกสำเร็จ', '', 'success').then(() => liff.closeWindow());
+      if (result.success) {
+        Swal.fire('✅ บันทึกสำเร็จ', '', 'success').then(() => liff.closeWindow());
+      } else {
+        Swal.fire('❌ บันทึกไม่สำเร็จ', result.message || '', 'error');
+      }
     }
   });
 }

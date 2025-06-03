@@ -306,6 +306,8 @@ async function updateServiceOrder() {
 
 
 document.addEventListener('DOMContentLoaded', async () => {
+  closeAddPopup();
+  closeViewPopup();
   showLoading();
   try {
     await liff.init({ liffId });

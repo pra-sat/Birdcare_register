@@ -193,24 +193,23 @@ function showCustomerPopup() {
       }
 
     const record = {
-      contents: JSON.stringify({
-        action: 'record_service',  // <-- sub_action ที่ GAS เข้าใจ
-        userId: foundUser.UserID,
-        nameLine: foundUser.nameLine || '',
-        statusMessage: foundUser.statusMessage || '',
-        pictureUrl: foundUser.pictureUrl || '',
-        brand: foundUser.Brand,
-        model: foundUser.Model,
-        year: foundUser.Year,
-        category: foundUser.Category || '',
-        serviceName: name,
-        price: price,
-        point: Math.floor(price * pointPerBaht),
-        note: note,
-        timestamp: new Date().toISOString(),
-        admin: document.getElementById('adminName').textContent
-      })
+      action: 'record_service',
+      userId: foundUser.UserID,
+      nameLine: foundUser.nameLine || '',
+      statusMessage: foundUser.statusMessage || '',
+      pictureUrl: foundUser.pictureUrl || '',
+      brand: foundUser.Brand,
+      model: foundUser.Model,
+      year: foundUser.Year,
+      category: foundUser.Category || '',
+      serviceName: name,
+      price: price,
+      point: Math.floor(price * pointPerBaht),
+      note: note,
+      timestamp: new Date().toISOString(),
+      admin: document.getElementById('adminName').textContent
     };
+
 
     document.querySelector('.swal2-confirm')?.setAttribute('disabled', 'true');
       
@@ -220,11 +219,14 @@ function showCustomerPopup() {
         didOpen: () => Swal.showLoading()
       });
 
-      await fetch(GAS_ENDPOINT + '?action=service', {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({ action: 'service', contents: JSON.stringify(record) })
-      });
+    await fetch(GAS_ENDPOINT + '?action=service', {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({
+        action: 'service',
+        contents: JSON.stringify(record) // ✅ ไม่ซ้อนซ้ำ
+      })
+    });
       const result = await res.json();
       
       Swal.close();

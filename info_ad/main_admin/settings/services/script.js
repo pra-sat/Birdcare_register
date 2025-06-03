@@ -144,12 +144,16 @@ async function submitAddService() {
       createdBy: currentAdmin.name
     };
 
-    await fetch(GAS_ENDPOINT + '?action=service', {
+    const res = await fetch(GAS_ENDPOINT + '?action=service', {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
       body: JSON.stringify(payload)
     });
-
+    const result = await res.json();
+        if (result.status !== 'success') {
+      showError(result.message || 'ไม่สามารถเพิ่ม/แก้ไขข้อมูลได้');
+      return;
+    }
     await logAdminAction('เพิ่มบริการ', `ชื่อ: ${name}, ราคา: ${price}, แต้ม: ${point}`);
     closeAddPopup(); // สำหรับ add
     fetchServices();
@@ -199,7 +203,7 @@ async function saveEditedService() {
 
   showLoading();
   try {
-    await fetch(GAS_ENDPOINT + '?action=service', {
+    const res = await fetch(GAS_ENDPOINT + '?action=service', {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
       body: JSON.stringify({
@@ -213,6 +217,12 @@ async function saveEditedService() {
         updatedBy: currentAdmin.name
       })
     });
+
+    const result = await res.json();
+    if (result.status !== 'success') {
+      showError(result.message || 'ไม่สามารถเพิ่ม/แก้ไขข้อมูลได้');
+      return;
+    }
 
     await logAdminAction('แก้ไขบริการ', `ชื่อ: ${name}, ราคา: ${price}, แต้ม: ${point}, สถานะ: ${status}`);
     closeViewPopup(); // สำหรับ save / delete

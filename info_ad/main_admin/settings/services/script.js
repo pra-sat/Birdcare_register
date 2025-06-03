@@ -246,10 +246,13 @@ async function deleteService() {
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
       body: JSON.stringify({
         action: 'delete_service',
-        serviceId
+        serviceId,
+        adminName: currentAdmin.name,
+        userId: userId,
+        token: await liff.getIDToken(),
+        device: navigator.userAgent
       })
     });
-
     await logAdminAction('ลบบริการ', `ID: ${serviceId}`);
     closeViewPopup(); // สำหรับ save / delete
     fetchServices();

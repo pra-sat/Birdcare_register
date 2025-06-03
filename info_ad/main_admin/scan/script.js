@@ -14,10 +14,19 @@ let cameraList = [];
 // ✅ โหลด LIFF และดึงโปรไฟล์
 window.addEventListener('DOMContentLoaded', async () => {
   await liff.init({ liffId });
-  if (!liff.isLoggedIn()) return liff.login();
+  if (!liff.isLoggedIn()) {
+    liff.login();
+    return;
+  }
 
-  const profile = await liff.getProfile();
+  const profile = await liff.getProfile().catch(err => {
+    Swal.fire("❌ ไม่สามารถโหลดโปรไฟล์ LINE", err.message || '', 'error');
+    return;
+  });
+  if (!profile) return;
+
   adminUserId = profile.userId;
+
 
   const res = await fetch(`${GAS_ENDPOINT}?action=check_admin&userId=${adminUserId}`);
   const result = await res.json();
@@ -183,7 +192,12 @@ function showCustomerPopup() {
         })
       };
 
-      Swal.fire({ title: '      Swal.fire({ title: '\u2b⏳ กำลังบันทึก...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+      Swal.fire({
+        title: '⏳ กำลังบันทึก...',
+        allowOutsideClick: false,
+        didOpen: () => Swal.showLoading()
+      });
+
       await fetch(GAS_ENDPOINT, { method: 'POST', body: JSON.stringify(record) });
       Swal.close();
       Swal.fire('✅ บันทึกสำเร็จ', '', 'success').then(() => liff.closeWindow());

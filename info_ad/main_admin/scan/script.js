@@ -168,71 +168,72 @@ function showCustomerPopup() {
         pointPreview.textContent = Math.floor(p * pointPerBaht);
       });
     },
-  preConfirm: async () => {
-    const name = document.getElementById('serviceName').value.trim();
-    const price = parseFloat(document.getElementById('priceInput').value) || 0;
-    const note = document.getElementById('noteInput').value.trim();
-    if (!name || price <= 0) return Swal.showValidationMessage('กรุณากรอกชื่อบริการและราคาถูกต้อง');
-  
-    const existing = serviceList.find(s => s.name === name);
-    if (!existing || existing.price != price) {
-      await fetch(GAS_ENDPOINT, {
+    preConfirm: async () => {
+      const name = document.getElementById('serviceName').value.trim();
+      const price = parseFloat(document.getElementById('priceInput').value) || 0;
+      const note = document.getElementById('noteInput').value.trim();
+      if (!name || price <= 0) return Swal.showValidationMessage('กรุณากรอกชื่อบริการและราคาถูกต้อง');
+    
+      const existing = serviceList.find(s => s.name === name);
+      if (!existing || existing.price != price) {
+        await fetch(GAS_ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({
+            action: 'service',
+            contents: JSON.stringify({
+              action: 'add_service',
+              name,
+              price,
+              point: Math.floor(price * pointPerBaht),
+              detail: '-',
+              createdBy: adminUserId
+            })
+          })
+        });
+      }
+    
+      const record = {
+        action: 'record_service',
+        userId: foundUser.UserID,
+        nameLine: foundUser.nameLine || '',
+        statusMessage: foundUser.statusMessage || '',
+        pictureUrl: foundUser.pictureUrl || '',
+        brand: foundUser.Brand,
+        model: foundUser.Model,
+        year: foundUser.Year,
+        category: foundUser.Category || '',
+        serviceName: name,
+        price: price,
+        point: Math.floor(price * pointPerBaht),
+        note: note,
+        timestamp: new Date().toISOString(),
+        admin: document.getElementById('adminName').textContent
+      };
+    
+      document.querySelector('.swal2-confirm')?.setAttribute('disabled', 'true');
+    
+      Swal.fire({ title: '⏳ กำลังบันทึก...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+    
+      const res = await fetch(GAS_ENDPOINT + '?action=service', {
         method: 'POST',
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
         body: JSON.stringify({
           action: 'service',
-          contents: JSON.stringify({
-            action: 'add_service',
-            name,
-            price,
-            point: Math.floor(price * pointPerBaht),
-            detail: '-',
-            createdBy: adminUserId
-          })
+          contents: JSON.stringify(record)
         })
       });
+    
+      const result = await res.json();
+      Swal.close();
+    
+      if (result.success) {
+        Swal.fire('✅ บันทึกสำเร็จ', '', 'success').then(() => liff.closeWindow());
+      } else {
+        Swal.fire('❌ บันทึกไม่สำเร็จ', result.message || '', 'error');
+      }
     }
-  
-    const record = {
-      action: 'record_service',
-      userId: foundUser.UserID,
-      nameLine: foundUser.nameLine || '',
-      statusMessage: foundUser.statusMessage || '',
-      pictureUrl: foundUser.pictureUrl || '',
-      brand: foundUser.Brand,
-      model: foundUser.Model,
-      year: foundUser.Year,
-      category: foundUser.Category || '',
-      serviceName: name,
-      price: price,
-      point: Math.floor(price * pointPerBaht),
-      note: note,
-      timestamp: new Date().toISOString(),
-      admin: document.getElementById('adminName').textContent
-    };
-  
-    document.querySelector('.swal2-confirm')?.setAttribute('disabled', 'true');
-  
-    Swal.fire({ title: '⏳ กำลังบันทึก...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
-  
-    const res = await fetch(GAS_ENDPOINT + '?action=service', {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify({
-        action: 'service',
-        contents: JSON.stringify(record)
-      })
-    });
-  
-    const result = await res.json();
-    Swal.close();
-  
-    if (result.success) {
-      Swal.fire('✅ บันทึกสำเร็จ', '', 'success').then(() => liff.closeWindow());
-    } else {
-      Swal.fire('❌ บันทึกไม่สำเร็จ', result.message || '', 'error');
-    }
-  }
+  });
 }
 // ให้ฟังก์ชันเปิดกล้อง/ค้นหาเบอร์ใช้ใน HTML ได้
 window.startCamera = startCamera;

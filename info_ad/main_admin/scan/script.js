@@ -188,25 +188,27 @@ function showCustomerPopup() {
         });
       }
 
-      const record = {
-        action: 'record_service',
-        contents: JSON.stringify({
-          userId: foundUser.UserID,
-          nameLine: foundUser.nameLine || '',
-          statusMessage: foundUser.statusMessage || '',
-          pictureUrl: foundUser.pictureUrl || '',
-          brand: foundUser.Brand,
-          model: foundUser.Model,
-          year: foundUser.Year,
-          category: foundUser.Category || '',
-          serviceName: name,
-          price: price,
-          point: Math.floor(price * pointPerBaht),
-          note: note,
-          timestamp: new Date().toISOString(),
-          admin: document.getElementById('adminName').textContent
-        })
-      };
+    const record = {
+      action: 'service',
+      contents: JSON.stringify({
+        action: 'record_service',  // <-- sub_action ที่ GAS เข้าใจ
+        userId: foundUser.UserID,
+        nameLine: foundUser.nameLine || '',
+        statusMessage: foundUser.statusMessage || '',
+        pictureUrl: foundUser.pictureUrl || '',
+        brand: foundUser.Brand,
+        model: foundUser.Model,
+        year: foundUser.Year,
+        category: foundUser.Category || '',
+        serviceName: name,
+        price: price,
+        point: Math.floor(price * pointPerBaht),
+        note: note,
+        timestamp: new Date().toISOString(),
+        admin: document.getElementById('adminName').textContent
+      })
+    };
+
     document.querySelector('.swal2-confirm')?.setAttribute('disabled', 'true');
       
       Swal.fire({

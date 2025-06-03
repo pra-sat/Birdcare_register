@@ -80,6 +80,31 @@ function setupServiceExtras() {
   document.querySelector('.button-group').appendChild(rankBtn);
 }
 
+async function handleStatusToggleChange(serviceId, newStatus) {
+  showLoading();
+  try {
+    await fetch(GAS_ENDPOINT + '?action=service', {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({
+        action: 'update_service_status',
+        serviceId,
+        status: newStatus,
+        adminName: currentAdmin.name,
+        userId,
+        device: navigator.userAgent,
+        token: await liff.getIDToken()
+      })
+    });
+
+    await logAdminAction('เปลี่ยนสถานะบริการ', `ID: ${serviceId}, เป็น: ${newStatus}`);
+  } catch (err) {
+    showError('อัปเดตสถานะไม่สำเร็จ');
+  } finally {
+    hideLoading();
+  }
+}
+
 async function showTopRankedServices() {
   showLoading();
   try {
@@ -177,29 +202,49 @@ function createServiceCard(service) {
     </label>
   `;
 
-  // คลิกการ์ด = เปิด popup (ยกเว้นคลิกปุ่มลบ)
+  // คลิกการ์ด = เปิด popup (ยกเว้นปุ่มลบ)
   card.addEventListener('click', (e) => {
-    if (!e.target.classList.contains('btn-delete')) {
+    if (!e.target.classList.contains('btn-delete') && e.target.type !== 'checkbox') {
       showServiceDetailPopup(service);
     }
   });
 
-  // คลิกปุ่มลบ = ยืนยันการลบ
+  // ปุ่มลบ
   const deleteBtn = card.querySelector('.btn-delete');
   deleteBtn.addEventListener('click', (e) => {
     e.stopPropagation();
     confirmDeleteService(service.serviceId);
   });
 
+  // ✅ ฟัง toggle-switch
+  const toggle = card.querySelector('input[type="checkbox"]');
+  toggle.addEventListener('change', async (e) => {
+    e.stopPropagation();
+    const newStatus = e.target.checked ? 'on' : 'off';
+    await handleStatusToggleChange(service.serviceId, newStatus);
+  });
+
   return card;
 }
 
-function renderServiceList(list) {
+
+function renderServiceList(list, filter = 'all') {
   const listEl = document.getElementById('serviceList');
   listEl.innerHTML = '';
-  list.forEach(service => listEl.appendChild(createServiceCard(service)));
+
+  const filtered = filter === 'on' ? list.filter(s => s.status === 'on') : list;
+
+  filtered.forEach(service => {
+    const card = createServiceCard(service);
+    if (service.status === 'off') {
+      card.classList.add('disabled');
+    }
+    listEl.appendChild(card);
+  });
+
   listEl.classList.remove('hidden');
 }
+
 
 async function fetchServices() {
   showLoading();

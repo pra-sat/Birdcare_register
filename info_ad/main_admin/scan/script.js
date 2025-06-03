@@ -1,15 +1,18 @@
+// ✅ ปรับปรุง script.js ตามคำขอล่าสุดของผู้ใช้
 const GAS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxdxUvmwLS3_nETwGLk4J8ipPq2LYNSWyhJ2ZwVsEJQgONG11NSSX3jVaeqWCU1TXvE5g/exec';
 const liffId = '2007421084-2OgzWbpV';
 const pointPerBaht = 0.1;
 
 let adminUserId = '';
 let foundUser = null;
+let serviceList = [];
 
 let currentCameraIndex = 0;
 let html5QrCode;
 let cameraList = [];
 
-document.addEventListener('DOMContentLoaded', async () => {
+// ✅ โหลด LIFF และดึงโปรไฟล์
+window.addEventListener('DOMContentLoaded', async () => {
   await liff.init({ liffId });
   if (!liff.isLoggedIn()) return liff.login();
 
@@ -45,13 +48,10 @@ function logAction(title, detail) {
 }
 
 function startCamera() {
-  html5QrCode = new Html5Qrcode("reader");
-
+  html5QrCode = new Html5Qrcode('reader');
   Html5Qrcode.getCameras().then(cameras => {
-    if (cameras && cameras.length) {
+    if (cameras.length) {
       cameraList = cameras;
-
-      // ✅ เริ่มที่กล้องหลังถ้ามี
       const backCam = cameras.find(cam => /back|environment/i.test(cam.label));
       const camId = backCam ? backCam.id : cameras[0].id;
       currentCameraIndex = cameras.findIndex(cam => cam.id === camId);
@@ -59,35 +59,30 @@ function startCamera() {
       html5QrCode.start(
         camId,
         { fps: 10, qrbox: 250 },
-        (decodedText, decodedResult) => {
+        (decodedText) => {
           onScanSuccess(decodedText);
           html5QrCode.stop();
         },
-        (errorMessage) => { /* ไม่ต้องแสดง error */ }
+        () => {}
       );
     } else {
-      Swal.fire("ไม่พบกล้อง", "อุปกรณ์ของคุณไม่มีกล้องหรือไม่อนุญาต", "error");
+      Swal.fire('ไม่พบกล้อง', '', 'error');
     }
-  }).catch(err => {
-    Swal.fire("ไม่สามารถเข้าถึงกล้องได้", err.message, "error");
   });
 }
 
 function toggleCamera() {
   if (!cameraList.length || !html5QrCode) return;
-
   html5QrCode.stop().then(() => {
     currentCameraIndex = (currentCameraIndex + 1) % cameraList.length;
-    const camId = cameraList[currentCameraIndex].id;
-
     html5QrCode.start(
-      camId,
+      cameraList[currentCameraIndex].id,
       { fps: 10, qrbox: 250 },
-      (decodedText, decodedResult) => {
+      (decodedText) => {
         onScanSuccess(decodedText);
         html5QrCode.stop();
       },
-      (errorMessage) => { /* ไม่ต้องแสดง error */ }
+      () => {}
     );
   });
 }
@@ -98,109 +93,105 @@ async function manualSearch() {
 
   const res = await fetch(`${GAS_ENDPOINT}?action=search_phone&phone=${phone}`);
   const result = await res.json();
-
-  if (!result.success) {
-    logAction('scan_failed', `ไม่พบเบอร์: ${phone}`);
-    return Swal.fire('ไม่พบข้อมูลลูกค้า', '', 'error');
-  }
-
+  if (!result.success) return Swal.fire('ไม่พบข้อมูลลูกค้า', '', 'error');
   foundUser = result.data;
-  showCustomerData(foundUser);
+  showCustomerPopup();
 }
 
 async function onScanSuccess(token) {
-  console.log("✅ อ่าน QR ได้: ", token);
-
   const res = await fetch(`${GAS_ENDPOINT}?action=verify_token&token=${token}`);
   const result = await res.json();
-
-  if (!result.success) {
-    await logAction('scan_failed', `QR Token ไม่ถูกต้อง: ${token}`);
-    Swal.fire("ไม่พบข้อมูลหรือ Token หมดอายุ", "", "error");
-    return;
-  }
-
+  if (!result.success) return Swal.fire('QR ไม่ถูกต้อง', '', 'error');
   foundUser = result.data;
-  showCustomerData(foundUser);
-}
-
-function showCustomerData(user) {
-  document.getElementById('custName').textContent = user.Name;
-  document.getElementById('custPhone').textContent = user.Phone;
-  document.getElementById('custCar').textContent = `${user.Brand} ${user.Model} ${user.Year}`;
-  document.getElementById('priceInput').value = user.defaultPrice || 0;
-  document.getElementById('pointPreview').textContent = '0';
-
-  document.getElementById('resultSection').classList.remove('hidden');
-}
-
-function updatePoint() {
-  const price = parseFloat(document.getElementById('priceInput').value) || 0;
-  const point = Math.floor(price * pointPerBaht);
-  document.getElementById('pointPreview').textContent = point;
+  showCustomerPopup();
 }
 
 function loadServices() {
   fetch(`${GAS_ENDPOINT}?action=service_list`)
     .then(res => res.json())
     .then(data => {
-      const select = document.getElementById('serviceSelect');
+      serviceList = data;
+      const datalist = document.createElement('datalist');
+      datalist.id = 'serviceOptions';
       data.forEach(item => {
         const opt = document.createElement('option');
-        opt.value = JSON.stringify(item);
-        opt.textContent = `${item.name} (${item.price}฿)`;
-        select.appendChild(opt);
+        opt.value = item.name;
+        datalist.appendChild(opt);
       });
-      document.getElementById('serviceSelect').addEventListener('change', () => {
-        const selected = JSON.parse(document.getElementById('serviceSelect').value);
-        document.getElementById('priceInput').value = selected.price;
-        updatePoint();
-      });
+      document.body.appendChild(datalist);
     });
 }
 
+function showCustomerPopup() {
+  Swal.fire({
+    title: 'ข้อมูลลูกค้า',
+    html: `
+      <p>ชื่อ: ${foundUser.Name}</p>
+      <p>เบอร์: ${foundUser.Phone}</p>
+      <p>รถ: ${foundUser.Brand} ${foundUser.Model} ${foundUser.Year}</p>
+      <input list="serviceOptions" id="serviceName" placeholder="ชื่อบริการ" class="swal2-input">
+      <input type="number" id="priceInput" placeholder="ราคา" class="swal2-input">
+      <p>แต้มที่จะได้: <span id="pointPreview">0</span></p>
+      <input type="text" id="noteInput" placeholder="หมายเหตุ" class="swal2-input">
+    `,
+    confirmButtonText: 'บันทึก',
+    didOpen: () => {
+      const priceInput = document.getElementById('priceInput');
+      const pointPreview = document.getElementById('pointPreview');
+      priceInput.addEventListener('input', () => {
+        const p = parseFloat(priceInput.value) || 0;
+        pointPreview.textContent = Math.floor(p * pointPerBaht);
+      });
+    },
+    preConfirm: async () => {
+      const name = document.getElementById('serviceName').value.trim();
+      const price = parseFloat(document.getElementById('priceInput').value) || 0;
+      const note = document.getElementById('noteInput').value.trim();
+      if (!name || price <= 0) return Swal.showValidationMessage('กรุณากรอกชื่อบริการและราคาถูกต้อง');
 
-async function submitService() {
-  const btn = document.getElementById('submitBtn');
-  btn.disabled = true;
-  btn.textContent = "⏳ กำลังบันทึก...";
+      const existing = serviceList.find(s => s.name === name);
+      if (!existing || existing.price != price) {
+        await fetch(GAS_ENDPOINT, {
+          method: 'POST',
+          body: JSON.stringify({
+            action: 'service',
+            contents: JSON.stringify({
+              action: 'add_service',
+              name,
+              price,
+              point: Math.floor(price * pointPerBaht),
+              detail: '-',
+              createdBy: adminUserId
+            })
+          })
+        });
+      }
 
-  const service = JSON.parse(document.getElementById('serviceSelect').value);
-  const note = document.getElementById('noteInput').value;
+      const record = {
+        action: 'record_service',
+        contents: JSON.stringify({
+          userId: foundUser.UserID,
+          nameLine: foundUser.nameLine || '',
+          brand: foundUser.Brand,
+          model: foundUser.Model,
+          serviceName: name,
+          price: price,
+          point: Math.floor(price * pointPerBaht),
+          note: note,
+          timestamp: new Date().toISOString(),
+          admin: document.getElementById('adminName').textContent
+        })
+      };
 
-  const body = {
-    action: 'record_service',   // ✅ สำคัญ
-    contents: JSON.stringify({
-      userId: foundUser.UserID,
-      nameLine: foundUser.nameLine || '',
-      brand: foundUser.Brand,
-      model: foundUser.Model,
-      serviceName: service.name,
-      price: service.price,
-      point: Math.floor(service.price * pointPerBaht),
-      note: note,
-      timestamp: new Date().toISOString(),
-      admin: document.getElementById('adminName').textContent
-    }),
-  };
-
-  await fetch(GAS_ENDPOINT, {
-    method: 'POST',
-    body: JSON.stringify(body),
-  })
-  .then(() => {
-    Swal.fire('✅ บันทึกสำเร็จ', '', 'success').then(() => {
-      liff.closeWindow();
-    });
-  })
-  .catch((err) => {
-    console.error("เกิดข้อผิดพลาด:", err);
-    Swal.fire("❌ เกิดข้อผิดพลาด", err.message || "", "error");
+      Swal.fire({ title: '      Swal.fire({ title: '\u2b⏳ กำลังบันทึก...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+      await fetch(GAS_ENDPOINT, { method: 'POST', body: JSON.stringify(record) });
+      Swal.close();
+      Swal.fire('✅ บันทึกสำเร็จ', '', 'success').then(() => liff.closeWindow());
+    }
   });
 }
 
-// Make functions globally available for HTML onclick
+// ให้ฟังก์ชันเปิดกล้อง/ค้นหาเบอร์ใช้ใน HTML ได้
 window.startCamera = startCamera;
 window.toggleCamera = toggleCamera;
 window.manualSearch = manualSearch;
-window.submitService = submitService;

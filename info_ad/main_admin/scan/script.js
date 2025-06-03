@@ -221,7 +221,7 @@ function showCustomerPopup() {
             point: Math.floor(price * pointPerBaht),
             note: note,
             timestamp: new Date().toISOString(),
-            admin: document.getElementById('adminName').textContent
+            admin: adminName
           })
         })
       });

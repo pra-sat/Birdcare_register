@@ -19,6 +19,8 @@ window.addEventListener('DOMContentLoaded', async () => {
     return;
   }
 
+
+
   const profile = await liff.getProfile().catch(err => {
     Swal.fire("❌ ไม่สามารถโหลดโปรไฟล์ LINE", err.message || '', 'error');
     return;
@@ -26,8 +28,9 @@ window.addEventListener('DOMContentLoaded', async () => {
   if (!profile) return;
 
   adminUserId = profile.userId;
-
-
+  if (liff.getIDToken && typeof liff.getIDToken === 'function') {
+    token = await liff.getIDToken();
+  }
   const res = await fetch(`${GAS_ENDPOINT}?action=check_admin&userId=${adminUserId}`);
   const result = await res.json();
 
@@ -40,8 +43,9 @@ window.addEventListener('DOMContentLoaded', async () => {
 });
 
 function logAction(title, detail) {
-  fetch(GAS_ENDPOINT, {
+  fetch(GAS_ENDPOINT + '?action=log_admin', {
     method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
     body: JSON.stringify({
       action: 'log_admin',
       contents: JSON.stringify({
@@ -50,7 +54,7 @@ function logAction(title, detail) {
         actionTitle: title,
         detail,
         device: navigator.userAgent,
-        token: '',
+        token: token,
       }),
     }),
   });

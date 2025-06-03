@@ -106,6 +106,12 @@ h2.title {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
 }
 
+.service-card.disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+
 /* Popup Styling */
 .swal2-popup {
   font-size: 1rem !important;

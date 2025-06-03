@@ -53,6 +53,11 @@ function toggleServiceList() {
   document.getElementById('serviceList').classList.toggle('hidden');
 }
 
+function toggleServiceStatus() {
+  // ไม่ต้องทำอะไรเลยถ้ายังไม่ได้ enable edit
+  // หรือจะเอาไว้ future use ก็ได้
+}
+
 async function logAdminAction(action, detail) {
   try {
     await fetch(GAS_ENDPOINT + '?action=log_admin', {
@@ -146,7 +151,7 @@ async function submitAddService() {
     });
 
     await logAdminAction('เพิ่มบริการ', `ชื่อ: ${name}, ราคา: ${price}, แต้ม: ${point}`);
-    closeAddPopup();
+    closeAddPopup(); // สำหรับ add
     fetchServices();
   } catch (err) {
     console.error(err);
@@ -168,15 +173,16 @@ function showServiceDetailPopup(service) {
   document.getElementById('viewPopup').dataset.serviceId = service.serviceId;
 }
 
-function toggleEditMode() {
-  document.getElementById('viewName').disabled = false;
-  document.getElementById('viewPrice').disabled = false;
-  document.getElementById('viewPoint').disabled = false;
-  document.getElementById('viewDetail').disabled = false;
+function toggleEditMode(enable = true) {
+  document.getElementById('viewName').disabled = !enable;
+  document.getElementById('viewPrice').disabled = !enable;
+  document.getElementById('viewPoint').disabled = !enable;
+  document.getElementById('viewDetail').disabled = !enable;
 
-  document.getElementById('editBtn').classList.add('hidden');
-  document.getElementById('saveBtn').classList.remove('hidden');
+  document.getElementById('editBtn').classList.toggle('hidden', enable);
+  document.getElementById('saveBtn').classList.toggle('hidden', !enable);
 }
+
 
 async function saveEditedService() {
   const name = document.getElementById('viewName').value.trim();
@@ -209,7 +215,7 @@ async function saveEditedService() {
     });
 
     await logAdminAction('แก้ไขบริการ', `ชื่อ: ${name}, ราคา: ${price}, แต้ม: ${point}, สถานะ: ${status}`);
-    closeViewPopup();
+    closeViewPopup(); // สำหรับ save / delete
     fetchServices();
   } catch (err) {
     console.error(err);
@@ -245,7 +251,7 @@ async function deleteService() {
     });
 
     await logAdminAction('ลบบริการ', `ID: ${serviceId}`);
-    closeViewPopup();
+    closeViewPopup(); // สำหรับ save / delete
     fetchServices();
   } catch (err) {
     console.error(err);

@@ -193,7 +193,6 @@ function showCustomerPopup() {
       }
 
     const record = {
-      action: 'service',
       contents: JSON.stringify({
         action: 'record_service',  // <-- sub_action ที่ GAS เข้าใจ
         userId: foundUser.UserID,
@@ -221,7 +220,11 @@ function showCustomerPopup() {
         didOpen: () => Swal.showLoading()
       });
 
-      const res = await fetch(GAS_ENDPOINT, { method: 'POST', body: JSON.stringify(record) });
+      await fetch(GAS_ENDPOINT + '?action=service', {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action: 'service', contents: JSON.stringify(record) })
+      });
       const result = await res.json();
       
       Swal.close();

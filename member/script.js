@@ -5,6 +5,8 @@ const memberInfoEl = document.getElementById('memberInfo');
 const historySection = document.getElementById('historySection');
 const toggleBtn = document.getElementById('toggleHistory');
 
+//const serviceDate = feedbackBtn.getAttribute('data-raw');  // ← ปรับเป็นแบบนี้:
+const serviceDate = toBangkokISOString(new Date(feedbackBtn.getAttribute('data-raw')));
 
 // ⭐ Global variable to store current userId for later use (e.g., submitting feedback)
 let currentUserId = null;
@@ -33,8 +35,12 @@ function formatPhone(phone) {
   return digits.replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3');
 }
 
+function toBangkokISOString(date) {
+  return new Date(date.getTime() - (date.getTimezoneOffset() * 60000)).toISOString();
+}
+
 function formatDateToYMDHM(rawDate) {
-  const d = new Date(rawDate);
+  const d = new Date(row.date).toISOString()  // ตัวอย่าง: '2025-06-04T07:20:00.000Z'
   const year = d.getFullYear();
   const month = (d.getMonth() + 1).toString().padStart(2, '0');
   const day = d.getDate().toString().padStart(2, '0');
@@ -67,7 +73,7 @@ async function showQRSection() {
   try {
     const token = generateToken();
     window.qrToken = token;
-    const createdAt = new Date().toISOString();
+    const createdAt = new Date(row.date).toISOString()  // ตัวอย่าง: '2025-06-04T07:20:00.000Z'
     const payload = {
       action: "create_token",
       token,
@@ -283,7 +289,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             historyCardsHtml += `
               <button class="btn feedback-btn"
                 data-date="${dateStr}"
-                data-raw="${formatDateToYMDHM(row.date)}"
+                data-raw="${new Date(row.date).toISOString()}"
                 data-service="${row.service || ''}">
                 ให้คะแนน / ข้อเสนอแนะ
               </button>
@@ -347,7 +353,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <td>${row.note}</td>
                 <td>  <button class="btn feedback-btn"
                       data-date="${dateStr}"
-                      data-raw="${formatDateToYMDHM(row.date)}"
+                      data-raw="${new Date(row.date).toISOString()}"
                       data-service="${row.service}">
                       ให้คะแนน / ข้อเสนอแนะ
                   </button>
@@ -534,7 +540,9 @@ document.addEventListener('DOMContentLoaded', async () => {
               date: serviceDate,
               service: serviceName,
               rating: ratingVal,
-              feedback: feedbackText
+              feedback: feedbackText,
+              brand: memberData?.brand || "",
+              model: memberData?.model || ""
             })
           });
 

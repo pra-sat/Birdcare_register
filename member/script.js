@@ -279,7 +279,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         // 📱 Mobile View: use cards
         let historyCardsHtml = '';
         history.forEach((row, index) => {
-          const dateStr = formatDateTime(row.date);
+          const dateStr = row.date;
           // Card container (add 'rated' class if already rated to adjust style)
           historyCardsHtml += `<div class="history-card${row.rating && row.feedback ? ' rated' : ''}">`;
           if (row.rating) {
@@ -294,7 +294,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             historyCardsHtml += `
               <button class="btn feedback-btn"
                 data-date="${dateStr}"
-                data-raw="${formatDateToYMD(row.date)}"
+                data-raw="${row.date}"
                 data-service="${row.service || ''}">
                 ให้คะแนน / ข้อเสนอแนะ
               </button>

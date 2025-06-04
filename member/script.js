@@ -28,36 +28,19 @@ function hideLoadingOverlay() {
   document.getElementById('loadingOverlay').classList.add('hidden');
 }
 
-function formatDateToYMD(rawDate) {
-  const d = new Date(rawDate);
-  const year = d.getFullYear();
-  const month = (d.getMonth() + 1).toString().padStart(2, '0');
-  const day = d.getDate().toString().padStart(2, '0');
-  return `${year}-${month}-${day}`; // 📌 ตรงกับ Sheet ฝั่ง Admin ใส่
-}
-
-
 function formatPhone(phone) {
   const digits = phone.replace(/\D/g, '');
   return digits.replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3');
 }
 
-function formatDate(rawDate) {
+function formatDateToYMDHM(rawDate) {
   const d = new Date(rawDate);
-  const day = d.getDate().toString().padStart(2, '0');
-  const month = (d.getMonth() + 1).toString().padStart(2, '0');
   const year = d.getFullYear();
-  return `${day}/${month}/${year}`;
-}
-
-function formatDateTime(rawDate) {
-  const d = new Date(rawDate);
-  const day = d.getDate().toString().padStart(2, '0');
   const month = (d.getMonth() + 1).toString().padStart(2, '0');
-  const year = d.getFullYear();
+  const day = d.getDate().toString().padStart(2, '0');
   const hour = d.getHours().toString().padStart(2, '0');
-  const min = d.getMinutes().toString().padStart(2, '0');
-  return `${day}/${month}/${year} | ${hour}:${min}น.`;
+  const minute = d.getMinutes().toString().padStart(2, '0');
+  return `${year}-${month}-${day} ${hour}:${minute}`;
 }
 
 // ⏳ ฟังก์ชันสร้าง token ไม่ซ้ำ
@@ -300,7 +283,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             historyCardsHtml += `
               <button class="btn feedback-btn"
                 data-date="${dateStr}"
-                data-raw="${row.date}"
+                data-raw="${formatDateToYMDHM(row.date)}"
                 data-service="${row.service || ''}">
                 ให้คะแนน / ข้อเสนอแนะ
               </button>
@@ -364,7 +347,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <td>${row.note}</td>
                 <td>  <button class="btn feedback-btn"
                       data-date="${dateStr}"
-                      data-raw="${formatDateToYMD(row.date)}"
+                      data-raw="${formatDateToYMDHM(row.date)}"
                       data-service="${row.service}">
                       ให้คะแนน / ข้อเสนอแนะ
                   </button>

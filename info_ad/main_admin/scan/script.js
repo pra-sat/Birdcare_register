@@ -20,7 +20,7 @@ function logAction(title, detail) {
     body: JSON.stringify({
       action: 'log_admin',
       contents: JSON.stringify({
-        name: adminName, // ✅ ใช้ค่าจากตัวแปรตรง ไม่พึ่ง DOM
+        name: adminName,
         userId: adminUserId,
         actionTitle: title,
         detail,
@@ -31,8 +31,76 @@ function logAction(title, detail) {
   });
 }
 
+async function onServiceSave() {
+  const name = document.getElementById('serviceName').value.trim();
+  const price = parseFloat(document.getElementById('priceInput').value) || 0;
+  const note = document.getElementById('noteInput').value.trim();
+  const point = Math.floor(price * pointPerBaht);
 
-// ✅ โหลด LIFF และดึงโปรไฟล์
+  if (!name || price <= 0) {
+    Swal.showValidationMessage('กรุณากรอกชื่อบริการและราคาถูกต้อง');
+    return;
+  }
+
+  const existing = serviceList.find(s => s.name === name);
+  if (!existing || existing.price != price) {
+    await fetch(GAS_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({
+        action: 'service',
+        contents: JSON.stringify({
+          action: 'add_service',
+          name,
+          price,
+          point,
+          detail: '-',
+          createdBy: adminUserId
+        })
+      })
+    });
+  }
+
+  document.querySelector('.swal2-confirm')?.setAttribute('disabled', 'true');
+  Swal.fire({ title: '⏳ กำลังบันทึก...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+
+  const res = await fetch(GAS_ENDPOINT + '?action=service', {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify({
+      action: 'service',
+      contents: JSON.stringify({
+        action: 'record_service',
+        userId: foundUser.UserID,
+        nameLine: foundUser.nameLine || '',
+        statusMessage: foundUser.statusMessage || '',
+        pictureUrl: foundUser.pictureUrl || '',
+        brand: foundUser.Brand,
+        model: foundUser.Model,
+        year: foundUser.Year,
+        category: foundUser.Category || '',
+        serviceName: name,
+        price,
+        point,
+        note,
+        timestamp: new Date().toISOString(),
+        admin: adminName
+      })
+    })
+  });
+
+  const result = await res.json();
+  Swal.close();
+
+  if (result.success) {
+    logAction('บันทึกบริการ', `✅ ${name} (${price} บาท)`);
+    Swal.fire('✅ บันทึกสำเร็จ', '', 'success').then(() => liff.closeWindow());
+  } else {
+    logAction('บันทึกบริการ', `❌ ล้มเหลว: ${name}, เหตุผล: ${result.message}`);
+    Swal.fire('❌ บันทึกไม่สำเร็จ', result.message || '', 'error');
+  }
+}
+
 window.addEventListener('DOMContentLoaded', async () => {
   await liff.init({ liffId });
   if (!liff.isLoggedIn()) {
@@ -126,7 +194,6 @@ async function manualSearch() {
   showCustomerPopup();
 }
 
-
 async function onScanSuccess(token) {
   const res = await fetch(`${GAS_ENDPOINT}?action=verify_token&token=${token}`);
   const result = await res.json();
@@ -172,73 +239,10 @@ function showCustomerPopup() {
         pointPreview.textContent = Math.floor(p * pointPerBaht);
       });
     },
-    preConfirm: async () => {
-      const name = document.getElementById('serviceName').value.trim();
-      const price = parseFloat(document.getElementById('priceInput').value) || 0;
-      const note = document.getElementById('noteInput').value.trim();
-      if (!name || price <= 0) return Swal.showValidationMessage('กรุณากรอกชื่อบริการและราคาถูกต้อง');
-    
-      const existing = serviceList.find(s => s.name === name);
-      if (!existing || existing.price != price) {
-        await fetch(GAS_ENDPOINT, {
-          method: 'POST',
-          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-          body: JSON.stringify({
-            action: 'service',
-            contents: JSON.stringify({
-              action: 'add_service',
-              name,
-              price,
-              point: Math.floor(price * pointPerBaht),
-              detail: '-',
-              createdBy: adminUserId
-            })
-          })
-        });
-      }
-    
-      document.querySelector('.swal2-confirm')?.setAttribute('disabled', 'true');
-    
-      Swal.fire({ title: '⏳ กำลังบันทึก...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
-    
-      const res = await fetch(GAS_ENDPOINT + '?action=service', {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({
-          action: 'service',
-          contents: JSON.stringify({
-            action: 'record_service',
-            userId: foundUser.UserID,
-            nameLine: foundUser.nameLine || '',
-            statusMessage: foundUser.statusMessage || '',
-            pictureUrl: foundUser.pictureUrl || '',
-            brand: foundUser.Brand,
-            model: foundUser.Model,
-            year: foundUser.Year,
-            category: foundUser.Category || '',
-            serviceName: name,
-            price: price,
-            point: Math.floor(price * pointPerBaht),
-            note: note,
-            timestamp: new Date().toISOString(),
-            admin: adminName
-          })
-        })
-      });
-
-    
-      const result = await res.json();
-      Swal.close();
-    
-      if (result.success) {
-        Swal.fire('✅ บันทึกสำเร็จ', '', 'success').then(() => liff.closeWindow());
-      } else {
-        Swal.fire('❌ บันทึกไม่สำเร็จ', result.message || '', 'error');
-      }
-    }
+    preConfirm: onServiceSave
   });
 }
-// ให้ฟังก์ชันเปิดกล้อง/ค้นหาเบอร์ใช้ใน HTML ได้
+
 window.startCamera = startCamera;
 window.toggleCamera = toggleCamera;
 window.manualSearch = manualSearch;

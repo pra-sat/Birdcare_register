@@ -6,15 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>สแกน QR ลูกค้า</title>
   <link rel="stylesheet" href="style.css" />
-
-  <!-- ✅ SweetAlert2 & QR Code -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="https://unpkg.com/html5-qrcode"></script>
-
-  <!-- ✅ LIFF SDK -->
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
-  
-  <!-- ✅ script.js ด้านล่างสุด -->
 </head>
 <body>
   <div class="admin-info">
@@ -26,18 +20,12 @@
   <p style="color:gray;">กรุณาเล็งกล้องไปยัง QR Code ลูกค้า</p>
   <button onclick="startCamera()">เปิดกล้อง</button>
   <button onclick="toggleCamera()">🔁 สลับกล้อง</button>
-
   <hr />
-
   <div>
     <label>หรือกรอกเบอร์โทรลูกค้า:</label><br />
     <input type="tel" id="manualPhone" placeholder="กรอกเบอร์โทร..." />
     <button onclick="manualSearch()">ตรวจสอบ</button>
   </div>
-
-  <!-- ✅ ฟอร์ม popup จะถูก inject โดย JS เมื่อพบข้อมูล -->
-
-  <!-- ✅ script.js -->
   <script src="script.js"></script>
 </body>
 </html>

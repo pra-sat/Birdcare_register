@@ -6,7 +6,7 @@ const historySection = document.getElementById('historySection');
 const toggleBtn = document.getElementById('toggleHistory');
 
 //const serviceDate = feedbackBtn.getAttribute('data-raw');  // ← ปรับเป็นแบบนี้:
-const serviceDate = toBangkokISOString(new Date(feedbackBtn.getAttribute('data-raw')));
+//const serviceDate = toBangkokISOString(new Date(feedbackBtn.getAttribute('data-raw')));
 
 // ⭐ Global variable to store current userId for later use (e.g., submitting feedback)
 let currentUserId = null;
@@ -518,7 +518,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             feedbackBtn = mainRow.querySelector('.feedback-btn');
           }
           if (feedbackBtn) {
-            serviceDate = feedbackBtn.getAttribute('data-raw');  // เพราะมันถูก format มาแล้วเป็น yyyy-MM-dd
+            serviceDate = toBangkokISOString(new Date(feedbackBtn.getAttribute('data-raw')));
             serviceName = feedbackBtn.getAttribute('data-service');
           }
           if (!feedbackBtn) {

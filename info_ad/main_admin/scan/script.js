@@ -100,7 +100,7 @@ class QRScanner {
     // ✅ DEBUG log
     console.log("📤 กำลังส่ง payload ไปยัง Apps Script:", payload);
   
-    const res = await fetch(GAS_ENDPOINT + '?action=service', {
+    const res = await fetch(GAS_ENDPOINT + '?action=record_service', {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
       body: JSON.stringify(payload)

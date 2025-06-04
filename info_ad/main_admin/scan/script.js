@@ -40,8 +40,8 @@ class QRScanner {
     this.startCamera();
 
     document.getElementById('manualPhone')?.addEventListener('keyup', (e) => {
-      if (e.key === 'Enter') scanner.manualSearch();
-   });
+      if (e.key === 'Enter') this.manualSearch();
+    });
   }
 
   logAction(title, detail) {

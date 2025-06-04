@@ -35,7 +35,7 @@ class QRScanner {
     document.getElementById('adminName').textContent = this.adminName;
     document.getElementById('adminRole').textContent = `ระดับ ${result.level || '-'}`;
 
-    this.logAction('enter_scan', 'เข้าสู่หน้า Scan');
+    this.logAction('เข้าสู่ระบบ Scan', 'มีการเข้าใช้งานหน้า scan');
     this.loadServices();
     this.startCamera();
 

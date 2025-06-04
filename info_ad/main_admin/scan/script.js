@@ -156,20 +156,32 @@ class QRScanner {
   }
 
   async onScanSuccess(token) {
-    Swal.fire({ title: '🔍 กำลังค้นหา QR...', allowOutsideClick: false, showConfirmButton: false, didOpen: () => Swal.showLoading() });
+    // ปิดการอ่านซ้ำทันที เพื่อป้องกันสแกนซ้ำระหว่างโหลด
+    if (this.html5QrCode) {
+      await this.html5QrCode.stop();
+    }
+  
+    Swal.fire({
+      title: '🔍 กำลังค้นหา QR...',
+      allowOutsideClick: false,
+      showConfirmButton: false,
+      didOpen: () => Swal.showLoading()
+    });
+  
     const res = await fetch(`${GAS_ENDPOINT}?action=verify_token&token=${token}`);
     const result = await res.json();
     Swal.close();
-
+  
     if (!result.success) {
       Swal.fire('QR ไม่ถูกต้อง', '', 'error');
-      this.startCamera();
+      this.startCamera(); // กลับมาเปิดกล้องใหม่ถ้าไม่เจอ
       return;
     }
-
+  
     this.foundUser = result.data;
-    this.showCustomerPopup();
+    this.showCustomerPopup(); // ไม่เปิดกล้องอีกเพราะเจอแล้ว
   }
+
 
   loadServices() {
     fetch(`${GAS_ENDPOINT}?action=service_list`)

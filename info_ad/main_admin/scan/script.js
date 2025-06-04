@@ -18,16 +18,22 @@ function logAction(title, detail) {
     method: 'POST',
     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
     body: JSON.stringify({
-      action: 'log_admin',
-      contents: JSON.stringify({
-        name: adminName,
-        userId: adminUserId,
-        actionTitle: title,
-        detail,
-        device: navigator.userAgent,
-        token: token,
-      }),
-    }),
+      action: 'record_service',   // 👈 ไม่ใช่ 'service' แล้ว
+      userId: foundUser.UserID,
+      nameLine: foundUser.nameLine || '',
+      statusMessage: foundUser.statusMessage || '',
+      pictureUrl: foundUser.pictureUrl || '',
+      brand: foundUser.Brand,
+      model: foundUser.Model,
+      year: foundUser.Year,
+      category: foundUser.Category || '',
+      serviceName: name,
+      price,
+      point,
+      note,
+      timestamp: new Date().toISOString(),
+      admin: adminName
+    })
   });
 }
 

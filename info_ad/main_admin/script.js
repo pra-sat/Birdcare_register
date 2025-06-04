@@ -103,6 +103,7 @@ class AdminManager {
       }).then(() => liff.closeWindow());
     }
 
+    await this.logAction(result.name, 'เข้าสู่ระบบ', 'มีการเข้าใช้งานหน้า admin');
     document.body.style.display = 'block';
     document.getElementById('adminName').textContent = result.name || 'ไม่ทราบชื่อ';
     document.getElementById('adminLevel').textContent = result.level || '1';
@@ -113,8 +114,6 @@ class AdminManager {
     if (level >= 2) document.querySelector('[data-menu="scan"]')?.classList.remove("hidden");
     if (level >= 3) document.querySelector('[data-menu="stats"]')?.classList.remove("hidden");
     if (level >= 5) document.querySelector('[data-menu="settings"]')?.classList.remove("hidden");
-
-    await this.logAction(result.name, 'เข้าสู่ระบบ', 'มีการเข้าใช้งานหน้า admin');
   }
 
   async logAction(name, action, detail) {

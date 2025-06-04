@@ -267,10 +267,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     const history = Array.isArray(data.serviceHistory) ? data.serviceHistory : [];
-  
-    // 🔃 เรียงจากวันที่ใหม่ไปเก่า
-    history.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+    function parseCustomDate(str) {
+      const [dmy, hms] = str.split(',');
+      const [day, month, year] = dmy.trim().split('/').map(Number);
+      const [hour, minute, second] = hms.trim().split(':').map(Number);
+      return new Date(year, month - 1, day, hour, minute, second);
+    }
     
+    history.sort((a, b) => parseCustomDate(b.date) - parseCustomDate(a.date));
+
     if (history.length === 0) {
       historySection.innerHTML = '<p>-</p>';
     } else {

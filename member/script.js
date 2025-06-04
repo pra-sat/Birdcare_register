@@ -582,12 +582,14 @@ document.addEventListener('DOMContentLoaded', async () => {
               cell.innerHTML = starsDisplay;
             }
           }
-          console.log("📦 ส่ง feedback", {
+          console.log("[📤 ส่ง Feedback]", {
             userId: currentUserId,
             date: serviceDate,
             service: serviceName,
             rating: ratingVal,
-            feedback: feedbackText
+            feedback: feedbackText,
+            brand: memberData?.brand,
+            model: memberData?.model
           });
           // Show success feedback
           Swal.fire({

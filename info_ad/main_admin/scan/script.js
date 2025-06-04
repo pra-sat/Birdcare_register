@@ -38,6 +38,10 @@ class QRScanner {
     this.logAction('enter_scan', 'เข้าสู่หน้า Scan');
     this.loadServices();
     this.startCamera();
+
+    document.getElementById('manualPhone')?.addEventListener('keyup', (e) => {
+      if (e.key === 'Enter') scanner.manualSearch();
+   });
   }
 
   logAction(title, detail) {
@@ -121,6 +125,18 @@ class QRScanner {
         this.currentCameraIndex = cameras.findIndex(cam => cam.id === camId);
         this.html5QrCode.start(camId, { fps: 10, qrbox: 250 }, (text) => this.onScanSuccess(text));
       } else Swal.fire('ไม่พบกล้อง', '', 'error');
+    });
+  }
+
+  toggleCamera() {
+    if (!this.cameraList.length || !this.html5QrCode) return;
+    this.html5QrCode.stop().then(() => {
+      this.currentCameraIndex = (this.currentCameraIndex + 1) % this.cameraList.length;
+      this.html5QrCode.start(
+        this.cameraList[this.currentCameraIndex].id,
+        { fps: 10, qrbox: 250 },
+        (decodedText) => this.onScanSuccess(decodedText)
+      );
     });
   }
 

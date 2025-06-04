@@ -47,24 +47,19 @@ async function onServiceSave() {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
       body: JSON.stringify({
-        action: 'record_service',   // 👈 ไม่ใช่ 'service' แล้ว
-        userId: foundUser.UserID,
-        nameLine: foundUser.nameLine || '',
-        statusMessage: foundUser.statusMessage || '',
-        pictureUrl: foundUser.pictureUrl || '',
-        brand: foundUser.Brand,
-        model: foundUser.Model,
-        year: foundUser.Year,
-        category: foundUser.Category || '',
-        serviceName: name,
-        price,
-        point,
-        note,
-        timestamp: new Date().toISOString(),
-        admin: adminName
+        action: 'service',
+        contents: JSON.stringify({
+          action: 'add_service',
+          name,
+          price,
+          point,
+          detail: '-',
+          createdBy: adminUserId
+        })
       })
     });
   }
+
 
   document.querySelector('.swal2-confirm')?.setAttribute('disabled', 'true');
   Swal.fire({ title: '⏳ กำลังบันทึก...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
@@ -73,24 +68,21 @@ async function onServiceSave() {
     method: 'POST',
     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
     body: JSON.stringify({
-      action: 'service',
-      contents: JSON.stringify({
-        action: 'record_service',
-        userId: foundUser.UserID,
-        nameLine: foundUser.nameLine || '',
-        statusMessage: foundUser.statusMessage || '',
-        pictureUrl: foundUser.pictureUrl || '',
-        brand: foundUser.Brand,
-        model: foundUser.Model,
-        year: foundUser.Year,
-        category: foundUser.Category || '',
-        serviceName: name,
-        price,
-        point,
-        note,
-        timestamp: new Date().toISOString(),
-        admin: adminName
-      })
+      action: 'record_service',   // 👈 ไม่ใช่ 'service' แล้ว
+      userId: foundUser.UserID,
+      nameLine: foundUser.nameLine || '',
+      statusMessage: foundUser.statusMessage || '',
+      pictureUrl: foundUser.pictureUrl || '',
+      brand: foundUser.Brand,
+      model: foundUser.Model,
+      year: foundUser.Year,
+      category: foundUser.Category || '',
+      serviceName: name,
+      price,
+      point,
+      note,
+      timestamp: new Date().toISOString(),
+      admin: adminName
     })
   });
 

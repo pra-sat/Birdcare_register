@@ -67,7 +67,7 @@ class QRScanner {
     const point = Math.floor(price * this.pointPerBaht);
 
     if (!name || price <= 0) {
-      Swal.showValidationMessage('กรุณากรอกชื่อบริการและราคาถึงต้อง');
+      Swal.showValidationMessage('กรุณากรอกชื่อบริการและราคาถูกต้อง');
       return;
     }
 

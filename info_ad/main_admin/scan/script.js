@@ -196,12 +196,27 @@ async function manualSearch() {
 }
 
 async function onScanSuccess(token) {
+  Swal.fire({
+    title: '🔍 กำลังค้นหา QR...',
+    allowOutsideClick: false,
+    showConfirmButton: false,
+    didOpen: () => Swal.showLoading()
+  });
+
   const res = await fetch(`${GAS_ENDPOINT}?action=verify_token&token=${token}`);
   const result = await res.json();
-  if (!result.success) return Swal.fire('QR ไม่ถูกต้อง', '', 'error');
+  Swal.close();
+
+  if (!result.success) {
+    Swal.fire('QR ไม่ถูกต้อง', '', 'error');
+    startCamera();  // ✅ กลับมาเปิดกล้องใหม่
+    return;
+  }
+
   foundUser = result.data;
   showCustomerPopup();
 }
+
 
 function loadServices() {
   fetch(`${GAS_ENDPOINT}?action=service_list`)

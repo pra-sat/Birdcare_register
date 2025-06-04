@@ -79,25 +79,23 @@ class QRScanner {
     Swal.fire({ title: '⏳ กำลังบันทึก...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
   
     const payload = {
-      action: 'service',
-      contents: JSON.stringify({
-        action: 'record_service',
-        userId: this.foundUser.UserID,
-        nameLine: this.foundUser.nameLine || '',
-        statusMessage: this.foundUser.statusMessage || '',
-        pictureUrl: this.foundUser.pictureUrl || '',
-        brand: this.foundUser.Brand,
-        model: this.foundUser.Model,
-        year: this.foundUser.Year,
-        category: this.foundUser.Category || '',
-        serviceName: name,
-        price,
-        point,
-        note,
-        timestamp: new Date().toISOString(),
-        admin: this.adminName
-      })
+      action: 'record_service',
+      userId: this.foundUser.UserID,
+      nameLine: this.foundUser.nameLine || '',
+      statusMessage: this.foundUser.statusMessage || '',
+      pictureUrl: this.foundUser.pictureUrl || '',
+      brand: this.foundUser.Brand,
+      model: this.foundUser.Model,
+      year: this.foundUser.Year,
+      category: this.foundUser.Category || '',
+      serviceName: name,
+      price,
+      point,
+      note,
+      timestamp: new Date().toISOString(),
+      admin: this.adminName
     };
+
   
     // ✅ DEBUG log
     console.log("📤 กำลังส่ง payload ไปยัง Apps Script:", payload);
@@ -107,7 +105,7 @@ class QRScanner {
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
       body: JSON.stringify(payload)
     });
-  
+      
     const result = await res.json();
     Swal.close();
   

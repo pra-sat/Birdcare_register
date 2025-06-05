@@ -465,7 +465,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       });
     });
     // Submit feedback event
-    const submitButtons = document.querySelectorAll('.submit-feedback-btn');
+   const submitButtons = document.querySelectorAll('.submit-feedback-btn');
 submitButtons.forEach(btn => {
   btn.addEventListener('click', async () => {
     const panelDiv = btn.closest('.feedback-panel');
@@ -501,7 +501,7 @@ submitButtons.forEach(btn => {
         feedbackBtn = mainRow.querySelector('.feedback-btn');
       }
       if (feedbackBtn) {
-        serviceDate = feedbackBtn.getAttribute('data-raw'); // ไม่ต้องแปลงซ้ำ
+        serviceDate = feedbackBtn.getAttribute('data-date'); // ใช้ data-date แทน data-raw
         serviceName = feedbackBtn.getAttribute('data-service');
       }
       if (!feedbackBtn) {
@@ -519,7 +519,7 @@ submitButtons.forEach(btn => {
         body: JSON.stringify({
           action: 'feedback',
           userId: currentUserId,
-          date: serviceDate,
+          date: serviceDate, // ส่งวันที่ดิบ (เช่น "04/06/2025, 16:00:17")
           service: serviceName,
           rating: ratingVal,
           feedback: feedbackText,
@@ -531,76 +531,58 @@ submitButtons.forEach(btn => {
       if (!res.ok) {
         throw new Error(`HTTP ${res.status}`);
       }
-          // On success, update the UI:
-          if (window.innerWidth <= 480) {
-            // Mobile: close form and show stars on card
-            const card = btn.closest('.history-card');
-            panelDiv.classList.remove('open');             // slide-up the panel
-            const fbButton = card.querySelector('.feedback-btn');
-            if (fbButton) fbButton.remove();               // remove "ให้คะแนน" button
-            // Display static stars in top-right corner
-            let staticStarsHtml = '<div class="rating-display">';
-            for (let s = 1; s <= 5; s++) {
-              staticStarsHtml += `<span class="star static${s <= ratingVal ? ' filled' : ''}">${s <= ratingVal ? '★' : '☆'}</span>`;
-            }
-            staticStarsHtml += '</div>';
-            card.insertAdjacentHTML('beforeend', staticStarsHtml);
-            card.classList.add('rated');  // mark card as rated (for styling)
-          } else {
-            // Desktop: remove form row and replace button with static stars in table
-            const panelRow = btn.closest('.feedback-row');
-            const mainRow = panelRow.previousElementSibling;
-            panelRow.remove();  // remove the feedback form row from table
-            const fbButton = mainRow.querySelector('.feedback-btn');
-            if (fbButton) {
-              const cell = fbButton.parentElement;
-              fbButton.remove();
-              // Insert static stars into the cell
-              let starsDisplay = '';
-              for (let s = 1; s <= 5; s++) {
-                starsDisplay += `<span class="star static${s <= ratingVal ? ' filled' : ''}">${s <= ratingVal ? '★' : '☆'}</span>`;
-              }
-              cell.innerHTML = starsDisplay;
-            }
-          }
-          console.log("[📤 ส่ง Feedback]", {
-            userId: currentUserId,
-            date: serviceDate,
-            service: serviceName,
-            rating: ratingVal,
-            feedback: feedbackText,
-            brand: memberData?.brand,
-            model: memberData?.model
-          });
-          // Show success feedback
-          Swal.fire({
-            icon: 'success',
-            title: 'ส่งความคิดเห็นสำเร็จ!',
-            text: 'ขอบคุณสำหรับความคิดเห็นของคุณ',
-            confirmButtonText: 'ตกลง'
-          });
-        } catch (error) {
-          console.error('Error sending feedback:', error);
-          // Show error message
-          Swal.fire({
-            icon: 'error',
-            title: '❌ ไม่สามารถส่งความคิดเห็นได้',
-            text: 'กรุณาลองใหม่อีกครั้ง',
-            confirmButtonText: 'ปิด'
-          });
-          btn.disabled = false;
+      // On success, update the UI:
+      if (window.innerWidth <= 480) {
+        const card = btn.closest('.history-card');
+        panelDiv.classList.remove('open');
+        const fbButton = card.querySelector('.feedback-btn');
+        if (fbButton) fbButton.remove();
+        let staticStarsHtml = '<div class="rating-display">';
+        for (let s = 1; s <= 5; s++) {
+          staticStarsHtml += `<span class="star static${s <= ratingVal ? ' filled' : ''}">${s <= ratingVal ? '★' : '☆'}</span>`;
         }
+        staticStarsHtml += '</div>';
+        card.insertAdjacentHTML('beforeend', staticStarsHtml);
+        card.classList.add('rated');
+      } else {
+        const panelRow = btn.closest('.feedback-row');
+        const mainRow = panelRow.previousElementSibling;
+        panelRow.remove();
+        const fbButton = mainRow.querySelector('.feedback-btn');
+        if (fbButton) {
+          const cell = fbButton.parentElement;
+          fbButton.remove();
+          let starsDisplay = '';
+          for (let s = 1; s <= 5; s++) {
+            starsDisplay += `<span class="star static${s <= ratingVal ? ' filled' : ''}">${s <= ratingVal ? '★' : '☆'}</span>`;
+          }
+          cell.innerHTML = starsDisplay;
+        }
+      }
+      console.log("[📤 ส่ง Feedback]", {
+        userId: currentUserId,
+        date: serviceDate,
+        service: serviceName,
+        rating: ratingVal,
+        feedback: feedbackText,
+        brand: memberData?.brand,
+        model: memberData?.model
       });
-    });
-} catch (err) {
-    hideLoadingOverlay();
-    console.error('Error:', err);
-    Swal.fire({
-      icon: 'error',
-      title: 'เกิดข้อผิดพลาด',
-      text: 'ไม่สามารถโหลดข้อมูลสมาชิกได้',
-      confirmButtonText: 'Close'
-    });
-    liff.closeWindow();
-  }
+      Swal.fire({
+        icon: 'success',
+        title: 'ส่งความคิดเห็นสำเร็จ!',
+        text: 'ขอบคุณสำหรับความคิดเห็นของคุณ',
+        confirmButtonText: 'ตกลง'
+      });
+    } catch (error) {
+      console.error('Error sending feedback:', error);
+      Swal.fire({
+        icon: 'error',
+        title: '❌ ไม่สามารถส่งความคิดเห็นได้',
+        text: 'กรุณาลองใหม่อีกครั้ง',
+        confirmButtonText: 'ปิด'
+      });
+      btn.disabled = false;
+    }
+  });
 });

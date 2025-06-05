@@ -35,12 +35,16 @@ function formatPhone(phone) {
   return digits.replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3');
 }
 
+// แก้ไขฟังก์ชัน toBangkokISOString ให้ชัดเจน
 function toBangkokISOString(date) {
-  return new Date(date.getTime() - (date.getTimezoneOffset() * 60000)).toISOString();
+  const bangkokOffset = 7 * 60; // GMT+07:00 ในหน่วยนาที
+  const bangkokTime = new Date(date.getTime() + (bangkokOffset * 60 * 1000));
+  return bangkokTime.toISOString();
 }
 
+// แก้ไขฟังก์ชัน formatDateToYMDHM
 function formatDateToYMDHM(rawDate) {
-  const d = new Date(row.date).toISOString()  // ตัวอย่าง: '2025-06-04T07:20:00.000Z'
+  const d = parseCustomDate(rawDate); // ใช้ parseCustomDate เพื่อแปลงวันที่
   const year = d.getFullYear();
   const month = (d.getMonth() + 1).toString().padStart(2, '0');
   const day = d.getDate().toString().padStart(2, '0');
@@ -152,86 +156,52 @@ function generateQRCode(text, userInfo) {
 
 document.addEventListener('DOMContentLoaded', async () => {
   try {
-    // await showPopupLoading();
     showLoadingOverlay();
     console.log("Start login line...");
     await liff.init({ liffId: '2007421084-WXmXrzZY' });
     if (!liff.isLoggedIn()) {
       liff.login();
-     return;
-   }
-    
-    
+      return;
+    }
+
     const profile = await liff.getProfile();
     await silentlyUpdateLineProfile(profile);
 
-        async function silentlyUpdateLineProfile(profile) {
-          try {
-            const payload = {
-              action: 'update_line_profile',
-              userId: profile.userId,
-              nameLine: profile.displayName,
-              statusMessage: profile.statusMessage || "",
-              pictureUrl: profile.pictureUrl || ""
-            };
-        
-            const res = await fetch(GAS_ENDPOINT + '?action=update_line_profile', {
-              method: 'POST',
-              headers: { "Content-Type": "text/plain;charset=utf-8" },
-              body: JSON.stringify(payload)
-            });
-        
-            const data = await res.json();
-            console.log("✅ LINE Profile อัปเดตอัตโนมัติ:", data);
-          } catch (err) {
-            console.warn("⚠️ อัปเดตโปรไฟล์ LINE ล้มเหลว:", err);
-          }
-        }
-    
     const userId = profile.userId;
     console.log("✅ userId:", userId);
-    currentUserId = userId;  // ⭐ store userId globally for later
+    currentUserId = userId;
 
-    
     const res = await fetch(`${GAS_ENDPOINT}?action=member&userId=${userId}`);
     console.log("✅ response status:", res.status);
-    
+
     if (!res.ok) {
-      hideLoadingOverlay(); // ✅ ต้องมาก่อน popup
-    
+      hideLoadingOverlay();
       Swal.fire({
         icon: 'error',
         title: '❗️ ไม่สามารถโหลดข้อมูลจากเซิร์ฟเวอร์ได้',
         text: 'กรุณาลองใหม่อีกครั้งหรือติดต่อ Admin',
         confirmButtonText: 'Close'
       }).then(() => {
-        liff.closeWindow(); // ✅ ปิดหลังจาก popup ปิด
+        liff.closeWindow();
       });
-    
       return;
     }
-    
+
     const data = await res.json();
-    memberData = data; // ⭐ เก็บไว้ใช้ภายหลัง
+    memberData = data;
 
     if (!data || !data.name) {
-      hideLoadingOverlay(); // ✅ ก่อน Swal.fire
-    
+      hideLoadingOverlay();
       Swal.fire({
         icon: 'error',
         title: '❌ ไม่พบข้อมูลสมาชิก',
         text: 'กรุณาคลิกที่เมนู สมัครสมาชิก',
         confirmButtonText: 'Close'
       }).then(() => {
-        liff.closeWindow(); // ✅ หลัง popup ปิด
+        liff.closeWindow();
       });
-    
       return;
     }
-
-
-    // Swal.close(); // ✅ ปิดหลังเช็ค name
-    
 
     memberInfoEl.innerHTML = `
       <p><b> ชื่อ : ${data.name}</b></p>
@@ -241,10 +211,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       <p> แต้มสะสม : ${data.point} แต้ม</p>
       <p> แต้มหมดอายุ : ${data.expirationDate && data.expirationDate.trim() ? data.expirationDate : '-'}</p>
     `;
-    
+
     toggleBtn.disabled = true;
     historySection.innerHTML = '<p>⏳ กำลังโหลดประวัติ...</p>';
-    // แล้วเปิดให้กด toggleBtn ได้หลังจากโหลดเสร็จ
     toggleBtn.disabled = false;
 
     if (!toggleBtn.classList.contains('bound')) {
@@ -265,40 +234,34 @@ document.addEventListener('DOMContentLoaded', async () => {
       const [hour, minute, second] = hms.trim().split(':').map(Number);
       return new Date(year, month - 1, day, hour, minute, second);
     }
-    
+
     history.sort((a, b) => parseCustomDate(b.date) - parseCustomDate(a.date));
 
     if (history.length === 0) {
       historySection.innerHTML = '<p>-</p>';
     } else {
-      // ⭐ Generate history list with rating/feedback feature
       if (window.innerWidth <= 480) {
-        // 📱 Mobile View: use cards
         let historyCardsHtml = '';
         history.forEach((row, index) => {
           const dateStr = row.date;
-          // Card container (add 'rated' class if already rated to adjust style)
+          const parsedDate = parseCustomDate(dateStr);
           historyCardsHtml += `<div class="history-card${row.rating && row.feedback ? ' rated' : ''}">`;
           if (row.rating) {
-            // Already rated: show stars given (static display in top-right)
             historyCardsHtml += '<div class="rating-display">';
             for (let s = 1; s <= 5; s++) {
               historyCardsHtml += `<span class="star static${s <= row.rating ? ' filled' : ''}">${s <= row.rating ? '★' : '☆'}</span>`;
             }
             historyCardsHtml += '</div>';
           } else {
-            // Not rated yet: show Rate/Feedback button
             historyCardsHtml += `
               <button class="btn feedback-btn"
                 data-date="${dateStr}"
-                data-raw="${new Date(row.date).toISOString()}"
+                data-raw="${toBangkokISOString(parsedDate)}" // แก้ไขตรงนี้
                 data-service="${row.service || ''}">
                 ให้คะแนน / ข้อเสนอแนะ
               </button>
             `;
-
           }
-          // Service details in card
           historyCardsHtml += `
             <p><b> วันที่:</b> ${dateStr}</p>
             <p><b> ยี่ห้อ/รุ่น:</b> ${row.brand || '-'} ${row.model || '-'}</p>
@@ -307,7 +270,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             <p><b> แต้ม:</b> ${row.point}</p>
             <p><b> หมายเหตุ:</b> ${row.note}</p>
           `;
-          // Feedback form panel (hidden by default) for not-yet-rated service
           if (!row.rating || !row.feedback) {
             historyCardsHtml += `
               <div class="feedback-panel">
@@ -319,15 +281,13 @@ document.addEventListener('DOMContentLoaded', async () => {
               </div>
             `;
           }
-          historyCardsHtml += `</div>`; // close .history-card
+          historyCardsHtml += `</div>`;
         });
         historySection.innerHTML = historyCardsHtml;
       } else {
-        // 🖥️ Desktop View: use table
         const rowsHtml = history.map((row, index) => {
-          const dateStr = formatDateTime(row.date);
+          const dateStr = formatDateToYMDHM(row.date); // ใช้ฟังก์ชันนี้แทน
           if (row.rating) {
-            // Already rated: single row with static stars in last column
             let starsTd = '';
             for (let s = 1; s <= 5; s++) {
               starsTd += `<span class="star static${s <= row.rating ? ' filled' : ''}">${s <= row.rating ? '★' : '☆'}</span>`;
@@ -344,7 +304,7 @@ document.addEventListener('DOMContentLoaded', async () => {
               </tr>
             `;
           } else {
-            // Not rated: main row + a hidden feedback form row
+            const parsedDate = parseCustomDate(row.date);
             return `
               <tr class="history-entry">
                 <td>${dateStr}</td>
@@ -353,13 +313,14 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <td>${row.price} ฿</td>
                 <td>${row.point}</td>
                 <td>${row.note}</td>
-                <td>  <button class="btn feedback-btn"
-                      data-date="${dateStr}"
-                      data-raw="${new Date(row.date).toISOString()}"
-                      data-service="${row.service}">
-                      ให้คะแนน / ข้อเสนอแนะ
+                <td>
+                  <button class="btn feedback-btn"
+                    data-date="${dateStr}"
+                    data-raw="${toBangkokISOString(parsedDate)}" // แก้ไขตรงนี้
+                    data-service="${row.service}">
+                    ให้คะแนน / ข้อเสนอแนะ
                   </button>
-              </td>
+                </td>
               </tr>
               <tr class="feedback-row hidden">
                 <td colspan="7">
@@ -400,7 +361,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     hideLoadingOverlay();
     toggleBtn.disabled = false;
-    toggleBtn.classList.remove("disabled"); // เพิ่มความสวยงามกรณีใส่ CSS .disabled
+    toggleBtn.classList.remove("disabled");
     
     // ⭐ Event listeners for Rating/Feedback interactions
     const feedbackButtons = document.querySelectorAll('.feedback-btn');
@@ -482,76 +443,71 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
     // Submit feedback event
     const submitButtons = document.querySelectorAll('.submit-feedback-btn');
-    submitButtons.forEach(btn => {
-      btn.addEventListener('click', async () => {
-        const panelDiv = btn.closest('.feedback-panel');
-        const ratingVal = parseInt(panelDiv.querySelector('.star-selector').dataset.rating) || 0;
-        const feedbackText = panelDiv.querySelector('.feedback-text').value.trim();
-        if (!ratingVal) {
-          // If no star selected, alert user
-          await Swal.fire({
-            icon: 'warning',
-            title: 'กรุณาให้คะแนน (เลือกจำนวนดาว)',
-            confirmButtonText: 'ตกลง'
-          });
-          return;
+submitButtons.forEach(btn => {
+  btn.addEventListener('click', async () => {
+    const panelDiv = btn.closest('.feedback-panel');
+    const ratingVal = parseInt(panelDiv.querySelector('.star-selector').dataset.rating) || 0;
+    const feedbackText = panelDiv.querySelector('.feedback-text').value.trim();
+    if (!ratingVal) {
+      await Swal.fire({
+        icon: 'warning',
+        title: 'กรุณาให้คะแนน (เลือกจำนวนดาว)',
+        confirmButtonText: 'ตกลง'
+      });
+      return;
+    }
+    try {
+      btn.disabled = true;
+      Swal.fire({
+        title: 'กำลังส่งความคิดเห็น...',
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        showConfirmButton: false,
+        didOpen: () => {
+          Swal.showLoading();
         }
-        try {
-          // Show sending status (SweetAlert2 loading)
-          btn.disabled = true;
-          Swal.fire({
-            title: 'กำลังส่งความคิดเห็น...',
-            allowOutsideClick: false,
-            allowEscapeKey: false,
-            showConfirmButton: false,
-            didOpen: () => {
-              Swal.showLoading();
-            }
-          });
-          // Identify the service entry via data attributes
-          let serviceDate = '', serviceName = '';
-          let feedbackBtn;
-          if (window.innerWidth <= 480) {
-            const card = btn.closest('.history-card');
-            feedbackBtn = card.querySelector('.feedback-btn');
-          } else {
-            const panelRow = btn.closest('.feedback-row');
-            const mainRow = panelRow.previousElementSibling;
-            feedbackBtn = mainRow.querySelector('.feedback-btn');
-          }
-          if (feedbackBtn) {
-            serviceDate = toBangkokISOString(new Date(feedbackBtn.getAttribute('data-raw')));
-            serviceName = feedbackBtn.getAttribute('data-service');
-          }
-          if (!feedbackBtn) {
-            Swal.fire({ icon: 'error', title: '❌ ไม่พบข้อมูลบริการ', confirmButtonText: 'ปิด' });
-            btn.disabled = false;
-            return;
-          }
+      });
+      let serviceDate = '', serviceName = '';
+      let feedbackBtn;
+      if (window.innerWidth <= 480) {
+        const card = btn.closest('.history-card');
+        feedbackBtn = card.querySelector('.feedback-btn');
+      } else {
+        const panelRow = btn.closest('.feedback-row');
+        const mainRow = panelRow.previousElementSibling;
+        feedbackBtn = mainRow.querySelector('.feedback-btn');
+      }
+      if (feedbackBtn) {
+        serviceDate = feedbackBtn.getAttribute('data-raw'); // ไม่ต้องแปลงซ้ำ
+        serviceName = feedbackBtn.getAttribute('data-service');
+      }
+      if (!feedbackBtn) {
+        Swal.fire({ icon: 'error', title: '❌ ไม่พบข้อมูลบริการ', confirmButtonText: 'ปิด' });
+        btn.disabled = false;
+        return;
+      }
 
-          // Send feedback data to Google Apps Script (updates spreadsheet)
-         const res = await fetch(GAS_ENDPOINT + '?action=feedback', {
-            redirect: "follow",
-            method: 'POST',
-            headers: {
-              'Content-Type': 'text/plain;charset=utf-8'
-            },
-            body: JSON.stringify({
-              action: 'feedback',
-              userId: currentUserId,
-              date: serviceDate,
-              service: serviceName,
-              rating: ratingVal,
-              feedback: feedbackText,
-              brand: memberData?.brand || "",
-              model: memberData?.model || ""
-            })
-          });
+      const res = await fetch(GAS_ENDPOINT + '?action=feedback', {
+        redirect: "follow",
+        method: 'POST',
+        headers: {
+          'Content-Type': 'text/plain;charset=utf-8'
+        },
+        body: JSON.stringify({
+          action: 'feedback',
+          userId: currentUserId,
+          date: serviceDate,
+          service: serviceName,
+          rating: ratingVal,
+          feedback: feedbackText,
+          brand: memberData?.brand || "",
+          model: memberData?.model || ""
+        })
+      });
 
-          
-          if (!res.ok) {
-            throw new Error(`HTTP ${res.status}`);
-          }
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}`);
+      }
           // On success, update the UI:
           if (window.innerWidth <= 480) {
             // Mobile: close form and show stars on card
@@ -613,7 +569,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
       });
     });
-  } catch (err) {
+} catch (err) {
     hideLoadingOverlay();
     console.error('Error:', err);
     Swal.fire({

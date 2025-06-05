@@ -96,6 +96,7 @@ async function showQRSection() {
     generateQRCode(token, memberData);
     startQRCountdown();
   } catch (err) {
+    console.error("❌ QR Creation Error:", err);  // 🔍 แสดง error จริงใน console
     Swal.fire("❌ ไม่สามารถสร้าง QR ได้", err.message, "error");
   } finally {
     btn.disabled = false;

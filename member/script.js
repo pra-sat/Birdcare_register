@@ -73,7 +73,7 @@ async function showQRSection() {
   try {
     const token = generateToken();
     window.qrToken = token;
-    const createdAt = new Date(row.date).toISOString()  // ตัวอย่าง: '2025-06-04T07:20:00.000Z'
+    const createdAt = new Date(memberData?.serviceHistory?.[0]?.date || new Date()).toISOString();   // ตัวอย่าง: '2025-06-04T07:20:00.000Z'
     const payload = {
       action: "create_token",
       token,

@@ -134,6 +134,7 @@ function generateQRCode(text, userInfo) {
         if (count <= 0) {
           clearInterval(qrInterval);
           deleteQRToken();
+          closeQRSection();
         }
       }, 1000);
     }

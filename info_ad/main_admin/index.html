@@ -1,31 +1,53 @@
+<!-- ✅ index.html (Main Admin พร้อม Popup Scan) -->
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8">
-  <title>_</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Panel</title>
+  <link rel="stylesheet" href="style.css" />
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://unpkg.com/html5-qrcode" defer></script>
   <script src="script.js" defer></script>
 </head>
 <body style="display:none;">
   <div class="container">
     <h2>🛠 แผงควบคุมผู้ดูแลระบบ</h2>
     <div class="profile">
-      <!-- <img id="adminPic" class="avatar" /> -->
       <p>👤 คุณ: <span id="adminName">-</span></p>
       <p>🛡️ ระดับ: <span id="adminLevel">-</span></p>
       <p>📛 บทบาท: <span id="adminRole">-</span></p>
     </div>
-    
+
     <div class="admin-buttons">
       <a class="btn hidden" data-menu="feedback" href="feedback/index.html">💬 ข้อเสนอแนะ</a>
-      <a class="btn hidden" data-menu="scan" href="scan/index.html">🔍 สแกน QR</a>
+      <button class="btn hidden" id="scanBtn">🔍 สแกน QR</button>
       <a class="btn hidden" data-menu="stats" href="stats/index.html">📊 รายงาน</a>
       <a class="btn hidden" data-menu="settings" href="settings/index.html">⚙️ ตั้งค่า</a>
     </div>
     <button class="btn danger" onclick="logout()">🚪 ออกจากระบบ</button>
   </div>
+
+  <!-- ✅ Scan Popup Section -->
+  <div id="scanPopup" class="hidden scan-popup">
+    <h3>📷 กล้องสแกน QR ลูกค้า</h3>
+    <div id="reader" style="width: 100%; max-width: 320px; margin: auto;"></div>
+    <input type="tel" id="manualPhone" class="swal2-input" placeholder="หรือกรอกเบอร์โทร" />
+    <div style="margin-top: 10px;">
+      <button class="btn" onclick="scanner.manualSearch()">🔍 ค้นหา</button>
+      <button class="btn" onclick="scanner.toggleCamera()">🔁 สลับกล้อง</button>
+      <button class="btn danger" onclick="scanner.closePopup()">❌ ปิด</button>
+    </div>
+  </div>
+
+  <script type="module">
+    import './scan_script.js';
+    document.getElementById('scanBtn')?.addEventListener('click', () => {
+      if (window.scanner?.openScanPopup) {
+        window.scanner.openScanPopup();
+      }
+    });
+  </script>
 </body>
 </html>

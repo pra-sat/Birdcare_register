@@ -3,20 +3,8 @@ const GAS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxdxUvmwLS3_nETwGL
 const liffId = '2007421084-2OgzWbpV';
 
 class QRScanner {
-  constructor() {
-    this.pointPerBaht = 0.1;
-    this.adminUserId = '';
-    this.adminName = '-';
-    this.token = '';
-    this.foundUser = null;
-    this.serviceList = [];
-    this.currentCameraIndex = 0;
-    this.html5QrCode = null;
-    this.cameraList = [];
-    this.init();
-  }
-
-  QRScanner.prototype.openScanPopup = function () {
+  
+  openScanPopup() {
     const popup = document.getElementById('scanPopup');
     if (popup) popup.classList.remove('hidden');
   
@@ -29,14 +17,26 @@ class QRScanner {
   
     this.loadServices();
     this.startCamera();
-  };
-  
-  QRScanner.prototype.closePopup = function () {
+  }
+
+  closePopup() {
     const popup = document.getElementById('scanPopup');
     if (popup) popup.classList.add('hidden');
     if (this.html5QrCode) this.html5QrCode.stop();
-  };
+  }
 
+  constructor() {
+    this.pointPerBaht = 0.1;
+    this.adminUserId = '';
+    this.adminName = '-';
+    this.token = '';
+    this.foundUser = null;
+    this.serviceList = [];
+    this.currentCameraIndex = 0;
+    this.html5QrCode = null;
+    this.cameraList = [];
+    this.init();
+  }
 
   async init() {
     await liff.init({ liffId });
@@ -200,6 +200,9 @@ class QRScanner {
     if (this.html5QrCode) {
       await this.html5QrCode.stop();
     }
+
+    if (this.isScanning) return;
+    this.isScanning = true;
   
     Swal.fire({
       title: '🔍 กำลังค้นหา QR...',
@@ -214,16 +217,19 @@ class QRScanner {
   
     if (!result.success) {
       Swal.fire('QR ไม่ถูกต้อง', '', 'error');
+      this.isScanning = false;
       this.startCamera(); // กลับมาเปิดกล้องใหม่ถ้าไม่เจอ
       return;
     }
-  
     this.foundUser = result.data;
     this.showCustomerPopup(); // ไม่เปิดกล้องอีกเพราะเจอแล้ว
   }
 
 
   loadServices() {
+    const existingList = document.getElementById('serviceOptions');
+    if (existingList) existingList.remove();
+
     fetch(`${GAS_ENDPOINT}?action=service_list`)
       .then(res => res.json())
       .then(data => {
@@ -266,4 +272,3 @@ class QRScanner {
 }
 
 window.scanner = new QRScanner(); // สร้าง instance เตรียมไว้
-window.scanner = scanner;

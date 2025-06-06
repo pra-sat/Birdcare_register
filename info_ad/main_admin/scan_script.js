@@ -149,6 +149,7 @@ class QRScanner {
 
   startCamera() {
     this.html5QrCode = new Html5Qrcode('reader');
+    if (this.html5QrCode._isScanning) return;
     Html5Qrcode.getCameras().then(cameras => {
       if (cameras.length) {
         this.cameraList = cameras;
@@ -184,6 +185,9 @@ class QRScanner {
   }
 
   async manualSearch() {
+    didOpen: () => {
+      document.getElementById('manualPhone')?.focus();
+    }
     const phone = document.getElementById('manualPhone').value;
     if (!phone) return;
 

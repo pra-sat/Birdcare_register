@@ -602,3 +602,9 @@ submitButtons.forEach(btn => {
     }
   });
 });
+// Add the missing closing braces for the try and document.addEventListener blocks
+  } catch (error) {
+    console.error('Error in DOMContentLoaded:', error);
+    hideLoadingOverlay();
+  } // Close the try block
+}); // Close the document.addEventListener

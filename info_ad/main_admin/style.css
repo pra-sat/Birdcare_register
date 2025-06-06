@@ -4,6 +4,7 @@ body {
   margin: 0;
   padding: 0;
 }
+
 .container {
   width: 100%;
   max-width: 500px;
@@ -14,14 +15,17 @@ body {
   box-shadow: 0 4px 16px rgba(0,0,0,0.1);
   text-align: center;
 }
+
 h2 {
   font-size: 24px;
   margin-bottom: 8px;
 }
+
 p {
   font-size: 16px;
   margin: 6px 0;
 }
+
 .btn {
   background: #0078d4;
   color: white;
@@ -39,6 +43,7 @@ p {
   min-width: 140px;
   white-space: nowrap;
 }
+
 .btn:hover {
   background: #005fa3;
 }
@@ -48,6 +53,7 @@ p {
   gap: 12px;
   margin-top: 20px;
 }
+
 @media (min-width: 600px) {
   .admin-buttons {
     flex-direction: row;
@@ -58,6 +64,24 @@ p {
     width: 45%;
   }
 }
+
 .hidden {
   display: none;
 }
+
+.scan-popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  padding: 20px;
+}
+

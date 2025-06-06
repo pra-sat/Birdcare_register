@@ -53,6 +53,17 @@ function formatDateToYMDHM(rawDate) {
   return `${year}-${month}-${day} ${hour}:${minute}`;
 }
 
+function toFullThaiDateTimeString(dateObj) {
+  const day = dateObj.getDate().toString().padStart(2, '0');
+  const month = (dateObj.getMonth() + 1).toString().padStart(2, '0');
+  const year = dateObj.getFullYear();
+  const hour = dateObj.getHours().toString().padStart(2, '0');
+  const minute = dateObj.getMinutes().toString().padStart(2, '0');
+  const second = dateObj.getSeconds().toString().padStart(2, '0');
+  return `${day}/${month}/${year}, ${hour}:${minute}:${second}`;
+}
+
+
 // ⏳ ฟังก์ชันสร้าง token ไม่ซ้ำ
 function generateToken(length = 20) {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -464,8 +475,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
       });
     });
-    // Submit feedback event
-   const submitButtons = document.querySelectorAll('.submit-feedback-btn');
+    
+// Submit feedback event
+const submitButtons = document.querySelectorAll('.submit-feedback-btn');
 submitButtons.forEach(btn => {
   btn.addEventListener('click', async () => {
     const panelDiv = btn.closest('.feedback-panel');
@@ -510,6 +522,10 @@ submitButtons.forEach(btn => {
         return;
       }
 
+      const parsedDate = new Date(feedbackBtn.getAttribute('data-raw'));
+      const formattedDate = toFullThaiDateTimeString(parsedDate);
+
+
       const res = await fetch(GAS_ENDPOINT + '?action=feedback', {
         redirect: "follow",
         method: 'POST',
@@ -519,7 +535,7 @@ submitButtons.forEach(btn => {
         body: JSON.stringify({
           action: 'feedback',
           userId: currentUserId,
-          date: serviceDate, // ส่งวันที่ดิบ (เช่น "04/06/2025, 16:00:17")
+          date: formattedDate, // ส่งวันที่ดิบ (เช่น "04/06/2025, 16:00:17")
           service: serviceName,
           rating: ratingVal,
           feedback: feedbackText,

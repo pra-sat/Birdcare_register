@@ -3,13 +3,15 @@ const GAS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxdxUvmwLS3_nETwGL
 const liffId = '2007421084-2OgzWbpV';
 
 class QRScanner {
+    
+  togglePopup(show = true) {
+    const popup = document.getElementById('scanPopup');
+    popup?.classList.toggle('hidden', !show);
+  }
   
   openScanPopup() {
-    togglePopup(show = true) {
-      const popup = document.getElementById('scanPopup');
-      popup?.classList.toggle('hidden', !show);
-    }
-  
+    
+    this.togglePopup(true);  
     const { userId, name, token } = window.adminInfo || {};
     if (userId && name) {
       this.adminUserId = userId;
@@ -185,9 +187,6 @@ class QRScanner {
   }
 
   async manualSearch() {
-    didOpen: () => {
-      document.getElementById('manualPhone')?.focus();
-    }
     const phone = document.getElementById('manualPhone').value;
     if (!phone) return;
 

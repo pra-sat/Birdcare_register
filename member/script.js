@@ -602,4 +602,3 @@ submitButtons.forEach(btn => {
     }
   });
 });
-  }

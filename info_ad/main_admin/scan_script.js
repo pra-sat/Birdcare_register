@@ -5,8 +5,10 @@ const liffId = '2007421084-2OgzWbpV';
 class QRScanner {
   
   openScanPopup() {
-    const popup = document.getElementById('scanPopup');
-    if (popup) popup.classList.remove('hidden');
+    togglePopup(show = true) {
+      const popup = document.getElementById('scanPopup');
+      popup?.classList.toggle('hidden', !show);
+    }
   
     const { userId, name, token } = window.adminInfo || {};
     if (userId && name) {
@@ -14,9 +16,9 @@ class QRScanner {
       this.adminName = name;
       this.token = token;
     }
-  
-    this.loadServices();
+    
     this.startCamera();
+    this.loadServices();
   }
 
   closePopup() {
@@ -26,6 +28,7 @@ class QRScanner {
   }
 
   constructor() {
+    this.isScanning = false;
     this.pointPerBaht = 0.1;
     this.adminUserId = '';
     this.adminName = '-';
@@ -115,7 +118,7 @@ class QRScanner {
       point,
       note,
       //timestamp: new Date().toISOString(),
-      timestamp: scanner.getThaiDateTime(), // รูปแบบ dd/MM/yyyy, HH:mm:ss
+      timestamp: this.getThaiDateTime(), // รูปแบบ dd/MM/yyyy, HH:mm:ss
       admin: this.adminName
     };
 
@@ -203,6 +206,7 @@ class QRScanner {
 
     if (this.isScanning) return;
     this.isScanning = true;
+    setTimeout(() => { this.isScanning = false; }, 2000); // 2 วินาที
   
     Swal.fire({
       title: '🔍 กำลังค้นหา QR...',
@@ -271,4 +275,4 @@ class QRScanner {
   }
 }
 
-window.scanner = new QRScanner(); // สร้าง instance เตรียมไว้
+window.scanner = new QRScanner();

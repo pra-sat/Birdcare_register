@@ -16,6 +16,28 @@ class QRScanner {
     this.init();
   }
 
+  QRScanner.prototype.openScanPopup = function () {
+    const popup = document.getElementById('scanPopup');
+    if (popup) popup.classList.remove('hidden');
+  
+    const { userId, name, token } = window.adminInfo || {};
+    if (userId && name) {
+      this.adminUserId = userId;
+      this.adminName = name;
+      this.token = token;
+    }
+  
+    this.loadServices();
+    this.startCamera();
+  };
+  
+  QRScanner.prototype.closePopup = function () {
+    const popup = document.getElementById('scanPopup');
+    if (popup) popup.classList.add('hidden');
+    if (this.html5QrCode) this.html5QrCode.stop();
+  };
+
+
   async init() {
     await liff.init({ liffId });
     if (!liff.isLoggedIn()) return liff.login();
@@ -243,5 +265,5 @@ class QRScanner {
   }
 }
 
-const scanner = new QRScanner();
+window.scanner = new QRScanner(); // สร้าง instance เตรียมไว้
 window.scanner = scanner;

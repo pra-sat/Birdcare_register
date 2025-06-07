@@ -56,10 +56,8 @@ class QRScanner {
       this.adminName = name;
       this.token = token;
     }
-    
     this.startCamera();    
     this.loadServices();
-    
   }
 
   closePopup() {

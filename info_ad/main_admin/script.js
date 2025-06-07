@@ -1,5 +1,6 @@
 // ✅ รีแฟกเตอร์เป็นแบบ Class
-import { GAS_ENDPOINT, liffId } from './config.js';
+const GAS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxdxUvmwLS3_nETwGLk4J8ipPq2LYNSWyhJ2ZwVsEJQgONG11NSSX3jVaeqWCU1TXvE5g/exec';
+const liffId = '2007421084-2OgzWbpV';
 
 document.addEventListener('DOMContentLoaded', () => {
   const adminManager = new AdminManager();

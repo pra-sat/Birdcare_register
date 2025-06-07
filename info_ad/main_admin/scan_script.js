@@ -1,6 +1,7 @@
 // scan_script.js
 const GAS_ENDPOINTS = 'https://script.google.com/macros/s/AKfycbxdxUvmwLS3_nETwGLk4J8ipPq2LYNSWyhJ2ZwVsEJQgONG11NSSX3jVaeqWCU1TXvE5g/exec';
-const liffIds = '2007421084-2OgzWbpV';
+//const liffIds = '2007421084-2OgzWbpV';
+window.liffId = '2007421084-2OgzWbpV';
 
 class QRScanner {
     
@@ -44,7 +45,7 @@ class QRScanner {
   }
 
   async init() {
-    await liff.init({ liffIds });
+    await liff.init({ liffId: window.liffId });
     if (!liff.isLoggedIn()) return liff.login();
 
     const profile = await liff.getProfile().catch(err => {

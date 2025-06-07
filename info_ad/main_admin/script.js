@@ -1,4 +1,4 @@
-// ✅ รีแฟกเตอร์เป็นแบบ Class
+// script.js (main_admin)
 const GAS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxdxUvmwLS3_nETwGLk4J8ipPq2LYNSWyhJ2ZwVsEJQgONG11NSSX3jVaeqWCU1TXvE5g/exec';
 const liffId = '2007421084-2OgzWbpV';
 

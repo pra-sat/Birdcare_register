@@ -34,15 +34,16 @@ class QRScanner {
       });
   }
     
-    togglePopup(show = true) {
-      const popup = document.getElementById('scanPopup');
-      if (!popup) return;
-      if (show) {
-        popup.classList.add('show');
-      } else {
-        popup.classList.remove('show');
-      }
+  togglePopup(show = true) {
+    const section = document.getElementById('scanSection');
+    if (!section) return;
+    if (show) {
+      section.classList.remove('hidden');
+    } else {
+      section.classList.add('hidden');
     }
+  }
+
   
   async openScanPopup() {
     this.togglePopup(true); 
@@ -61,10 +62,10 @@ class QRScanner {
   }
 
   closePopup() {
-    const popup = document.getElementById('scanPopup');
-    if (popup) this.togglePopup(false);
+    this.togglePopup(false);
     if (this.html5QrCode) this.html5QrCode.stop();
   }
+
 
   async init() {
     await liff.init({ liffId: window.liffId });

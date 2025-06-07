@@ -10,7 +10,7 @@ class QRScanner {
     popup?.classList.toggle('hidden', !show);
   }
   
-  openScanPopup() {
+  async openScanPopup() {
     this.togglePopup(true); 
     if (!this.adminUserId) {
        await this.init(); // ✅ รอ init เสร็จก่อน
@@ -44,6 +44,16 @@ class QRScanner {
     this.currentCameraIndex = 0;
     this.html5QrCode = null;
     this.cameraList = [];
+
+      // ✅ เชื่อมปุ่มแบบไม่ต้องใช้ onclick ใน HTML
+        document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('manualPhone')?.addEventListener('keyup', (e) => {
+          if (e.key === 'Enter') this.manualSearch();
+        });
+        document.querySelector('#scannerSearchBtn')?.addEventListener('click', () => this.manualSearch());
+        document.querySelector('#scannerSwitchBtn')?.addEventListener('click', () => this.toggleCamera());
+        document.querySelector('#scannerCloseBtn')?.addEventListener('click', () => this.closePopup());
+      });
   }
 
   async init() {

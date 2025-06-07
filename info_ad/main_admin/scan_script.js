@@ -316,4 +316,14 @@ class QRScanner {
   }
 }
 
-window.scanner = new QRScanner();
+const scannerInstance = new QRScanner();
+window.scanner = scannerInstance;
+
+document.getElementById('scanBtn')?.addEventListener('click', async () => {
+  if (window.scanner?.openScanPopup) {
+    await window.scanner.openScanPopup();
+  } else {
+    Swal.fire("❌ ไม่สามารถเปิดกล้อง", "ระบบยังไม่พร้อมใช้งาน", "error");
+  }
+});
+

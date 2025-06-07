@@ -101,24 +101,19 @@ class QRScanner {
     const price = parseFloat(document.getElementById('priceInput').value) || 0;
     const note = document.getElementById('noteInput').value.trim();
     const point = Math.floor(price * this.pointPerBaht);
-
+  
     if (!name || price <= 0) {
       Swal.showValidationMessage('กรุณากรอกชื่อบริการและราคาถูกต้อง');
       return;
     }
-
-    const confirmed = await Swal.fire({
-      title: 'ยืนยันข้อมูล?',
-      html: `บริการ: ${name}<br>ราคา: ${price}<br>แต้ม: ${point}<br>หมายเหตุ: ${note}`,
-      icon: 'question',
-      showCancelButton: true,
-      confirmButtonText: 'บันทึก',
-      cancelButtonText: 'ยกเลิก'
-    });
-    if (!confirmed.isConfirmed) return;
-
+  
+    if (!this.serviceList.length) {
+      Swal.fire('⚠️ ยังโหลดรายการบริการไม่เสร็จ', 'กรุณารอ 1-2 วินาทีแล้วลองใหม่', 'warning');
+      return;
+    }
+  
     Swal.fire({ title: '⏳ กำลังบันทึก...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
-
+  
     const payload = {
       action: 'record_service',
       userId: this.foundUser.UserID,
@@ -133,24 +128,30 @@ class QRScanner {
       price,
       point,
       note,
-      timestamp: this.getThaiDateTime(),
+      //timestamp: new Date().toISOString(),
+      timestamp: scanner.getThaiDateTime(), // รูปแบบ dd/MM/yyyy, HH:mm:ss
       admin: this.adminName
     };
 
+  
+    // ✅ DEBUG log
+    console.log("📤 กำลังส่ง payload ไปยัง Apps Script:", payload);
+  
     const res = await fetch(GAS_ENDPOINT + '?action=record_service', {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
       body: JSON.stringify(payload)
     });
-
+      
     const result = await res.json();
     Swal.close();
-
+  
+    // ✅ DEBUG result
+    console.log("📥 ตอบกลับจาก GAS:", result);
+  
     if (result.success) {
       this.logAction('บันทึกบริการ', `✅ ${name} (${price} บาท)`);
-      await this.closePopup();
-      Swal.fire('✅ บันทึกสำเร็จ', `บริการ: ${name}<br>แต้ม: ${point}`, 'success');
-      this.closePopup();
+      Swal.fire('✅ บันทึกสำเร็จ', `บริการ: ${name}<br>แต้ม: ${point}`, 'success').then(() => liff.closeWindow());
     } else {
       this.logAction('บันทึกบริการ', `❌ ล้มเหลว: ${name}, เหตุ: ${result.message}`);
       Swal.fire('❌ บันทึกไม่สำเร็จ', result.message || '', 'error');

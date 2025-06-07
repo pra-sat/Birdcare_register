@@ -1,5 +1,6 @@
 // script.js (ES6 Class)
-import { GAS_ENDPOINT, liffId } from './config.js';
+const GAS_ENDPOINTS = 'https://script.google.com/macros/s/AKfycbxdxUvmwLS3_nETwGLk4J8ipPq2LYNSWyhJ2ZwVsEJQgONG11NSSX3jVaeqWCU1TXvE5g/exec';
+const liffIdss = '2007421084-2OgzWbpV';
 
 class QRScanner {
     
@@ -43,7 +44,7 @@ class QRScanner {
   }
 
   async init() {
-    await liff.init({ liffId });
+    await liff.init({ liffIds });
     if (!liff.isLoggedIn()) return liff.login();
 
     const profile = await liff.getProfile().catch(err => {
@@ -54,7 +55,7 @@ class QRScanner {
     this.adminUserId = profile.userId;
     this.token = liff.getIDToken ? await liff.getIDToken() : '';
 
-    const res = await fetch(`${GAS_ENDPOINT}?action=check_admin&userId=${this.adminUserId}`);
+    const res = await fetch(`${GAS_ENDPOINTS}?action=check_admin&userId=${this.adminUserId}`);
     const result = await res.json();
 
     this.adminName = result.name || '-';
@@ -71,7 +72,7 @@ class QRScanner {
   }
 
   logAction(title, detail) {
-    fetch(GAS_ENDPOINT + '?action=log_admin', {
+    fetch(GAS_ENDPOINTS + '?action=log_admin', {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
       body: JSON.stringify({
@@ -127,7 +128,7 @@ class QRScanner {
     // ✅ DEBUG log
     console.log("📤 กำลังส่ง payload ไปยัง Apps Script:", payload);
   
-    const res = await fetch(GAS_ENDPOINT + '?action=record_service', {
+    const res = await fetch(GAS_ENDPOINTS + '?action=record_service', {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
       body: JSON.stringify(payload)
@@ -216,7 +217,7 @@ class QRScanner {
     if (!phone) return;
 
     Swal.fire({ title: '🔍 กำลังค้นหา...', allowOutsideClick: false, showConfirmButton: false, didOpen: () => Swal.showLoading() });
-    const res = await fetch(`${GAS_ENDPOINT}?action=search_phone&phone=${phone}`);
+    const res = await fetch(`${GAS_ENDPOINTS}?action=search_phone&phone=${phone}`);
     const result = await res.json();
     Swal.close();
 
@@ -243,7 +244,7 @@ class QRScanner {
       didOpen: () => Swal.showLoading()
     });
   
-    const res = await fetch(`${GAS_ENDPOINT}?action=verify_token&token=${token}`);
+    const res = await fetch(`${GAS_ENDPOINTS}?action=verify_token&token=${token}`);
     const result = await res.json();
     Swal.close();
   
@@ -262,7 +263,7 @@ class QRScanner {
     const existingList = document.getElementById('serviceOptions');
     if (existingList) existingList.remove();
 
-    fetch(`${GAS_ENDPOINT}?action=service_list`)
+    fetch(`${GAS_ENDPOINTS}?action=service_list`)
       .then(res => res.json())
       .then(data => {
         this.serviceList = data;

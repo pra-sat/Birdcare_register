@@ -111,7 +111,7 @@ class AdminManager {
 
     const level = parseInt(result.level || '1');
     if (level >= 1) document.querySelector('[data-menu="feedback"]')?.classList.remove("hidden");
-    if (level >= 2) document.querySelector('[data-menu="scan"]')?.classList.remove("hidden");{
+    if (level >= 2) document.getElementById('scanBtn')?.classList.remove("hidden");{
       window.adminInfo = {
         userId: this.userId,
         name: this.name,

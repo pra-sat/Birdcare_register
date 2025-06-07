@@ -172,7 +172,7 @@ class QRScanner {
     }
   }
 
- startCamera() {async startCamera() {
+ async startCamera() {
   try {
       if (!this.html5QrCode) {
         this.html5QrCode = new Html5Qrcode('reader');

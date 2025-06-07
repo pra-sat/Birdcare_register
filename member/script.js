@@ -1,5 +1,130 @@
 // ✅ script.js
+
+// ✅ script.js
 const GAS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxdxUvmwLS3_nETwGLk4J8ipPq2LYNSWyhJ2ZwVsEJQgONG11NSSX3jVaeqWCU1TXvE5g/exec';
+
+const memberInfoEl = document.getElementById('memberInfo');
+const historySection = document.getElementById('historySection');
+const toggleBtn = document.getElementById('toggleHistory');
+
+let currentUserId = null;
+let memberData = null;
+
+function showLoadingOverlay() {
+  document.getElementById('loadingOverlay').classList.remove('hidden');
+}
+function hideLoadingOverlay() {
+  document.getElementById('loadingOverlay').classList.add('hidden');
+}
+function formatPhone(phone) {
+  const digits = phone.replace(/\D/g, '');
+  return digits.replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3');
+}
+function toBangkokISOString(date) {
+  const bangkokOffset = 7 * 60;
+  const bangkokTime = new Date(date.getTime() + (bangkokOffset * 60 * 1000));
+  return bangkokTime.toISOString();
+}
+function formatDateToYMDHM(rawDate) {
+  const d = parseCustomDate(rawDate);
+  const year = d.getFullYear();
+  const month = (d.getMonth() + 1).toString().padStart(2, '0');
+  const day = d.getDate().toString().padStart(2, '0');
+  const hour = d.getHours().toString().padStart(2, '0');
+  const minute = d.getMinutes().toString().padStart(2, '0');
+  return `${year}-${month}-${day} ${hour}:${minute}`;
+}
+function parseCustomDate(str) {
+  const [dmy, hms] = str.split(',');
+  const [day, month, year] = dmy.trim().split('/').map(Number);
+  const [hour, minute, second] = hms.trim().split(':').map(Number);
+  return new Date(year, month - 1, day, hour, minute, second);
+}
+
+// ✅ Lazy load service history every time
+async function renderServiceHistory() {
+  if (!memberData) return;
+
+  Swal.fire({
+    title: '⏳ กำลังโหลดประวัติการใช้บริการ...',
+    allowOutsideClick: false,
+    allowEscapeKey: false,
+    showConfirmButton: false,
+    didOpen: () => Swal.showLoading()
+  });
+
+  const history = Array.isArray(memberData.serviceHistory) ? memberData.serviceHistory : [];
+  history.sort((a, b) => parseCustomDate(b.date) - parseCustomDate(a.date));
+
+  const wrapper = historySection.querySelector('.history-section-wrapper');
+  if (history.length === 0) {
+    wrapper.innerHTML = '<p>-</p>';
+  } else {
+    let html = `<table class="history-table">
+      <thead><tr><th>วันที่</th><th>บริการ</th><th>ราคา</th><th>แต้ม</th><th>หมายเหตุ</th></tr></thead>
+      <tbody>`;
+    history.forEach(row => {
+      html += `<tr>
+        <td>${row.date}</td>
+        <td>${row.service}</td>
+        <td>${row.price}</td>
+        <td>${row.point}</td>
+        <td>${row.note}</td>
+      </tr>`;
+    });
+    html += '</tbody></table>';
+    wrapper.innerHTML = html;
+  }
+
+  Swal.close();
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+  try {
+    showLoadingOverlay();
+    await liff.init({ liffId: '2007421084-WXmXrzZY' });
+    if (!liff.isLoggedIn()) return liff.login();
+
+    const profile = await liff.getProfile();
+    currentUserId = profile.userId;
+
+    const res = await fetch(`${GAS_ENDPOINT}?action=member&userId=${currentUserId}`);
+    if (!res.ok) throw new Error('โหลดข้อมูลไม่ได้');
+    const data = await res.json();
+    memberData = data;
+
+    if (!data.name) throw new Error('ไม่มีข้อมูลสมาชิก');
+
+    memberInfoEl.innerHTML = `
+      <p><b> ชื่อ : ${data.name}</b></p>
+      <p> เบอร์โทร : ${formatPhone(data.phone)}</p>
+      <p> รถ : ${data.brand} ${data.model} (${data.year})</p>
+      <p> หมวดหมู่ : ${data.category}</p>
+      <p> แต้มสะสม : ${data.point} แต้ม</p>
+      <p> แต้มหมดอายุ : ${data.expirationDate?.trim() || '-'}</p>
+    `;
+
+    if (!toggleBtn.classList.contains('bound')) {
+      toggleBtn.addEventListener('click', async () => {
+        const isHidden = historySection.classList.contains('hidden');
+        if (isHidden) await renderServiceHistory();
+        historySection.classList.toggle('hidden');
+        toggleBtn.textContent = isHidden ? '▲ ซ่อนประวัติการใช้บริการ' : '▼ ดูประวัติการใช้บริการ';
+      });
+      toggleBtn.classList.add('bound');
+    }
+
+    hideLoadingOverlay();
+  } catch (err) {
+    console.error(err);
+    hideLoadingOverlay();
+    Swal.fire({ icon: 'error', title: 'เกิดข้อผิดพลาด', text: err.message });
+  }
+});
+
+
+
+/*const GAS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxdxUvmwLS3_nETwGLk4J8ipPq2LYNSWyhJ2ZwVsEJQgONG11NSSX3jVaeqWCU1TXvE5g/exec';
 
 const memberInfoEl = document.getElementById('memberInfo');
 const historySection = document.getElementById('historySection');
@@ -608,3 +733,4 @@ submitButtons.forEach(btn => {
     hideLoadingOverlay();
   } // Close the try block
 }); // Close the document.addEventListener
+*/

@@ -75,6 +75,7 @@ button:focus {
 }
 
 .scan-popup {
+  visibility: hidden;
   position: fixed;
   top: 0;
   left: 0;
@@ -89,10 +90,14 @@ button:focus {
   padding: 20px;
   transform: scale(0.95);
   opacity: 0;
+  pointer-events: none;
   transition: all 0.25s ease-in-out;
 }
 
 .scan-popup.show {
+  visibility: visible;
+  opacity: 1;
+  pointer-events: auto;
   display: flex;
   transform: scale(1);
   opacity: 1;

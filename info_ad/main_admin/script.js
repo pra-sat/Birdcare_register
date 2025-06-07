@@ -56,7 +56,15 @@ class QRScanner {
       this.adminName = name;
       this.token = token;
     }
-    
+
+    if (this.html5QrCode._isScanning) {
+      try {
+        await this.html5QrCode.stop();
+      } catch (e) {
+        console.warn("📸 กล้องหยุดไม่ทันก่อนเริ่มใหม่:", e.message);
+      }
+    }
+
     this.startCamera();
     this.loadServices();
   }
@@ -255,8 +263,12 @@ class QRScanner {
 
   async onScanSuccess(token) {
     // ปิดการอ่านซ้ำทันที เพื่อป้องกันสแกนซ้ำระหว่างโหลด
-    if (this.html5QrCode) {
-      await this.html5QrCode.stop();
+    if (this.html5QrCode._isScanning) {
+      try {
+        await this.html5QrCode.stop();
+      } catch (e) {
+        console.warn("📸 กล้องหยุดไม่ทันก่อนเริ่มใหม่:", e.message);
+      }
     }
 
     if (this.isScanning) return;

@@ -7,10 +7,8 @@ document.addEventListener('DOMContentLoaded', () => {
   adminManager.init();
 });
 
-
-//----------------------------------------------------------------- QRScanner --------------------------------------------------
+//------------------------------ QRScanner ------------------------------
 class QRScanner {
-    
   constructor() {
     this.isScanning = false;
     this.pointPerBaht = 0.1;
@@ -23,41 +21,33 @@ class QRScanner {
     this.html5QrCode = null;
     this.cameraList = [];
 
-      // ✅ เชื่อมปุ่มแบบไม่ต้องใช้ onclick ใน HTML
-        document.addEventListener('DOMContentLoaded', () => {
-        document.getElementById('manualPhone')?.addEventListener('keyup', (e) => {
-          if (e.key === 'Enter') this.manualSearch();
-        });
-        document.querySelector('#scannerSearchBtn')?.addEventListener('click', () => this.manualSearch());
-        document.querySelector('#scannerSwitchBtn')?.addEventListener('click', () => this.toggleCamera());
-        document.querySelector('#scannerCloseBtn')?.addEventListener('click', () => this.closePopup());
-      });
+    document.getElementById('manualPhone')?.addEventListener('keyup', (e) => {
+      if (e.key === 'Enter') this.manualSearch();
+    });
+    document.querySelector('#scannerSearchBtn')?.addEventListener('click', () => this.manualSearch());
+    document.querySelector('#scannerSwitchBtn')?.addEventListener('click', () => this.toggleCamera());
+    document.querySelector('#scannerCloseBtn')?.addEventListener('click', () => this.closePopup());
   }
-    
+
   togglePopup(show = true) {
     const section = document.getElementById('scanSection');
     if (!section) return;
+    section.classList.toggle('hidden', !show);
     if (show) {
-      section.classList.remove('hidden');
-    } else {
-      section.classList.add('hidden');
+      setTimeout(() => section.scrollIntoView({ behavior: 'smooth' }), 100);
     }
   }
 
-  
   async openScanPopup() {
-    this.togglePopup(true); 
-    if (!this.adminUserId) {
-       await this.init(); // ✅ รอ init เสร็จก่อน
-    }
-      
+    this.togglePopup(true);
+    if (!this.adminUserId) await this.init();
     const { userId, name, token } = window.adminInfo || {};
     if (userId && name) {
       this.adminUserId = userId;
       this.adminName = name;
       this.token = token;
     }
-    this.startCamera();    
+    this.startCamera();
     this.loadServices();
   }
 
@@ -66,32 +56,20 @@ class QRScanner {
     if (this.html5QrCode) this.html5QrCode.stop();
   }
 
-
   async init() {
     await liff.init({ liffId: window.liffId });
     if (!liff.isLoggedIn()) return liff.login();
 
-    const profile = await liff.getProfile().catch(err => {
-      Swal.fire("❌ ไม่สามารถโหลดโปรไฟล์ LINE", err.message || '', 'error');
-    });
-    if (!profile) return;
-
+    const profile = await liff.getProfile();
     this.adminUserId = profile.userId;
-    this.token = liff.getIDToken ? await liff.getIDToken() : '';
+    this.token = await liff.getIDToken();
 
     const res = await fetch(`${GAS_ENDPOINT}?action=check_admin&userId=${this.adminUserId}`);
     const result = await res.json();
-
     this.adminName = result.name || '-';
-    document.getElementById('adminName').textContent = this.adminName;
-    document.getElementById('adminRole').textContent = `ระดับ ${result.level || '-'}`;
 
     this.logAction('เข้าสู่ระบบ Scan', 'มีการเข้าใช้งานหน้า scan');
     this.loadServices();
-    
-    document.getElementById('manualPhone')?.addEventListener('keyup', (e) => {
-      if (e.key === 'Enter') this.manualSearch();
-    });
   }
 
   logAction(title, detail) {
@@ -115,19 +93,24 @@ class QRScanner {
     const price = parseFloat(document.getElementById('priceInput').value) || 0;
     const note = document.getElementById('noteInput').value.trim();
     const point = Math.floor(price * this.pointPerBaht);
-  
+
     if (!name || price <= 0) {
       Swal.showValidationMessage('กรุณากรอกชื่อบริการและราคาถูกต้อง');
       return;
     }
-  
-    if (!this.serviceList.length) {
-      Swal.fire('⚠️ ยังโหลดรายการบริการไม่เสร็จ', 'กรุณารอ 1-2 วินาทีแล้วลองใหม่', 'warning');
-      return;
-    }
-  
+
+    const confirmed = await Swal.fire({
+      title: 'ยืนยันข้อมูล?',
+      html: `บริการ: ${name}<br>ราคา: ${price}<br>แต้ม: ${point}<br>หมายเหตุ: ${note}`,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'บันทึก',
+      cancelButtonText: 'ยกเลิก'
+    });
+    if (!confirmed.isConfirmed) return;
+
     Swal.fire({ title: '⏳ กำลังบันทึก...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
-  
+
     const payload = {
       action: 'record_service',
       userId: this.foundUser.UserID,
@@ -142,30 +125,23 @@ class QRScanner {
       price,
       point,
       note,
-      //timestamp: new Date().toISOString(),
-      timestamp: this.getThaiDateTime(), // รูปแบบ dd/MM/yyyy, HH:mm:ss
+      timestamp: this.getThaiDateTime(),
       admin: this.adminName
     };
 
-  
-    // ✅ DEBUG log
-    console.log("📤 กำลังส่ง payload ไปยัง Apps Script:", payload);
-  
     const res = await fetch(GAS_ENDPOINT + '?action=record_service', {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
       body: JSON.stringify(payload)
     });
-      
+
     const result = await res.json();
     Swal.close();
-  
-    // ✅ DEBUG result
-    console.log("📥 ตอบกลับจาก GAS:", result);
-  
+
     if (result.success) {
       this.logAction('บันทึกบริการ', `✅ ${name} (${price} บาท)`);
-      Swal.fire('✅ บันทึกสำเร็จ', `บริการ: ${name}<br>แต้ม: ${point}`, 'success').then(() => liff.closeWindow());
+      Swal.fire('✅ บันทึกสำเร็จ', `บริการ: ${name}<br>แต้ม: ${point}`, 'success');
+      this.closePopup();
     } else {
       this.logAction('บันทึกบริการ', `❌ ล้มเหลว: ${name}, เหตุ: ${result.message}`);
       Swal.fire('❌ บันทึกไม่สำเร็จ', result.message || '', 'error');
@@ -174,38 +150,23 @@ class QRScanner {
 
   async startCamera() {
     try {
-      if (!this.html5QrCode) {
-        this.html5QrCode = new Html5Qrcode('reader');
-      }
-  
-      if (this.html5QrCode._isScanning) {
-        console.warn("📸 กล้องยังไม่หยุดดี รีเซ็ตก่อน...");
-        await this.html5QrCode.stop().catch(e => {
-          console.warn("⚠️ ไม่สามารถหยุดกล้องทันที:", e.message);
-        });
-      }
-  
+      if (!this.html5QrCode) this.html5QrCode = new Html5Qrcode('reader');
+      if (this.html5QrCode._isScanning) await this.html5QrCode.stop();
+
       const cameras = await Html5Qrcode.getCameras();
-      if (!cameras.length) throw new Error("ไม่พบกล้อง");
-  
+      if (!cameras.length) throw new Error('ไม่พบกล้อง');
+
       this.cameraList = cameras;
-      const backCam = cameras.find(cam => /back|environment/i.test(cam.label));
-      const camId = backCam ? backCam.id : cameras[0].id;
-      this.currentCameraIndex = cameras.findIndex(cam => cam.id === camId);
-  
+      const camId = cameras[0].id;
       await this.html5QrCode.start(
         camId,
         { fps: 10, qrbox: 250 },
         text => this.onScanSuccess(text)
       );
-  
     } catch (err) {
       Swal.fire('❌ เปิดกล้องไม่สำเร็จ', err.message || '', 'error');
-      console.error("❌ startCamera error:", err);
     }
   }
-
-
 
   toggleCamera() {
     if (!this.cameraList.length || !this.html5QrCode) return;
@@ -214,84 +175,48 @@ class QRScanner {
       this.html5QrCode.start(
         this.cameraList[this.currentCameraIndex].id,
         { fps: 10, qrbox: 250 },
-        (decodedText) => this.onScanSuccess(decodedText)
+        text => this.onScanSuccess(text)
       );
     });
   }
 
-  getThaiDateTime(dateObj = new Date()) {
-    const d = dateObj;
-    const day = d.getDate().toString().padStart(2, '0');
-    const month = (d.getMonth() + 1).toString().padStart(2, '0');
-    const year = d.getFullYear();
-    const hour = d.getHours().toString().padStart(2, '0');
-    const minute = d.getMinutes().toString().padStart(2, '0');
-    const second = d.getSeconds().toString().padStart(2, '0');
-    return `${day}/${month}/${year}, ${hour}:${minute}:${second}`;
+  getThaiDateTime(d = new Date()) {
+    return `${d.getDate().toString().padStart(2, '0')}/${(d.getMonth() + 1).toString().padStart(2, '0')}/${d.getFullYear()}, ${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}:${d.getSeconds().toString().padStart(2, '0')}`;
   }
 
   async manualSearch() {
     const phone = document.getElementById('manualPhone').value;
     if (!phone) return;
-
-    Swal.fire({ title: '🔍 กำลังค้นหา...', allowOutsideClick: false, showConfirmButton: false, didOpen: () => Swal.showLoading() });
+    Swal.fire({ title: '🔍 กำลังค้นหา...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
     const res = await fetch(`${GAS_ENDPOINT}?action=search_phone&phone=${phone}`);
     const result = await res.json();
     Swal.close();
 
     if (!result.success) return Swal.fire('ไม่พบข้อมูลลูกค้า', '', 'error');
-    document.getElementById('manualPhone').value = '';
     this.foundUser = result.data;
-    this.showCustomerPopup();
-        /** ✅ เพิ่มตรงนี้ก่อนเรียก Swal */
-      this.closePopup(); // ปิดกล้อง + ปิด popup
-      setTimeout(() => this.showCustomerPopup(), 300); // รอให้ DOM ปรับก่อนค่อยแสดง Swal
+    this.closePopup();
+    setTimeout(() => this.showCustomerPopup(), 300);
   }
 
   async onScanSuccess(token) {
-    // ปิดการอ่านซ้ำทันที เพื่อป้องกันสแกนซ้ำระหว่างโหลด
-    if (this.html5QrCode._isScanning) {
-      try {
-        await this.html5QrCode.stop();
-      } catch (e) {
-        console.warn("📸 กล้องหยุดไม่ทันก่อนเริ่มใหม่:", e.message);
-      }
-    }
-
     if (this.isScanning) return;
     this.isScanning = true;
-    setTimeout(() => { this.isScanning = false; }, 2000); // 2 วินาที
-  
-    Swal.fire({
-      title: '🔍 กำลังค้นหา QR...',
-      allowOutsideClick: false,
-      showConfirmButton: false,
-      didOpen: () => Swal.showLoading()
-    });
-  
+    Swal.fire({ title: '🔍 กำลังค้นหา QR...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
     const res = await fetch(`${GAS_ENDPOINT}?action=verify_token&token=${token}`);
     const result = await res.json();
     Swal.close();
-  
+
     if (!result.success) {
       Swal.fire('QR ไม่ถูกต้อง', '', 'error');
       this.isScanning = false;
-      this.startCamera(); // กลับมาเปิดกล้องใหม่ถ้าไม่เจอ
-      return;
+      return this.startCamera();
     }
     this.foundUser = result.data;
-    this.showCustomerPopup(); // ไม่เปิดกล้องอีกเพราะเจอแล้ว
-
-        /** ✅ เพิ่มตรงนี้ก่อนเรียก Swal */
-      this.closePopup(); // ปิดกล้อง + ปิด popup
-      setTimeout(() => this.showCustomerPopup(), 300); // รอให้ DOM ปรับก่อนค่อยแสดง Swal
+    this.closePopup();
+    setTimeout(() => this.showCustomerPopup(), 300);
   }
 
-
   loadServices() {
-    const existingList = document.getElementById('serviceOptions');
-    if (existingList) existingList.remove();
-
     fetch(`${GAS_ENDPOINT}?action=service_list`)
       .then(res => res.json())
       .then(data => {
@@ -332,7 +257,6 @@ class QRScanner {
     });
   }
 }
-
 
 //----------------------------------------------------------------- main admin --------------------------------------------------
 class AdminManager {

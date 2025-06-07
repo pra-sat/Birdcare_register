@@ -64,8 +64,7 @@ class QRScanner {
 
     this.logAction('เข้าสู่ระบบ Scan', 'มีการเข้าใช้งานหน้า scan');
     this.loadServices();
-    this.startCamera();
-
+    
     document.getElementById('manualPhone')?.addEventListener('keyup', (e) => {
       if (e.key === 'Enter') this.manualSearch();
     });

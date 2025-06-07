@@ -326,4 +326,3 @@ document.getElementById('scanBtn')?.addEventListener('click', async () => {
     Swal.fire("❌ ไม่สามารถเปิดกล้อง", "ระบบยังไม่พร้อมใช้งาน", "error");
   }
 });
-

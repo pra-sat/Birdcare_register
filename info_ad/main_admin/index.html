@@ -41,12 +41,16 @@
     </div>
   </div>
 
-  <script type="module">
-    import './scan_script.js';
-    document.getElementById('scanBtn')?.addEventListener('click', () => {
-      if (window.scanner?.openScanPopup) {
-        window.scanner.openScanPopup();
-      }
+  <script src="scan_script.js" defer></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('scanBtn')?.addEventListener('click', () => {
+        if (window.scanner?.openScanPopup) {
+          window.scanner.openScanPopup();
+        } else {
+          Swal.fire("❌ ไม่สามารถเปิดกล้อง", "ระบบยังไม่พร้อมใช้งาน", "error");
+        }
+      });
     });
   </script>
 </body>

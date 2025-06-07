@@ -12,7 +12,10 @@ class QRScanner {
   
   openScanPopup() {
     
-    this.togglePopup(true);  
+    this.togglePopup(true); 
+    if (!this.adminUserId) {
+       this.init(); // ← ✅ ค่อยเรียกตอนนี้
+    }
     const { userId, name, token } = window.adminInfo || {};
     if (userId && name) {
       this.adminUserId = userId;
@@ -41,7 +44,6 @@ class QRScanner {
     this.currentCameraIndex = 0;
     this.html5QrCode = null;
     this.cameraList = [];
-    this.init();
   }
 
   async init() {

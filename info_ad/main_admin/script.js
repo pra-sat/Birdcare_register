@@ -291,7 +291,7 @@ class AdminManager {
   }
 
   async init() {
-    await navigator.mediaDevices.getUserMedia({ video: true }).catch(() => {});
+    //await navigator.mediaDevices.getUserMedia({ video: true }).catch(() => {});
     try {
       Swal.fire({
         title: 'กำลังโหลดข้อมูล...',

@@ -1,4 +1,3 @@
-<!-- ✅ index.html (Main Admin พร้อม Popup Scan) -->
 <!DOCTYPE html>
 <html lang="th">
 <head>
@@ -29,28 +28,16 @@
     <button class="btn danger" type="button" onclick="logout()">🚪 ออกจากระบบ</button>
   </div>
 
-  <!-- ✅ Scan Popup Section -->
-  <div id="scanPopup" class="hidden scan-popup">
+  <!-- ✅ Scan Section (ไม่ใช้ Popup อีกต่อไป) -->
+  <div id="scanSection" class="scan-section hidden">
     <h3>📷 กล้องสแกน QR ลูกค้า</h3>
-    <div id="reader" style="width: 100%; max-width: 320px; margin: auto;"></div>
-    <input type="tel" id="manualPhone" class="swal2-input" placeholder="หรือกรอกเบอร์โทร" />
-    <div style="margin-top: 10px;">
+    <div id="reader" class="camera-box"></div>
+    <input type="tel" id="manualPhone" placeholder="หรือกรอกเบอร์โทร" class="input-field" />
+    <div class="scan-controls">
       <button class="btn" id="scannerSearchBtn">🔍 ค้นหา</button>
       <button class="btn" id="scannerSwitchBtn">🔁 สลับกล้อง</button>
-      <button class="btn danger" id="scannerCloseBtn">❌ ปิด</button>
     </div>
   </div>
 
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      document.getElementById('scanBtn')?.addEventListener('click', async () => {
-        if (window.scanner?.openScanPopup) {
-          await window.scanner.openScanPopup(); // ✅ รอ async
-        } else {
-          Swal.fire("❌ ไม่สามารถเปิดกล้อง", "ระบบยังไม่พร้อมใช้งาน", "error");
-        }
-      });
-    });
-  </script>
 </body>
 </html>

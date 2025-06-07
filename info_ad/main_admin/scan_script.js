@@ -1,4 +1,4 @@
-// script.js (ES6 Class)
+// scan_script.js
 const GAS_ENDPOINTS = 'https://script.google.com/macros/s/AKfycbxdxUvmwLS3_nETwGLk4J8ipPq2LYNSWyhJ2ZwVsEJQgONG11NSSX3jVaeqWCU1TXvE5g/exec';
 const liffIdss = '2007421084-2OgzWbpV';
 

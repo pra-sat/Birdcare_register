@@ -11,11 +11,11 @@ class QRScanner {
   }
   
   openScanPopup() {
-    
     this.togglePopup(true); 
     if (!this.adminUserId) {
        await this.init(); // ✅ รอ init เสร็จก่อน
     }
+      
     const { userId, name, token } = window.adminInfo || {};
     if (userId && name) {
       this.adminUserId = userId;

@@ -5,6 +5,29 @@ window.liffId = '2007421084-2OgzWbpV';
 
 class QRScanner {
     
+  constructor() {
+    this.isScanning = false;
+    this.pointPerBaht = 0.1;
+    this.adminUserId = '';
+    this.adminName = '-';
+    this.token = '';
+    this.foundUser = null;
+    this.serviceList = [];
+    this.currentCameraIndex = 0;
+    this.html5QrCode = null;
+    this.cameraList = [];
+
+      // ✅ เชื่อมปุ่มแบบไม่ต้องใช้ onclick ใน HTML
+        document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('manualPhone')?.addEventListener('keyup', (e) => {
+          if (e.key === 'Enter') this.manualSearch();
+        });
+        document.querySelector('#scannerSearchBtn')?.addEventListener('click', () => this.manualSearch());
+        document.querySelector('#scannerSwitchBtn')?.addEventListener('click', () => this.toggleCamera());
+        document.querySelector('#scannerCloseBtn')?.addEventListener('click', () => this.closePopup());
+      });
+  }
+    
   togglePopup(show = true) {
     const popup = document.getElementById('scanPopup');
     popup?.classList.toggle('hidden', !show);
@@ -31,29 +54,6 @@ class QRScanner {
     const popup = document.getElementById('scanPopup');
     if (popup) popup.classList.add('hidden');
     if (this.html5QrCode) this.html5QrCode.stop();
-  }
-
-  constructor() {
-    this.isScanning = false;
-    this.pointPerBaht = 0.1;
-    this.adminUserId = '';
-    this.adminName = '-';
-    this.token = '';
-    this.foundUser = null;
-    this.serviceList = [];
-    this.currentCameraIndex = 0;
-    this.html5QrCode = null;
-    this.cameraList = [];
-
-      // ✅ เชื่อมปุ่มแบบไม่ต้องใช้ onclick ใน HTML
-        document.addEventListener('DOMContentLoaded', () => {
-        document.getElementById('manualPhone')?.addEventListener('keyup', (e) => {
-          if (e.key === 'Enter') this.manualSearch();
-        });
-        document.querySelector('#scannerSearchBtn')?.addEventListener('click', () => this.manualSearch());
-        document.querySelector('#scannerSwitchBtn')?.addEventListener('click', () => this.toggleCamera());
-        document.querySelector('#scannerCloseBtn')?.addEventListener('click', () => this.closePopup());
-      });
   }
 
   async init() {

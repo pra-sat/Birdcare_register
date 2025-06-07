@@ -80,23 +80,21 @@ button:focus {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(0, 0, 0, 0.75);
-  backdrop-filter: blur(4px);
+  background-color: rgba(0, 0, 0, 0.85); /* ✅ ทำให้มืดขึ้นชัดเจน */
   display: none;
-  flex-direction: column;
+  z-index: 9999;
+  backdrop-filter: blur(2px); /* optional */
   justify-content: center;
   align-items: center;
-  z-index: 9999;
   padding: 20px;
-
-  transform: scale(0.95); /* เพิ่มตรงนี้ */
-  opacity: 0;              /* เพิ่มตรงนี้ */
-  transition: all 0.3s ease-in-out; /* เพิ่มตรงนี้ */
+  transform: scale(0.95);
+  opacity: 0;
+  transition: all 0.25s ease-in-out;
 }
 
 .scan-popup.show {
   display: flex;
-  transform: scale(1);  /* เพิ่มตรงนี้ */
-  opacity: 1;           /* เพิ่มตรงนี้ */
+  transform: scale(1);
+  opacity: 1;
 }
 

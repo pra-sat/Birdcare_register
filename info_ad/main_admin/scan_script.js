@@ -242,6 +242,9 @@ class QRScanner {
     document.getElementById('manualPhone').value = '';
     this.foundUser = result.data;
     this.showCustomerPopup();
+        /** ✅ เพิ่มตรงนี้ก่อนเรียก Swal */
+      this.closePopup(); // ปิดกล้อง + ปิด popup
+      setTimeout(() => this.showCustomerPopup(), 300); // รอให้ DOM ปรับก่อนค่อยแสดง Swal
   }
 
   async onScanSuccess(token) {
@@ -273,6 +276,10 @@ class QRScanner {
     }
     this.foundUser = result.data;
     this.showCustomerPopup(); // ไม่เปิดกล้องอีกเพราะเจอแล้ว
+
+        /** ✅ เพิ่มตรงนี้ก่อนเรียก Swal */
+      this.closePopup(); // ปิดกล้อง + ปิด popup
+      setTimeout(() => this.showCustomerPopup(), 300); // รอให้ DOM ปรับก่อนค่อยแสดง Swal
   }
 
 

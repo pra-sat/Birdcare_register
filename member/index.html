@@ -1,1 +1,54 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ข้อมูลสมาชิก</title>
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="loadingOverlay" class="loading-overlay hidden">
+    <div class="loading-box">
+        <div class="spinner"></div>
+        <p>⏳ กำลังโหลดข้อมูลสมาชิก...</p>
+      </div>
+    </div>
+  
+  <div class="container">
+    <h2>ข้อมูลสมาชิก</h2>
 
+    <div id="memberInfo" class="card"></div>
+
+    <!-- แถบกดดูประวัติ -->
+    <button class="btn history-toggle" id="toggleHistory">▼ ดูประวัติการใช้บริการ</button>
+    <button class="btn" id="qrBtn" onclick="showQRSection()">แสดง QR Code</button>
+
+    <!-- พื้นที่แสดงประวัติ -->
+    <div id="historySection" class="card hidden">
+      <div class="history-section-wrapper">
+        <!-- ตารางจะถูกเติมผ่าน JS -->
+      </div>
+    </div>
+
+    <button class="btn close small" onclick="liff.closeWindow()">ปิดหน้าต่าง</button>
+    <p class="notice">❕ หากต้องการแก้ไขข้อมูล กรุณาทักแชทหรือแจ้ง Admin</p>
+  </div>
+  
+  <!-- ✅ Section แสดง QR -->
+  <div id="qrSection" class="qr-popup hidden">
+    <div class="qr-popup-inner">
+      <p><b>QR ยืนยันตัวตน</b></p>
+      <canvas id="qrCanvas"></canvas>
+      <p id="qrUserInfo"></p>
+      <p>หมดอายุใน <span id="qrCountdown">600</span> วินาที</p>
+      <button class="btn" id="closeQRBtn">❌</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
+  
+</body>
+</html>

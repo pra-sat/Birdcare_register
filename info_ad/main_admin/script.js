@@ -63,6 +63,7 @@ class QRScanner {
   }
 
 
+
   async init() {
     await liff.init({ liffId: window.liffId });
     if (!liff.isLoggedIn()) return liff.login();
@@ -147,6 +148,7 @@ class QRScanner {
 
     if (result.success) {
       this.logAction('บันทึกบริการ', `✅ ${name} (${price} บาท)`);
+      await this.closePopup();
       Swal.fire('✅ บันทึกสำเร็จ', `บริการ: ${name}<br>แต้ม: ${point}`, 'success');
       this.closePopup();
     } else {
@@ -289,6 +291,7 @@ class AdminManager {
   }
 
   async init() {
+    await navigator.mediaDevices.getUserMedia({ video: true }).catch(() => {});
     try {
       Swal.fire({
         title: 'กำลังโหลดข้อมูล...',

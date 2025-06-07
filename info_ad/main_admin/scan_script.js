@@ -150,7 +150,23 @@ class QRScanner {
   }
 
   startCamera() {
-    this.html5QrCode = new Html5Qrcode('reader');
+    try {
+        this.html5QrCode = new Html5Qrcode('reader');
+        Html5Qrcode.getCameras().then(cameras => {
+          if (cameras.length) {
+            ...
+          } else {
+            Swal.fire('ไม่พบกล้อง', '', 'error');
+            console.error("ไม่พบกล้องในอุปกรณ์นี้");
+          }
+        }).catch(err => {
+          Swal.fire('เกิดข้อผิดพลาดกับกล้อง', err.message || '', 'error');
+          console.error("❌ startCamera error:", err);
+        });
+      } catch (e) {
+        Swal.fire('กล้องไม่พร้อมใช้งาน', e.message || '', 'error');
+        console.error("❌ html5QrCode init fail:", e);
+      }     
     if (this.html5QrCode._isScanning) return;
     Html5Qrcode.getCameras().then(cameras => {
       if (cameras.length) {

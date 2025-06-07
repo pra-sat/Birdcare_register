@@ -103,7 +103,6 @@ button:focus {
   transform: scale(1);
 }
 
-
 #reader {
   flex: 1;
   flex-grow: 1;

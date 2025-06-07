@@ -52,6 +52,7 @@ button:focus {
 .btn:hover {
   background: #005fa3;
 }
+
 .admin-buttons {
   display: flex;
   flex-direction: column;

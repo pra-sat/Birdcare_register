@@ -51,10 +51,17 @@ class QRScanner {
     this.loadServices();
   }
 
-  closePopup() {
+  async closePopup() {
     this.togglePopup(false);
-    if (this.html5QrCode) this.html5QrCode.stop();
+    if (this.html5QrCode && this.html5QrCode._isScanning) {
+      try {
+        await this.html5QrCode.stop();
+      } catch (err) {
+        console.warn("⚠️ กล้องหยุดไม่ได้ (อาจไม่ได้เปิด):", err.message);
+      }
+    }
   }
+
 
   async init() {
     await liff.init({ liffId: window.liffId });
@@ -198,23 +205,36 @@ class QRScanner {
     setTimeout(() => this.showCustomerPopup(), 300);
   }
 
-  async onScanSuccess(token) {
+ async onScanSuccess(token) {
     if (this.isScanning) return;
     this.isScanning = true;
+  
+    try {
+      if (this.html5QrCode && this.html5QrCode._isScanning) {
+        await this.html5QrCode.stop();
+      }
+    } catch (err) {
+      console.warn("⚠️ ไม่สามารถหยุดกล้อง:", err.message);
+    }
+  
     Swal.fire({ title: '🔍 กำลังค้นหา QR...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+  
     const res = await fetch(`${GAS_ENDPOINT}?action=verify_token&token=${token}`);
     const result = await res.json();
     Swal.close();
-
+  
     if (!result.success) {
       Swal.fire('QR ไม่ถูกต้อง', '', 'error');
       this.isScanning = false;
-      return this.startCamera();
+      this.startCamera(); // รีสตาร์ทกล้องใหม่
+      return;
     }
+  
     this.foundUser = result.data;
-    this.closePopup();
+    this.togglePopup(false); // ซ่อนหน้า scan
     setTimeout(() => this.showCustomerPopup(), 300);
   }
+
 
   loadServices() {
     fetch(`${GAS_ENDPOINT}?action=service_list`)

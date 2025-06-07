@@ -1,6 +1,6 @@
 // script.js (main_admin)
 const GAS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxdxUvmwLS3_nETwGLk4J8ipPq2LYNSWyhJ2ZwVsEJQgONG11NSSX3jVaeqWCU1TXvE5g/exec';
-const liffId = '2007421084-2OgzWbpV';
+window.liffId = '2007421084-2OgzWbpV';
 
 document.addEventListener('DOMContentLoaded', () => {
   const adminManager = new AdminManager();
@@ -26,7 +26,7 @@ class AdminManager {
         didOpen: () => Swal.showLoading()
       });
 
-      await liff.init({ liffId });
+      await liff.init({ liffId: window.liffId });
       if (!liff.isLoggedIn()) return liff.login();
 
       const profile = await liff.getProfile();

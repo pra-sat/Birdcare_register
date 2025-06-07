@@ -236,7 +236,14 @@ document.addEventListener('DOMContentLoaded', async () => {
       });
       return;
     }
-
+        memberInfoEl.innerHTML = `
+      <p><b> ชื่อ : ${data.name}</b></p>
+      <p> เบอร์โทร : ${formatPhone(data.phone)}</p>
+      <p> รถ : ${data.brand} ${data.model} (${data.year})</p>
+      <p> แต้มสะสม : ${data.point} แต้ม</p>
+      <p> แต้มหมดอายุ : ${data.expirationDate && data.expirationDate.trim() ? data.expirationDate : '-'}</p>
+    `;
+/*
     memberInfoEl.innerHTML = `
       <p><b> ชื่อ : ${data.name}</b></p>
       <p> เบอร์โทร : ${formatPhone(data.phone)}</p>
@@ -245,7 +252,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       <p> แต้มสะสม : ${data.point} แต้ม</p>
       <p> แต้มหมดอายุ : ${data.expirationDate && data.expirationDate.trim() ? data.expirationDate : '-'}</p>
     `;
-
+*/
     toggleBtn.disabled = true;
     historySection.innerHTML = '<p>⏳ กำลังโหลดประวัติ...</p>';
     toggleBtn.disabled = false;

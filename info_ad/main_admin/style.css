@@ -82,20 +82,21 @@ button:focus {
   height: 100vh;
   background: rgba(0, 0, 0, 0.75);
   backdrop-filter: blur(4px);
-  display: none; /* ✅ เปลี่ยนจาก always flex → ใช้ toggle แบบมาตรฐาน */
+  display: none;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   z-index: 9999;
   padding: 20px;
+
+  transform: scale(0.95); /* เพิ่มตรงนี้ */
+  opacity: 0;              /* เพิ่มตรงนี้ */
+  transition: all 0.3s ease-in-out; /* เพิ่มตรงนี้ */
 }
 
 .scan-popup.show {
-  display: flex; /* ✅ เมื่อมีคลาส .show → โชว์ด้วย flex */
-}
-
-.scan-popup:not(.hidden) {
-  transform: scale(1);
-  opacity: 1;
+  display: flex;
+  transform: scale(1);  /* เพิ่มตรงนี้ */
+  opacity: 1;           /* เพิ่มตรงนี้ */
 }
 

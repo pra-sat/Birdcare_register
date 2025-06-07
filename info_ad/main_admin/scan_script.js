@@ -14,7 +14,7 @@ class QRScanner {
     
     this.togglePopup(true); 
     if (!this.adminUserId) {
-       this.init(); // ← ✅ ค่อยเรียกตอนนี้
+       await this.init(); // ✅ รอ init เสร็จก่อน
     }
     const { userId, name, token } = window.adminInfo || {};
     if (userId && name) {

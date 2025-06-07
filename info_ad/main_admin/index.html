@@ -44,9 +44,9 @@
   <script src="scan_script.js" defer></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      document.getElementById('scanBtn')?.addEventListener('click', () => {
+      document.getElementById('scanBtn')?.addEventListener('click', async () => {
         if (window.scanner?.openScanPopup) {
-          window.scanner.openScanPopup();
+          await window.scanner.openScanPopup(); // ✅ รอ async
         } else {
           Swal.fire("❌ ไม่สามารถเปิดกล้อง", "ระบบยังไม่พร้อมใช้งาน", "error");
         }

@@ -57,8 +57,9 @@ class QRScanner {
       this.token = token;
     }
     
-    this.loadServices();
     this.startCamera();    
+    this.loadServices();
+    
   }
 
   closePopup() {
@@ -172,18 +173,21 @@ class QRScanner {
     }
   }
 
- async startCamera() {
-  try {
+  async startCamera() {
+    try {
       if (!this.html5QrCode) {
         this.html5QrCode = new Html5Qrcode('reader');
       }
   
+      if (this.html5QrCode._isScanning) {
+        console.warn("📸 กล้องยังไม่หยุดดี รีเซ็ตก่อน...");
+        await this.html5QrCode.stop().catch(e => {
+          console.warn("⚠️ ไม่สามารถหยุดกล้องทันที:", e.message);
+        });
+      }
+  
       const cameras = await Html5Qrcode.getCameras();
       if (!cameras.length) throw new Error("ไม่พบกล้อง");
-  
-      if (this.html5QrCode._isScanning) {
-        await this.html5QrCode.stop(); // ✅ สำคัญ!
-      }
   
       this.cameraList = cameras;
       const backCam = cameras.find(cam => /back|environment/i.test(cam.label));
@@ -195,11 +199,13 @@ class QRScanner {
         { fps: 10, qrbox: 250 },
         text => this.onScanSuccess(text)
       );
+  
     } catch (err) {
       Swal.fire('❌ เปิดกล้องไม่สำเร็จ', err.message || '', 'error');
       console.error("❌ startCamera error:", err);
     }
   }
+
 
 
   toggleCamera() {

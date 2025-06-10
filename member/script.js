@@ -128,7 +128,8 @@ function generateQRCode(text, userInfo) {
     size: 200
   });
 
-  document.getElementById('qrUserInfo').innerText = `${userInfo.name} - ${userInfo.brand} ${userInfo.model} (${userInfo.year})`;
+  //document.getElementById('qrUserInfo').innerText = `${userInfo.name} - ${userInfo.brand} ${userInfo.model} (${userInfo.year})`;
+  document.getElementById('qrUserInfo').innerText = `ชื่อ: ${userInfo.name} (เลือกรถที่หน้างาน)`
   document.getElementById('closeQRBtn').addEventListener('click', closeQRSection);
 }
 
@@ -236,13 +237,14 @@ document.addEventListener('DOMContentLoaded', async () => {
       });
       return;
     }
-        memberInfoEl.innerHTML = `
-      <p><b> ชื่อ : ${data.name}</b></p>
-      <p> เบอร์โทร : ${formatPhone(data.phone)}</p>
-      <p> รถ : ${data.brand} ${data.model} (${data.year})</p>
-      <p> แต้มสะสม : ${data.point} แต้ม</p>
-      <p> แต้มหมดอายุ : ${data.expirationDate && data.expirationDate.trim() ? data.expirationDate : '-'}</p>
-    `;
+    memberInfoEl.innerHTML = data.vehicles.map(vehicle => `
+      <div class="card">
+        <p><b>รถ:</b> ${vehicle.brand} ${vehicle.model} (${vehicle.year})</p>
+        <p><b>แต้มสะสม:</b> ${vehicle.point} แต้ม</p>
+        <p><b>แต้มหมดอายุ:</b> ${vehicle.expirationDate || '-'}</p>
+      </div>
+    `).join('');
+
 /*
     memberInfoEl.innerHTML = `
       <p><b> ชื่อ : ${data.name}</b></p>

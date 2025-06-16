@@ -98,36 +98,34 @@ class QRScanner {
 
   async onServiceSave() {
     const name = document.getElementById('serviceName').value.trim();
-    const priceInput = document.getElementById('priceInput');
-      if (this.isRedeeming) {
-        priceInput.placeholder = "จำนวนแต้มที่ใช้";
-      } else {
-        priceInput.placeholder = "ราคา";
-      }
     const note = document.getElementById('noteInput').value.trim();
     const vehicleSelect = document.getElementById('vehicleSelect');
     const selectedIndex = vehicleSelect ? Number(vehicleSelect.value) : 0;
     const selectedVehicle = this.foundUser.vehicles?.[selectedIndex] || {};
     const availablePoint = parseInt(selectedVehicle.point || 0);
   
-    if (!name || priceInput <= 0) {
+    const priceInputEl = document.getElementById('priceInput');
+    const priceValue = parseFloat(priceInputEl.value || '0');
+    
+    if (!name || priceValue <= 0) {
       Swal.showValidationMessage('กรุณากรอกชื่อบริการและราคาถูกต้อง');
       return;
     }
-  
-    let price = priceInput;
-    let point = Math.floor(priceInput * this.pointPerBaht);
+    
+    let price = priceValue;
+    let point = Math.floor(priceValue * this.pointPerBaht);
     let label = `ราคา: ${price} บาท | แต้มที่ได้: ${point}`;
-  
+    
     if (this.isRedeeming) {
       if (price > availablePoint) {
         Swal.showValidationMessage('แต้มของลูกค้าไม่เพียงพอ');
         return;
       }
       price = -price;
-      point = -priceInput;
+      point = -priceValue;
       label = `ราคา: ${Math.abs(price)} | แต้มที่ใช้: ${Math.abs(point)}`;
     }
+
   
     const confirmHtml = `
       <p>ชื่อ: ${this.foundUser.Name}</p>
@@ -348,11 +346,9 @@ class QRScanner {
           this.isRedeeming = !this.isRedeeming;
           redeemBtn.classList.toggle('redeem-active', this.isRedeeming);
           redeemBtn.textContent = this.isRedeeming ? '🟣 ใช้แต้มสะสม' : '🎁 แลกแต้ม';
-          redeemBtn.style.backgroundColor = this.isRedeeming ? '#8e44ad' : '';
           priceInput.placeholder = this.isRedeeming ? "จำนวนแต้มที่ใช้" : "ราคา";
           updatePointDisplay();
         });
-
   
         updateCurrentPoint(); // โหลดครั้งแรก
       },

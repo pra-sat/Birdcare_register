@@ -98,25 +98,37 @@ class QRScanner {
 
   async onServiceSave() {
     const name = document.getElementById('serviceName').value.trim();
-    const price = parseFloat(document.getElementById('priceInput').value) || 0;
+    const priceInput = parseFloat(document.getElementById('priceInput').value) || 0;
     const note = document.getElementById('noteInput').value.trim();
-    const point = Math.floor(price * this.pointPerBaht);
+    const vehicleSelect = document.getElementById('vehicleSelect');
+    const selectedIndex = vehicleSelect ? Number(vehicleSelect.value) : 0;
+    const selectedVehicle = this.foundUser.vehicles?.[selectedIndex] || {};
+    const availablePoint = parseInt(selectedVehicle.point || 0);
   
-    if (!name || price <= 0) {
+    if (!name || priceInput <= 0) {
       Swal.showValidationMessage('กรุณากรอกชื่อบริการและราคาถูกต้อง');
       return;
     }
   
-    const vehicleSelect = document.getElementById('vehicleSelect');
-    const selectedIndex = vehicleSelect ? Number(vehicleSelect.value) : 0;
-    const selectedVehicle = this.foundUser.vehicles?.[selectedIndex] || {};
+    let price = priceInput;
+    let point = Math.floor(priceInput * this.pointPerBaht);
+    let label = `ราคา: ${price} บาท | แต้มที่ได้: ${point}`;
   
-    // ✅ ยืนยันข้อมูลก่อนส่ง
+    if (this.isRedeeming) {
+      if (price > availablePoint) {
+        Swal.showValidationMessage('แต้มของลูกค้าไม่เพียงพอ');
+        return;
+      }
+      price = -price;
+      point = -priceInput;
+      label = `ราคา: ${Math.abs(price)} | แต้มที่ใช้: ${Math.abs(point)}`;
+    }
+  
     const confirmHtml = `
       <p>ชื่อ: ${this.foundUser.Name}</p>
       <p>รถ: ${selectedVehicle.Brand} ${selectedVehicle.Model} (${selectedVehicle.Year})</p>
       <p>บริการ: ${name}</p>
-      <p>ราคา: ${price} บาท | แต้มที่ได้: ${point}</p>
+      <p>${label}</p>
       <p>หมายเหตุ: ${note || '-'}</p>
     `;
   
@@ -151,9 +163,6 @@ class QRScanner {
       admin: this.adminName
     };
   
-    // ✅ DEBUG log
-    console.log("📤 Payload ที่จะส่ง:", payload);
-  
     const res = await fetch(GAS_ENDPOINT + '?action=record_service', {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
@@ -171,6 +180,7 @@ class QRScanner {
       Swal.fire('❌ บันทึกไม่สำเร็จ', result.message || '', 'error');
     }
   }
+
 
 
   async startCamera() {
@@ -271,30 +281,71 @@ class QRScanner {
   }
 
   showCustomerPopup() {
+    this.isRedeeming = false;
+    this.currentPoint = 0;
+  
+    const vehicleOptions = this.foundUser.vehicles.map((v, i) =>
+      `<option value="${i}">${v.Brand} ${v.Model} (${v.Year})</option>`
+    ).join('');
+  
     Swal.fire({
       title: 'ข้อมูลลูกค้า',
       html: `
         <p>ชื่อ: ${this.foundUser.Name}</p>
         <p>เบอร์: ${this.foundUser.Phone}</p>
-        <p>รถ: <select id="vehicleSelect" class="swal2-input">
-              ${this.foundUser.vehicles.map((v, i) => 
-                `<option value="${i}">${v.Brand} ${v.Model} (${v.Year})</option>`
-              ).join('')}
-            </select>
-            </p>
+        <p>รถ: <select id="vehicleSelect" class="swal2-input">${vehicleOptions}</select></p>
         <input list="serviceOptions" id="serviceName" placeholder="ชื่อบริการ" class="swal2-input">
         <input type="number" id="priceInput" placeholder="ราคา" class="swal2-input">
-        <p>แต้มที่จะได้: <span id="pointPreview">0</span></p>
+        <button id="redeemBtn" class="swal2-confirm" style="margin-bottom: 6px;">🎁 แลกแต้ม</button>
+        <p id="pointInfo">แต้มที่จะได้: <span id="pointPreview">0</span></p>
         <input type="text" id="noteInput" placeholder="หมายเหตุ" class="swal2-input">
       `,
       confirmButtonText: 'บันทึก',
       didOpen: () => {
         const priceInput = document.getElementById('priceInput');
         const pointPreview = document.getElementById('pointPreview');
-        priceInput.addEventListener('input', () => {
+        const pointInfo = document.getElementById('pointInfo');
+        const redeemBtn = document.getElementById('redeemBtn');
+        const vehicleSelect = document.getElementById('vehicleSelect');
+  
+        const updatePointDisplay = () => {
           const p = parseFloat(priceInput.value) || 0;
-          pointPreview.textContent = Math.floor(p * this.pointPerBaht);
+          if (this.isRedeeming) {
+            const remain = this.currentPoint - p;
+            if (remain < 0) {
+              pointInfo.textContent = `แต้มของคุณไม่พอใช้บริการนี้ค่ะ ❌`;
+              pointInfo.style.color = 'red';
+              Swal.getConfirmButton().disabled = true;
+            } else {
+              pointInfo.textContent = `แต้มคงเหลือ: ${this.currentPoint} - ${p} → ${remain} แต้ม`;
+              pointInfo.style.color = 'black';
+              Swal.getConfirmButton().disabled = false;
+            }
+          } else {
+            pointPreview.textContent = Math.floor(p * this.pointPerBaht);
+            pointInfo.innerHTML = `แต้มที่จะได้: <span id="pointPreview">${Math.floor(p * this.pointPerBaht)}</span>`;
+            Swal.getConfirmButton().disabled = false;
+          }
+        };
+  
+        // เปลี่ยนคันรถ → อัปเดตแต้ม
+        const updateCurrentPoint = () => {
+          const selectedIndex = Number(vehicleSelect.value) || 0;
+          this.currentPoint = parseInt(this.foundUser.vehicles[selectedIndex].point || '0');
+          updatePointDisplay();
+        };
+  
+        vehicleSelect.addEventListener('change', updateCurrentPoint);
+        priceInput.addEventListener('input', updatePointDisplay);
+  
+        // ปุ่มสลับโหมดแลกแต้ม
+        redeemBtn.addEventListener('click', () => {
+          this.isRedeeming = !this.isRedeeming;
+          redeemBtn.classList.toggle('redeem-active', this.isRedeeming);
+          updatePointDisplay();
         });
+  
+        updateCurrentPoint(); // โหลดครั้งแรก
       },
       preConfirm: () => this.onServiceSave()
     });

@@ -370,8 +370,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <td>
                   <button class="btn feedback-btn"
                     data-date="${dateStr}"
-                    data-raw="${toBangkokISOString(parsedDate)}" // แก้ไขตรงนี้
-                    data-service="${row.service}">
+                    data-raw="${toBangkokISOString(parsedDate)}"
+                    data-service="${row.service || ''}"
+                    data-brand="${row.brand || ''}"
+                    data-model="${row.model || ''}">
                     ให้คะแนน / ข้อเสนอแนะ
                   </button>
                 </td>
@@ -546,6 +548,10 @@ submitButtons.forEach(btn => {
       const formattedDate = toFullThaiDateTimeString(parsedDate);
 
 
+      // ระหว่างส่ง feedback
+      const brand = feedbackBtn.getAttribute('data-brand') || '';
+      const model = feedbackBtn.getAttribute('data-model') || '';
+      
       const res = await fetch(GAS_ENDPOINT + '?action=feedback', {
         redirect: "follow",
         method: 'POST',
@@ -555,14 +561,15 @@ submitButtons.forEach(btn => {
         body: JSON.stringify({
           action: 'feedback',
           userId: currentUserId,
-          date: formattedDate, // ส่งวันที่ดิบ (เช่น "04/06/2025, 16:00:17")
+          date: formattedDate,
           service: serviceName,
           rating: ratingVal,
           feedback: feedbackText,
-          brand: memberData?.brand || "",
-          model: memberData?.model || ""
+          brand,
+          model
         })
       });
+
 
       if (!res.ok) {
         throw new Error(`HTTP ${res.status}`);
@@ -601,8 +608,8 @@ submitButtons.forEach(btn => {
         service: serviceName,
         rating: ratingVal,
         feedback: feedbackText,
-        brand: memberData?.brand,
-        model: memberData?.model
+        brand,
+        model
       });
       Swal.fire({
         icon: 'success',

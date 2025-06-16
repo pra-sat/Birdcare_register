@@ -114,8 +114,9 @@ class QRScanner {
   
     Swal.fire({ title: '⏳ กำลังบันทึก...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
 
-    const selectedIndex = parseInt(document.getElementById('vehicleSelect')?.value || 0);
-    const selectedVehicle = this.foundUser.vehicles?.[selectedIndex] || {};
+    const vehicleSelect = document.getElementById('vehicleSelect');
+    const selectedIndex = vehicleSelect ? Number(vehicleSelect.value) : 0;
+
  
     const payload = {
       action: 'record_service',

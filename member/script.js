@@ -310,8 +310,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             historyCardsHtml += `
               <button class="btn feedback-btn"
                 data-date="${dateStr}"
-                data-raw="${toBangkokISOString(parsedDate)}" // แก้ไขตรงนี้
-                data-service="${row.service || ''}">
+                data-raw="${toBangkokISOString(parsedDate)}"
+                data-service="${row.service || ''}"
+                data-brand="${row.brand || ''}"
+                data-model="${row.model || ''}">
                 ให้คะแนน / ข้อเสนอแนะ
               </button>
             `;

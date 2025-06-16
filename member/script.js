@@ -167,6 +167,13 @@ function generateQRCode(text, userInfo) {
       window.qrToken = null;
     }
 
+    function parseCustomDate(str) {
+      const [dmy, hms] = str.split(',');
+      const [day, month, year] = dmy.trim().split('/').map(Number);
+      const [hour, minute, second] = hms.trim().split(':').map(Number);
+      return new Date(year, month - 1, day, hour, minute, second);
+    }
+
 document.addEventListener('DOMContentLoaded', async () => {
   try {
     showLoadingOverlay();
@@ -282,13 +289,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     const history = Array.isArray(data.serviceHistory) ? data.serviceHistory : [];
-
-    function parseCustomDate(str) {
-      const [dmy, hms] = str.split(',');
-      const [day, month, year] = dmy.trim().split('/').map(Number);
-      const [hour, minute, second] = hms.trim().split(':').map(Number);
-      return new Date(year, month - 1, day, hour, minute, second);
-    }
 
     history.sort((a, b) => parseCustomDate(b.date) - parseCustomDate(a.date));
 

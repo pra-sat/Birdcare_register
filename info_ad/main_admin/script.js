@@ -98,7 +98,12 @@ class QRScanner {
 
   async onServiceSave() {
     const name = document.getElementById('serviceName').value.trim();
-    const priceInput = parseFloat(document.getElementById('priceInput').value) || 0;
+    const priceInput = document.getElementById('priceInput');
+      if (this.isRedeeming) {
+        priceInput.placeholder = "จำนวนแต้มที่ใช้";
+      } else {
+        priceInput.placeholder = "ราคา";
+      }
     const note = document.getElementById('noteInput').value.trim();
     const vehicleSelect = document.getElementById('vehicleSelect');
     const selectedIndex = vehicleSelect ? Number(vehicleSelect.value) : 0;
@@ -342,8 +347,12 @@ class QRScanner {
         redeemBtn.addEventListener('click', () => {
           this.isRedeeming = !this.isRedeeming;
           redeemBtn.classList.toggle('redeem-active', this.isRedeeming);
+          redeemBtn.textContent = this.isRedeeming ? '🟣 ใช้แต้มสะสม' : '🎁 แลกแต้ม';
+          redeemBtn.style.backgroundColor = this.isRedeeming ? '#8e44ad' : '';
+          priceInput.placeholder = this.isRedeeming ? "จำนวนแต้มที่ใช้" : "ราคา";
           updatePointDisplay();
         });
+
   
         updateCurrentPoint(); // โหลดครั้งแรก
       },

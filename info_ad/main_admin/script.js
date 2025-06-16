@@ -113,6 +113,9 @@ class QRScanner {
     }
   
     Swal.fire({ title: '⏳ กำลังบันทึก...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+
+    const selectedIndex = document.getElementById('vehicleSelect')?.value || 0;
+    const selectedVehicle = this.foundUser.vehicles?.[selectedIndex] || {};
   
     const payload = {
       action: 'record_service',
@@ -120,10 +123,10 @@ class QRScanner {
       nameLine: this.foundUser.nameLine || '',
       statusMessage: this.foundUser.statusMessage || '',
       pictureUrl: this.foundUser.pictureUrl || '',
-      brand: this.foundUser.Brand,
-      model: this.foundUser.Model,
-      year: this.foundUser.Year,
-      category: this.foundUser.Category || '',
+      brand: selectedVehicle.Brand || '',
+      model: selectedVehicle.Model || '',
+      year: selectedVehicle.Year || '',
+      category: selectedVehicle.Category || '',
       serviceName: name,
       price,
       point,
@@ -261,7 +264,12 @@ class QRScanner {
       html: `
         <p>ชื่อ: ${this.foundUser.Name}</p>
         <p>เบอร์: ${this.foundUser.Phone}</p>
-        <p>รถ: ${this.foundUser.Brand} ${this.foundUser.Model} ${this.foundUser.Year}</p>
+        <p>รถ: <select id="vehicleSelect" class="swal2-input">
+              ${this.foundUser.vehicles.map((v, i) => 
+                `<option value="${i}">${v.Brand} ${v.Model} (${v.Year})</option>`
+              ).join('')}
+            </select>
+            </p>
         <input list="serviceOptions" id="serviceName" placeholder="ชื่อบริการ" class="swal2-input">
         <input type="number" id="priceInput" placeholder="ราคา" class="swal2-input">
         <p>แต้มที่จะได้: <span id="pointPreview">0</span></p>

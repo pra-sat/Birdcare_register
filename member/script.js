@@ -247,13 +247,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     `;
     memberInfoEl.innerHTML = userInfoHtml;
 
-    memberInfoEl.innerHTML = data.vehicles.map(vehicle => `
+    memberInfoEl.innerHTML += data.vehicles.map(vehicle => `
       <div class="card">
         <p><b>รถ:</b> ${vehicle.brand} ${vehicle.model} (${vehicle.year})</p>
         <p><b>แต้มสะสม:</b> ${vehicle.point} แต้ม</p>
         <p><b>แต้มหมดอายุ:</b> ${vehicle.expirationDate || '-'}</p>
       </div>
     `).join('');
+    
 
 /*
     memberInfoEl.innerHTML = `

@@ -96,7 +96,7 @@ class QRScanner {
     });
   }
 
-  async onServiceSave() {
+  async onServiceSave() {async onServiceSave() {
     const name = document.getElementById('serviceName').value.trim();
     const price = parseFloat(document.getElementById('priceInput').value) || 0;
     const note = document.getElementById('noteInput').value.trim();
@@ -107,18 +107,32 @@ class QRScanner {
       return;
     }
   
-    if (!this.serviceList.length) {
-      Swal.fire('⚠️ ยังโหลดรายการบริการไม่เสร็จ', 'กรุณารอ 1-2 วินาทีแล้วลองใหม่', 'warning');
-      return;
-    }
-  
-    Swal.fire({ title: '⏳ กำลังบันทึก...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
-
     const vehicleSelect = document.getElementById('vehicleSelect');
     const selectedIndex = vehicleSelect ? Number(vehicleSelect.value) : 0;
     const selectedVehicle = this.foundUser.vehicles?.[selectedIndex] || {};
-    console.log("selectedVehicle:", selectedVehicle);
-    
+  
+    // ✅ ยืนยันข้อมูลก่อนส่ง
+    const confirmHtml = `
+      <p>ชื่อ: ${this.foundUser.Name}</p>
+      <p>รถ: ${selectedVehicle.Brand} ${selectedVehicle.Model} (${selectedVehicle.Year})</p>
+      <p>บริการ: ${name}</p>
+      <p>ราคา: ${price} บาท | แต้ม: ${point}</p>
+      <p>หมายเหตุ: ${note || '-'}</p>
+    `;
+  
+    const confirm = await Swal.fire({
+      title: 'ยืนยันข้อมูลก่อนส่ง?',
+      html: confirmHtml,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: '✅ ยืนยัน',
+      cancelButtonText: '❌ ยกเลิก'
+    });
+  
+    if (!confirm.isConfirmed) return;
+  
+    Swal.fire({ title: '⏳ กำลังบันทึก...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+  
     const payload = {
       action: 'record_service',
       userId: this.foundUser.UserID,
@@ -136,23 +150,18 @@ class QRScanner {
       timestamp: scanner.getThaiDateTime(),
       admin: this.adminName
     };
-
-
   
     // ✅ DEBUG log
-    console.log("📤 กำลังส่ง payload ไปยัง Apps Script:", payload);
+    console.log("📤 Payload ที่จะส่ง:", payload);
   
     const res = await fetch(GAS_ENDPOINT + '?action=record_service', {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
       body: JSON.stringify(payload)
     });
-      
+  
     const result = await res.json();
     Swal.close();
-  
-    // ✅ DEBUG result
-    console.log("📥 ตอบกลับจาก GAS:", result);
   
     if (result.success) {
       this.logAction('บันทึกบริการ', `✅ ${name} (${price} บาท)`);
@@ -162,6 +171,7 @@ class QRScanner {
       Swal.fire('❌ บันทึกไม่สำเร็จ', result.message || '', 'error');
     }
   }
+
 
   async startCamera() {
     try {

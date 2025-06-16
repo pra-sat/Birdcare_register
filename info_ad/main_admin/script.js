@@ -285,7 +285,7 @@ class QRScanner {
     this.currentPoint = 0;
   
     const vehicleOptions = this.foundUser.vehicles.map((v, i) =>
-      `<option value="${i}">${v.Brand} ${v.Model} (${v.Year})</option>`
+      `<option value="${i}">${v.Brand} ${v.Model} (${v.Year}) - ${v.point} แต้ม</option>`
     ).join('');
   
     Swal.fire({

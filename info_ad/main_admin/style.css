@@ -139,3 +139,9 @@ button:focus {
 .swal2-title {
   font-size: 20px !important;
 }
+
+.redeem-active {
+  background-color: #8e44ad !important;
+  color: white !important;
+  font-weight: bold;
+}

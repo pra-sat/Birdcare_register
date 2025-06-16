@@ -96,7 +96,7 @@ class QRScanner {
     });
   }
 
-  async onServiceSave() {async onServiceSave() {
+  async onServiceSave() {
     const name = document.getElementById('serviceName').value.trim();
     const price = parseFloat(document.getElementById('priceInput').value) || 0;
     const note = document.getElementById('noteInput').value.trim();

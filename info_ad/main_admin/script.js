@@ -116,7 +116,7 @@ class QRScanner {
       <p>ชื่อ: ${this.foundUser.Name}</p>
       <p>รถ: ${selectedVehicle.Brand} ${selectedVehicle.Model} (${selectedVehicle.Year})</p>
       <p>บริการ: ${name}</p>
-      <p>ราคา: ${price} บาท | แต้ม: ${point}</p>
+      <p>ราคา: ${price} บาท | แต้มที่ได้: ${point}</p>
       <p>หมายเหตุ: ${note || '-'}</p>
     `;
   

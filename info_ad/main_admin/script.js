@@ -116,8 +116,9 @@ class QRScanner {
 
     const vehicleSelect = document.getElementById('vehicleSelect');
     const selectedIndex = vehicleSelect ? Number(vehicleSelect.value) : 0;
-
- 
+    const selectedVehicle = this.foundUser.vehicles?.[selectedIndex] || {};
+    console.log("selectedVehicle:", selectedVehicle);
+    
     const payload = {
       action: 'record_service',
       userId: this.foundUser.UserID,
@@ -132,10 +133,10 @@ class QRScanner {
       price,
       point,
       note,
-      //timestamp: new Date().toISOString(),
-      timestamp: scanner.getThaiDateTime(), // รูปแบบ dd/MM/yyyy, HH:mm:ss
+      timestamp: scanner.getThaiDateTime(),
       admin: this.adminName
     };
+
 
   
     // ✅ DEBUG log

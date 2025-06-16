@@ -237,6 +237,16 @@ document.addEventListener('DOMContentLoaded', async () => {
       });
       return;
     }
+
+        // แสดงข้อมูลส่วนตัวสมาชิกด้านบน
+    const userInfoHtml = `
+      <div class="card">
+        <p><b>ชื่อ:</b> ${data.name || "-"}</p>
+        <p><b>เบอร์โทร:</b> ${formatPhone(data.vehicles[0]?.phone || "-")}</p>
+      </div>
+    `;
+    memberInfoEl.innerHTML = userInfoHtml;
+
     memberInfoEl.innerHTML = data.vehicles.map(vehicle => `
       <div class="card">
         <p><b>รถ:</b> ${vehicle.brand} ${vehicle.model} (${vehicle.year})</p>
